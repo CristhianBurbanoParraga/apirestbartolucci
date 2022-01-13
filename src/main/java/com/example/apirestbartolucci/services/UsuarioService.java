@@ -29,11 +29,7 @@ public class UsuarioService {
         return usuarioRepository.findById(id);
     }
 
-    public Usuario SaveUsuario(Usuario usuario) {
-        return usuarioRepository.save(usuario);
-    }
-
-    public Usuario UpdateUsuario(Usuario usuario) {
+    public Usuario SaveAndUpdateUsuario(Usuario usuario) {
         return usuarioRepository.save(usuario);
     }
 

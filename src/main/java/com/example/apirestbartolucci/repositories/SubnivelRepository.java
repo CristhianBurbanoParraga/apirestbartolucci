@@ -8,13 +8,17 @@ package com.example.apirestbartolucci.repositories;
  *
  * @author criss
  */
-import com.example.apirestbartolucci.models.Usuario;
+import com.example.apirestbartolucci.models.Nivel;
+import com.example.apirestbartolucci.models.Subnivel;
+import java.util.ArrayList;
 import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UsuarioRepository extends CrudRepository<Usuario, Integer> {
+public interface SubnivelRepository extends CrudRepository<Subnivel, Integer> {
 
-    public Optional<Usuario> findByUsuarioAndClave(String usuario, String clave);
+    public ArrayList<Subnivel> findSubnivelByNivel(Nivel nivel);
+
+    public Optional<Subnivel> findSubnivelByNombre(String nombre);
 }

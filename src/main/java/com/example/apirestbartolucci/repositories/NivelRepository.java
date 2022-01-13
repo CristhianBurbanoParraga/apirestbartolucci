@@ -8,13 +8,13 @@ package com.example.apirestbartolucci.repositories;
  *
  * @author criss
  */
-import com.example.apirestbartolucci.models.Usuario;
+import com.example.apirestbartolucci.models.Nivel;
 import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UsuarioRepository extends CrudRepository<Usuario, Integer> {
+public interface NivelRepository extends CrudRepository<Nivel, Integer> {
 
-    public Optional<Usuario> findByUsuarioAndClave(String usuario, String clave);
+    public Optional<Nivel> findByNombre(String nombre);
 }

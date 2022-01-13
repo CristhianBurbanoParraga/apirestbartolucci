@@ -10,6 +10,7 @@ package com.example.apirestbartolucci.controllers;
  */
 import com.example.apirestbartolucci.models.Usuario;
 import com.example.apirestbartolucci.services.UsuarioService;
+import io.swagger.annotations.ApiOperation;
 import java.util.ArrayList;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,31 +31,43 @@ public class UsuarioController {
     @Autowired
     UsuarioService usuarioService;
 
+    @ApiOperation(value = "GetAllUsuarios",
+            notes = "Obtiene un array json de los usuarios registrados")
     @GetMapping()
     public ArrayList<Usuario> GetAllUsuarios() {
         return usuarioService.GetAllUsuarios();
     }
 
+    @ApiOperation(value = "GetUsuarioById",
+            notes = "Obtiene un json del usuario por id pasado por parametro")
     @GetMapping(path = "/{id}")
     public Optional<Usuario> GetUsuarioById(@PathVariable("id") int id) {
         return usuarioService.GetUsuarioById(id);
     }
 
+    @ApiOperation(value = "SaveUsuario",
+            notes = "Registra un usuario y devuelve el objeto registrado en json")
     @PostMapping()
     public Usuario SaveUsuario(@RequestBody Usuario usuario) {
-        return usuarioService.SaveUsuario(usuario);
+        return usuarioService.SaveAndUpdateUsuario(usuario);
     }
 
+    @ApiOperation(value = "UpdateUsuario",
+            notes = "Actualiza un usuario y devuelve el objeto modificado en json")
     @PutMapping
     public Usuario UpdateUsuario(@RequestBody Usuario usuario) {
-        return usuarioService.UpdateUsuario(usuario);
+        return usuarioService.SaveAndUpdateUsuario(usuario);
     }
 
+    @ApiOperation(value = "DeleteUsuario",
+            notes = "Elimina un usuario por id pasado por parametro y devuelve un booleano")
     @DeleteMapping(path = "/{id}")
     public boolean DeleteUsuario(@PathVariable("id") int id) {
         return usuarioService.DeleteUsuarioById(id);
     }
 
+    @ApiOperation(value = "LoginByUsuarioAndClave",
+            notes = "Obtiene un usuario por sus credenciales pasadas por parametro y devuelve un json")
     @GetMapping(path = "/login")
     public Optional<Usuario> LoginByUsuarioAndClave(@RequestParam("user") String usuario,
             @RequestParam("password") String clave) {
