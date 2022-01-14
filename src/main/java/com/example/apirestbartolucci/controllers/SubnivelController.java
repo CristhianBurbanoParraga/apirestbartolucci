@@ -32,7 +32,8 @@ public class SubnivelController {
     @Autowired
     SubnivelService subnivelService;
 
-    @ApiOperation(value = "GetAllSubniveles")
+    @ApiOperation(value = "GetAllSubniveles",
+            notes = "Obtiene un array json de los subniveles registtados")
     @GetMapping()
     public ArrayList<Subnivel> GetAllSubniveles() {
         return subnivelService.GetAllSubniveles();
@@ -66,10 +67,10 @@ public class SubnivelController {
         return subnivelService.DeleteSubnivelById(id);
     }
 
-    @ApiOperation(value = "GetSubnivelByNivel",
+    @ApiOperation(value = "GetSubnivelByIdnivel",
             notes = "Obtiene un array json de los subniveles registrados por nivel")
     @PostMapping(path = "/bynivel")
-    public ArrayList<Subnivel> GetSubnivelByNivel(@RequestBody Nivel nivel) {
+    public ArrayList<Subnivel> GetSubnivelByIdnivel(@RequestBody Nivel nivel) {
         return subnivelService.GetSubnivelByNivel(nivel);
     }
 

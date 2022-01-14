@@ -24,8 +24,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "subnivel")
-public class Subnivel implements Serializable {
+@Table(name = "actividad")
+public class Actividad implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,35 +33,32 @@ public class Subnivel implements Serializable {
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idnivel", nullable = false)
+    @JoinColumn(name = "idsubnivel", nullable = false)
     @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
-    private Nivel nivel;
+    private Subnivel subnivel;
 
-    private String nombre;
+    private String tipo;
 
-    private String descripcion;
+    private String detalle;
 
-    private int numactividades;
-
-    private String url;
+    private int valor;
 
     private boolean activo;
 
-    @OneToMany(mappedBy = "subnivel", fetch = FetchType.LAZY,
+    @OneToMany(mappedBy = "actividad", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    private Set<Actividad> actividad;
+    private Set<Contenido> contenido;
 
-    public Subnivel() {
+    public Actividad() {
     }
 
-    public Subnivel(int id, Nivel nivel, String nombre,
-            String descripcion, int numactividades, String url, boolean activo) {
+    public Actividad(int id, Subnivel subnivel, String tipo,
+            String detalle, int valor, boolean activo) {
         this.id = id;
-        this.nivel = nivel;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.numactividades = numactividades;
-        this.url = url;
+        this.subnivel = subnivel;
+        this.tipo = tipo;
+        this.detalle = detalle;
+        this.valor = valor;
         this.activo = activo;
     }
 
@@ -73,44 +70,36 @@ public class Subnivel implements Serializable {
         this.id = id;
     }
 
-    public Nivel getNivel() {
-        return nivel;
+    public Subnivel getSubnivel() {
+        return subnivel;
     }
 
-    public void setNivel(Nivel nivel) {
-        this.nivel = nivel;
+    public void setSubnivel(Subnivel subnivel) {
+        this.subnivel = subnivel;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getTipo() {
+        return tipo;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getDetalle() {
+        return detalle;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setDetalle(String detalle) {
+        this.detalle = detalle;
     }
 
-    public int getNumactividades() {
-        return numactividades;
+    public int getValor() {
+        return valor;
     }
 
-    public void setNumactividades(int numactividades) {
-        this.numactividades = numactividades;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
+    public void setValor(int valor) {
+        this.valor = valor;
     }
 
     public boolean isActivo() {
@@ -120,5 +109,4 @@ public class Subnivel implements Serializable {
     public void setActivo(boolean activo) {
         this.activo = activo;
     }
-
 }
