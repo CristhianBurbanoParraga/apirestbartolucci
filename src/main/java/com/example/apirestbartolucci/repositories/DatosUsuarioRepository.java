@@ -4,20 +4,19 @@
  */
 package com.example.apirestbartolucci.repositories;
 
-/**
- *
- * @author criss
- */
-import com.example.apirestbartolucci.models.Usuario;
-import java.util.ArrayList;
+import com.example.apirestbartolucci.models.DatosUsuario;
 import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+/**
+ *
+ * @author criss
+ */
 @Repository
-public interface UsuarioRepository extends CrudRepository<Usuario, Integer> {
+public interface DatosUsuarioRepository extends CrudRepository<DatosUsuario, Integer> {
 
-    public Optional<Usuario> findByUsuario(String usuario);
+    public Optional<DatosUsuario> findByCorreo(String correo);
 
-    public ArrayList<Usuario> findByActivo(boolean activo);
+    public Optional<DatosUsuario> findByTelefono(String telefono);
 }

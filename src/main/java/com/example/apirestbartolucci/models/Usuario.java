@@ -9,16 +9,15 @@ package com.example.apirestbartolucci.models;
  * @author criss
  */
 import java.io.Serializable;
-import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "usuario")
@@ -29,46 +28,34 @@ public class Usuario implements Serializable {
     @Column(unique = true, nullable = false)
     private int id;
 
+    @Column(length = 15, nullable = false, unique = true)
     private String usuario;
 
+    @Column(nullable = false, unique = false)
     private String clave;
 
+    @Column(length = 2, nullable = false, unique = false)
     private String tipousuario;
 
-    private String nombre;
-
-    private String apellido;
-
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private Date fechanacimiento;
-
-    private String correo;
-
-    private String telefono;
-
-    private String direccion;
-
+    @Column(nullable = true, unique = false)
     private int stockcaritas;
 
+    @Column(nullable = false, unique = false)
     private boolean activo;
+
+    @OneToOne(mappedBy = "usuario", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private DatosUsuario datosUsuario;
 
     public Usuario() {
     }
 
-    public Usuario(int id, String usuario, String clave, String tipousuario,
-            String nombre, String apellido, Date fechanacimiento, String correo,
-            String telefono, String direccion, int stockcaritas, boolean activo) {
+    public Usuario(int id, String usuario, String clave,
+            String tipousuario, int stockcaritas, boolean activo) {
         this.id = id;
         this.usuario = usuario;
         this.clave = clave;
         this.tipousuario = tipousuario;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.fechanacimiento = fechanacimiento;
-        this.correo = correo;
-        this.telefono = telefono;
-        this.direccion = direccion;
         this.stockcaritas = stockcaritas;
         this.activo = activo;
     }
@@ -103,54 +90,6 @@ public class Usuario implements Serializable {
 
     public void setTipousuario(String tipousuario) {
         this.tipousuario = tipousuario;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-    public Date getFechanacimiento() {
-        return fechanacimiento;
-    }
-
-    public void setFechanacimiento(Date fechanacimiento) {
-        this.fechanacimiento = fechanacimiento;
-    }
-
-    public String getCorreo() {
-        return correo;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
     }
 
     public int getStockcaritas() {
