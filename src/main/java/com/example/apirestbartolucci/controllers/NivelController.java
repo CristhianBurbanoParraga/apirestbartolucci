@@ -8,13 +8,16 @@ package com.example.apirestbartolucci.controllers;
  *
  * @author criss
  */
+import com.example.apirestbartolucci.dtos.nivel.NivelSaveDto;
+import com.example.apirestbartolucci.dtos.nivel.NivelUpdateDto;
+import com.example.apirestbartolucci.models.Mensaje;
 import com.example.apirestbartolucci.models.Nivel;
 import com.example.apirestbartolucci.services.NivelService;
-import io.swagger.annotations.ApiOperation;
 import java.util.ArrayList;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,46 +34,80 @@ public class NivelController {
     @Autowired
     NivelService nivelService;
 
-    @ApiOperation(value = "GetAllNiveles",
-            notes = "Obtiene un array json de los niveles registrados")
     @GetMapping()
-    public ArrayList<Nivel> GetAllNiveles() {
-        return nivelService.GetAllNiveles();
+    public ResponseEntity<?> GetAllNiveles() {
+        ArrayList<Nivel> niveles = nivelService.GetAllNiveles();
+        if (niveles.isEmpty()) {
+            return new ResponseEntity(new Mensaje("No hay registros"),
+                    HttpStatus.OK);
+        } else {
+            return new ResponseEntity(niveles, HttpStatus.OK);
+        }
     }
 
-    @ApiOperation(value = "GetNivelById",
-            notes = "Obtiene un json del nivel por id pasado por parametro")
     @GetMapping(path = "/{id}")
-    public Optional<Nivel> GetNivelById(@PathVariable("id") int id) {
-        return nivelService.GetNivelById(id);
+    public ResponseEntity<?> GetNivelById(@PathVariable("id") int id) {
+        Optional<Nivel> nivel = nivelService.GetNivelById(id);
+        if (nivel.isPresent()) {
+            return new ResponseEntity(nivel, HttpStatus.OK);
+        } else {
+            return new ResponseEntity(new Mensaje("No existe registro con id: "
+                    + String.valueOf(id)), HttpStatus.OK);
+        }
     }
 
-    @ApiOperation(value = "SaveNivel",
-            notes = "Registra un nivel y devuelve el objeto registrado en json")
+    @GetMapping(path = "/byNombre/{nombre}")
+    public ResponseEntity<?> GetNivelByNombre(
+            @PathVariable("nombre") String nombre) {
+        Optional<Nivel> nivel = nivelService.GetNivelByNombre(nombre);
+        if (nivel.isPresent()) {
+            return new ResponseEntity(nivel, HttpStatus.OK);
+        } else {
+            return new ResponseEntity(new Mensaje("No existe registro "
+                    + "con nombre: " + nombre), HttpStatus.OK);
+        }
+    }
+
+    @GetMapping(path = "/byStatus/{status}")
+    public ResponseEntity<?> GetAllNivelesByStatus(
+            @PathVariable("status") boolean activo) {
+        ArrayList<Nivel> niveles = nivelService.GetNivelByStatus(activo);
+        if (niveles.isEmpty()) {
+            return new ResponseEntity(new Mensaje("No hay registros con Activo: "
+                    + activo), HttpStatus.OK);
+        } else {
+            return new ResponseEntity(niveles, HttpStatus.OK);
+        }
+    }
+
     @PostMapping()
-    public Nivel SaveNivel(@RequestBody Nivel nivel) {
-        return nivelService.SaveAndUpdateNivel(nivel);
+    public ResponseEntity<?> SaveNivel(@RequestBody NivelSaveDto nivelDto) {
+        Nivel nivel = nivelService.SaveNivel(nivelDto);
+        if (nivel == null) {
+            return new ResponseEntity(new Mensaje("Error al guardar el "
+                    + "archivo o campo existente 'nombre'"), HttpStatus.OK);
+        } else {
+            return new ResponseEntity(nivel, HttpStatus.OK);
+        }
     }
 
-    @ApiOperation(value = "UpdateNivel",
-            notes = "Actualiza un nivel y devuelve el objeto modificado en json")
-    @PutMapping
-    public Nivel UpdateNivel(@RequestBody Nivel nivel) {
-        return nivelService.SaveAndUpdateNivel(nivel);
+    @PutMapping()
+    public ResponseEntity<?> UpdateNivel(
+            @RequestBody NivelUpdateDto nivelDto) {
+        Nivel nivel = nivelService.UpdateNivel(nivelDto);
+        if (nivel != null) {
+            return new ResponseEntity(nivel, HttpStatus.OK);
+        } else {
+            return new ResponseEntity(new Mensaje("Nivel con id: "
+                    + String.valueOf(nivelDto.getId()) + " inexistente"),
+                    HttpStatus.OK);
+        }
     }
 
-    @ApiOperation(value = "DeleteNivel",
-            notes = "Elimina un nivel por id pasado por parametro y devuelve un booleano")
-    @DeleteMapping(path = "/{id}")
-    public boolean DeleteNivel(@PathVariable("id") int id) {
-        return nivelService.DeleteNivelById(id);
-    }
-
-    @ApiOperation(value = "GetNivelByNombre",
-            notes = "Obtiene un nivel por nombre pasado por parametro y devuelve el objeto en json")
-    @GetMapping(path = "/byname")
-    public Optional<Nivel> GetNivelByNombre(@RequestParam("name") String nombre) {
-        return nivelService.GetNivelByNombre(nombre);
+    @PutMapping(path = "/changeStatusNivel")
+    public Mensaje ChangeNivelStatus(@RequestParam("id") int id,
+            @RequestParam("activo") boolean activo) {
+        return new Mensaje(nivelService.ChangeNivelStatus(id, activo));
     }
 
 }

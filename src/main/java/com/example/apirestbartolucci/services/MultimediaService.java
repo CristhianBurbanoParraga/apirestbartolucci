@@ -4,12 +4,12 @@
  */
 package com.example.apirestbartolucci.services;
 
-import com.example.apirestbartolucci.models.Multimedia;
-import com.example.apirestbartolucci.repositories.MultimediaRepository;
-import java.util.ArrayList;
-import java.util.Optional;
+import com.example.apirestbartolucci.dtos.multimedia.OtherMultimediaDto;
+import java.io.IOException;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -19,39 +19,17 @@ import org.springframework.stereotype.Service;
 public class MultimediaService {
 
     @Autowired
-    MultimediaRepository multimediaRepository;
+    CloudinaryService cloudinaryService;
 
-    public ArrayList<Multimedia> GetAllMultimedias() {
-        return (ArrayList<Multimedia>) multimediaRepository.findAll();
-    }
-
-    public Optional<Multimedia> GetMultimediaById(int id) {
-        return multimediaRepository.findById(id);
-    }
-
-    public Multimedia SaveAndUpdateMultimedia(Multimedia multimedia) {
-        return multimediaRepository.save(multimedia);
-    }
-
-    public boolean DeleteMultimediaById(int id) {
+    public OtherMultimediaDto SaveOtherMultimedia(MultipartFile multipartFile) {
         try {
-            multimediaRepository.deleteById(id);
-            return true;
-        } catch (Exception e) {
-            return false;
+            Map map = cloudinaryService.upload(multipartFile);
+            OtherMultimediaDto otherMultimediaDto
+                    = new OtherMultimediaDto((String) map.get("public_id"),
+                            (String) map.get("url"));
+            return otherMultimediaDto;
+        } catch (IOException ioe) {
+            return null;
         }
     }
-
-    public Optional<Multimedia> GetMultimediaByNombre(String nombre) {
-        return multimediaRepository.findByNombre(nombre);
-    }
-
-    public Optional<Multimedia> GetMultimediaByPublicid(String publicid) {
-        return multimediaRepository.findByPublicid(publicid);
-    }
-
-    public Optional<Multimedia> GetMultimediaByUrl(String url) {
-        return multimediaRepository.findByUrl(url);
-    }
-
 }
