@@ -6,7 +6,7 @@ package com.example.apirestbartolucci.models;
 
 /**
  *
- * @author PC
+ * @author criss
  */
 public class Mensaje {
 

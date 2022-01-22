@@ -12,11 +12,16 @@ import com.example.apirestbartolucci.dtos.usuario.UsuarioCredentialsDto;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioSaveDto;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioUpdateCredentialsDto;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioUpdateDto;
-import com.example.apirestbartolucci.models.DatosUsuario;
+import com.example.apirestbartolucci.models.Docente;
+import com.example.apirestbartolucci.models.Estudiante;
+import com.example.apirestbartolucci.models.Grupo;
 import com.example.apirestbartolucci.models.Usuario;
-import com.example.apirestbartolucci.repositories.DatosUsuarioRepository;
+import com.example.apirestbartolucci.repositories.DocenteRepository;
+import com.example.apirestbartolucci.repositories.EstudianteRepository;
+import com.example.apirestbartolucci.repositories.GrupoRepository;
 import com.example.apirestbartolucci.repositories.UsuarioRepository;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 import javax.mail.SendFailedException;
@@ -30,7 +35,13 @@ public class UsuarioService {
     UsuarioRepository usuarioRepository;
 
     @Autowired
-    DatosUsuarioRepository datosUsuarioRepository;
+    EstudianteRepository estudianteRepository;
+
+    @Autowired
+    DocenteRepository docenteRepository;
+
+    @Autowired
+    GrupoRepository grupoRepository;
 
     @Autowired
     JasyptService jasyptService;
@@ -38,20 +49,12 @@ public class UsuarioService {
     @Autowired
     EmailService emailService;
 
-    public ArrayList<Usuario> GetAllUsuariosOnlyCrendentials() {
+    public ArrayList<Usuario> GetAllUsuarios() {
         return (ArrayList<Usuario>) usuarioRepository.findAll();
     }
 
-    public ArrayList<DatosUsuario> GetAllUsuarios() {
-        return (ArrayList<DatosUsuario>) datosUsuarioRepository.findAll();
-    }
-
-    public Optional<Usuario> GetUsuarioOnlyCrendentialsById(int id) {
+    public Optional<Usuario> GetUsuarioById(int id) {
         return usuarioRepository.findById(id);
-    }
-
-    public Optional<DatosUsuario> GetUsuarioById(int id) {
-        return datosUsuarioRepository.findById(id);
     }
 
     public ArrayList<Usuario> GetAllUsuariosByActivo(boolean activo) {
@@ -61,41 +64,86 @@ public class UsuarioService {
     public UsuarioSaveDto SaveUsuario(UsuarioSaveDto usuarioSaveDto) {
         if (ExistsUsuarioSave(usuarioSaveDto.getUsuario(),
                 usuarioSaveDto.getCorreo(),
-                usuarioSaveDto.getTelefono()) == true) {
+                usuarioSaveDto.getTelefono())) {
             return null;
         } else {
             Usuario usuario = new Usuario();
             usuario.setUsuario(usuarioSaveDto.getUsuario());
             usuario.setClave(jasyptService.EncryptValor(
                     usuarioSaveDto.getClave()));
-            usuario.setTipousuario("US");
-            usuario.setStockcaritas(0);
-            usuario.setActivo(usuarioSaveDto.isActivo());
-            int id = usuarioRepository.save(usuario).getId();
-            datosUsuarioRepository.save(new DatosUsuario(0,
-                    usuario, usuarioSaveDto.getNombres(),
-                    usuarioSaveDto.getApellidos(),
-                    usuarioSaveDto.getTelefono(),
-                    usuarioSaveDto.getCorreo(),
-                    usuarioSaveDto.getFechanacimiento()));
+            usuario.setActivo(true);
+            if (usuarioSaveDto.isIsDocente()) {
+                usuario.setTipousuario("DC");
+                usuario = usuarioRepository.save(usuario);
+                Docente docente = new Docente(0,
+                        usuario,
+                        usuarioSaveDto.getNombres(),
+                        usuarioSaveDto.getApellidos(),
+                        usuarioSaveDto.getTelefono(),
+                        usuarioSaveDto.getCorreo(),
+                        usuarioSaveDto.getFechanacimiento(),
+                        null);
+                docenteRepository.save(docente);
+            } else {
+                usuario.setTipousuario("ES");
+                if (ExistsDocenteSelectedSave(
+                        usuarioSaveDto.getSelectedDocente().getId(),
+                        usuarioSaveDto.getSelectedDocente().getNombres(),
+                        usuarioSaveDto.getSelectedDocente().getApellidos())) {
+                    usuario = usuarioRepository.save(usuario);
+                    Estudiante estudiante = new Estudiante(0,
+                            usuario,
+                            usuarioSaveDto.getNombres(),
+                            usuarioSaveDto.getApellidos(),
+                            usuarioSaveDto.getTelefono(),
+                            usuarioSaveDto.getCorreo(),
+                            usuarioSaveDto.getFechanacimiento(),
+                            0, null, null);
+                    estudiante = estudianteRepository.save(estudiante);
+                    Docente docente = docenteRepository.findById(
+                            usuarioSaveDto.getSelectedDocente().getId()).get();
+                    Grupo grupo = new Grupo(0, docente, estudiante,
+                            new Date(), true);
+                    grupoRepository.save(grupo);
+                    return usuarioSaveDto;
+                } else {
+                    return null;
+                }
+            }
             return usuarioSaveDto;
         }
     }
 
     public UsuarioUpdateDto UpdateUsuario(UsuarioUpdateDto usuarioUpdateDto) {
-        Optional<DatosUsuario> datosUsuario
-                = datosUsuarioRepository.findById(usuarioUpdateDto.getId());
-        if (datosUsuario.isPresent()) {
-            datosUsuario.get().setNombres(usuarioUpdateDto.getNombres());
-            datosUsuario.get().setApellidos(usuarioUpdateDto
-                    .getApellidos());
-            datosUsuario.get().setTelefono(usuarioUpdateDto.getTelefono());
-            datosUsuario.get().setCorreo(usuarioUpdateDto.getCorreo());
-            datosUsuario.get().setFechanacimiento(usuarioUpdateDto
-                    .getFechanacimiento());
-            datosUsuarioRepository.save(datosUsuario.get());
-            return usuarioUpdateDto;
+        if (usuarioUpdateDto.isIsDocente()) {
+            Optional<Docente> docente
+                    = docenteRepository.findById(usuarioUpdateDto.getId());
+            if (docente.isPresent()) {
+                docente.get().setNombres(usuarioUpdateDto.getNombres());
+                docente.get().setApellidos(usuarioUpdateDto.getApellidos());
+                docente.get().setTelefono(usuarioUpdateDto.getTelefono());
+                docente.get().setCorreo(usuarioUpdateDto.getCorreo());
+                docente.get().setFechanacimiento(
+                        usuarioUpdateDto.getFechanacimiento());
+                docenteRepository.save(docente.get());
+                return usuarioUpdateDto;
+            } else {
+                return null;
+            }
         } else {
+            Optional<Estudiante> estudiante
+                    = estudianteRepository.findById(usuarioUpdateDto.getId());
+            if (estudiante.isPresent()) {
+                estudiante.get().setNombres(usuarioUpdateDto.getNombres());
+                estudiante.get().setApellidos(usuarioUpdateDto.getApellidos());
+                estudiante.get().setTelefono(usuarioUpdateDto.getTelefono());
+                estudiante.get().setCorreo(usuarioUpdateDto.getCorreo());
+                estudiante.get().setFechanacimiento(
+                        usuarioUpdateDto.getFechanacimiento());
+                estudianteRepository.save(estudiante.get());
+                return usuarioUpdateDto;
+            } else {
+            }
             return null;
         }
     }
@@ -138,9 +186,20 @@ public class UsuarioService {
         Optional<Usuario> usuario = usuarioRepository.findById(id);
         if (usuario.isPresent()) {
             usuario.get().setActivo(activo);
-            usuarioRepository.save(usuario.get());
-            return "Estado de cuenta de usuario con id: " + String.valueOf(id)
-                    + " cambiada a: " + String.valueOf(activo);
+            if (usuario.get().getEstudiante() != null) {
+                usuarioRepository.save(usuario.get());
+                return "Estado de cuenta de usuario con id: "
+                        + String.valueOf(id) + " cambiada a: "
+                        + String.valueOf(activo);
+            } else if (usuario.get().getDocente() != null) {
+                usuarioRepository.save(usuario.get());
+                return "Estado de cuenta de usuario con id: "
+                        + String.valueOf(id) + " cambiada a: "
+                        + String.valueOf(activo);
+            } else {
+                return "Error (raro): Cuenta de usuario existente pero no"
+                        + " contiene datos";
+            }
         } else {
             return "Cuenta de usuario inexistente con id: "
                     + String.valueOf(id);
@@ -149,11 +208,12 @@ public class UsuarioService {
 
     public String SendEmailByRecoveryCredentials(String correo)
             throws SendFailedException {
-        Optional<DatosUsuario> datosUsuario
-                = datosUsuarioRepository.findByCorreo(correo);
-        if (datosUsuario.isPresent()) {
-            String user = datosUsuario.get().getUsuario().getUsuario();
-            String password = jasyptService.DecryptValor(datosUsuario.get()
+        String user = "";
+        String password = "";
+        Optional<Docente> docente = docenteRepository.findByCorreo(correo);
+        if (docente.isPresent()) {
+            user = docente.get().getUsuario().getUsuario();
+            password = jasyptService.DecryptValor(docente.get()
                     .getUsuario().getClave());
             String body = "TOLAND APP\n\nHa solicitado la recuperación de sus "
                     + "credenciales de usuario. "
@@ -168,18 +228,48 @@ public class UsuarioService {
                 return data.get("Response");
             }
         } else {
-            return "No existe un usuario con el correo "
-                    + correo + " en el sistema";
+            Optional<Estudiante> estudiante
+                    = estudianteRepository.findByCorreo(correo);
+            if (estudiante.isPresent()) {
+                user = estudiante.get().getUsuario().getUsuario();
+                password = jasyptService.DecryptValor(estudiante.get()
+                        .getUsuario().getClave());
+                String body = "TOLAND APP\n\nHa solicitado la recuperación "
+                        + "de sus credenciales de usuario. "
+                        + "Los cuales son los siguientes:\n\nUsuario: "
+                        + user + "\nContraseña: " + password + "\n\nPor su "
+                        + "seguridad, recomendamos cambie sus credenciales de "
+                        + "usuario directamente en la aplicación.";
+                Map<String, String> data = emailService.SendEmail(correo, body);
+                if (data.get("Status").equals("ok")) {
+                    return "El correo de recuperación se ha enviado a " + correo;
+                } else {
+                    return data.get("Response");
+                }
+            } else {
+                return "No existe un usuario con el correo "
+                        + correo + " en el sistema";
+            }
         }
     }
 
     private boolean ExistsUsuarioSave(String username, String correo,
             String telefono) {
         if (!usuarioRepository.findByUsuario(username).isPresent()) {
-            if (!datosUsuarioRepository.findByCorreo(correo).isPresent()) {
-                if (!datosUsuarioRepository.findByTelefono(telefono)
+            if (!docenteRepository.findByCorreo(correo).isPresent()) {
+                if (!docenteRepository.findByTelefono(telefono)
                         .isPresent()) {
-                    return false;
+                    if (!estudianteRepository.findByCorreo(correo)
+                            .isPresent()) {
+                        if (!estudianteRepository.findByTelefono(telefono)
+                                .isPresent()) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
                 } else {
                     return true;
                 }
@@ -191,8 +281,19 @@ public class UsuarioService {
         }
     }
 
-    public Optional<DatosUsuario> GetByCorreo(String correo) {
-        return datosUsuarioRepository.findByCorreo(correo);
+    private boolean ExistsDocenteSelectedSave(int id, String nombres,
+            String apellidos) {
+        Optional<Docente> docente = docenteRepository.findById(id);
+        if (docente.isPresent()) {
+            if (docenteRepository.findByNombresAndApellidos(
+                    nombres, apellidos).isPresent()) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
 }

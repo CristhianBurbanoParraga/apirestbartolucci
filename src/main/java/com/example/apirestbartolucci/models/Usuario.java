@@ -8,6 +8,8 @@ package com.example.apirestbartolucci.models;
  *
  * @author criss
  */
+//import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -37,27 +39,34 @@ public class Usuario implements Serializable {
     @Column(length = 2, nullable = false, unique = false)
     private String tipousuario;
 
-    @Column(nullable = true, unique = false)
-    private int stockcaritas;
-
     @Column(nullable = false, unique = false)
     private boolean activo;
 
     @OneToOne(mappedBy = "usuario", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
-    private DatosUsuario datosUsuario;
+    @JsonManagedReference
+    //@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
+    private Estudiante estudiante;
+
+    @OneToOne(mappedBy = "usuario", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JsonManagedReference
+    //@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
+    private Docente docente;
 
     public Usuario() {
     }
 
     public Usuario(int id, String usuario, String clave,
-            String tipousuario, int stockcaritas, boolean activo) {
+            String tipousuario, boolean activo, Estudiante estudiante,
+            Docente docente) {
         this.id = id;
         this.usuario = usuario;
         this.clave = clave;
         this.tipousuario = tipousuario;
-        this.stockcaritas = stockcaritas;
         this.activo = activo;
+        this.estudiante = estudiante;
+        this.docente = docente;
     }
 
     public int getId() {
@@ -92,20 +101,28 @@ public class Usuario implements Serializable {
         this.tipousuario = tipousuario;
     }
 
-    public int getStockcaritas() {
-        return stockcaritas;
-    }
-
-    public void setStockcaritas(int stockcaritas) {
-        this.stockcaritas = stockcaritas;
-    }
-
     public boolean isActivo() {
         return activo;
     }
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    public Estudiante getEstudiante() {
+        return estudiante;
+    }
+
+    public void setEstudiante(Estudiante estudiante) {
+        this.estudiante = estudiante;
+    }
+
+    public Docente getDocente() {
+        return docente;
+    }
+
+    public void setDocente(Docente docente) {
+        this.docente = docente;
     }
 
 }

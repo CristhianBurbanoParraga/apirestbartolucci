@@ -37,60 +37,66 @@ public class UsuarioController {
     @Autowired
     UsuarioService usuarioService;
 
-    @GetMapping(path = "/onlyCredentials")
-    public ResponseEntity<ArrayList<?>> GetAllUsusariosOnlyCredentials() {
-        return new ResponseEntity(
-                usuarioService.GetAllUsuariosOnlyCrendentials(), HttpStatus.OK);
-    }
-
     @GetMapping()
-    public ResponseEntity<ArrayList<?>> GetAllUsuarios() {
-        return new ResponseEntity(usuarioService.GetAllUsuarios(),
-                HttpStatus.OK);
-    }
-
-    @GetMapping(path = "/onlyCredentials/{id}")
-    public ResponseEntity<?> GetUsuarioOnlyCredentialsById(
-            @PathVariable("id") int id) {
-        return new ResponseEntity(
-                usuarioService.GetUsuarioOnlyCrendentialsById(id),
-                HttpStatus.OK);
+    public ResponseEntity<?> GetAll() {
+        ArrayList<Usuario> usuarios = usuarioService.GetAllUsuarios();
+        if (usuarios.isEmpty()) {
+            return new ResponseEntity(new Mensaje("No hay registros"),
+                    HttpStatus.OK);
+        } else {
+            return new ResponseEntity(usuarios, HttpStatus.OK);
+        }
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<?> GetUsuarioById(@PathVariable("id") int id) {
-        return new ResponseEntity(usuarioService.GetUsuarioById(id),
-                HttpStatus.OK);
+    public ResponseEntity<?> GetById(@PathVariable("id") int id) {
+        Optional<Usuario> usuario = usuarioService.GetUsuarioById(id);
+        if (usuario.isPresent()) {
+            return new ResponseEntity(usuario,
+                    HttpStatus.OK);
+        } else {
+            return new ResponseEntity(new Mensaje("No existe registro con id: "
+                    + String.valueOf(id)), HttpStatus.OK);
+        }
+
     }
 
     @GetMapping(path = "/byStatusAccount")
-    public ResponseEntity<ArrayList<?>> GetAllAccountsByStatus(
+    public ResponseEntity<?> GetAllAccountsByStatus(
             @RequestParam("activo") boolean activo) {
-        return new ResponseEntity(usuarioService.GetAllUsuariosByActivo(activo),
-                HttpStatus.OK);
+        ArrayList<Usuario> usuarios = usuarioService.GetAllUsuariosByActivo(activo);
+        if (usuarios.isEmpty()) {
+            return new ResponseEntity(new Mensaje("No hay registros"),
+                    HttpStatus.OK);
+        } else {
+            return new ResponseEntity(usuarios, HttpStatus.OK);
+        }
     }
 
     @PostMapping(path = "/login")
-    public ResponseEntity<?> GetUsuarioByCredentials(
+    public ResponseEntity<?> GetByCredentials(
             @RequestBody UsuarioCredentialsDto credentiales) {
         Optional<Usuario> optionalUsuario
                 = usuarioService.LoginByUsuarioAndClave(credentiales);
         if (optionalUsuario.isPresent()) {
             return new ResponseEntity(optionalUsuario, HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("Error: Credenciales "
-                    + "incorrectas o Cuenta desactivada"), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje("Acceso denegado, "
+                    + "posibles causas: \nCredenciales "
+                    + "incorrectas ó \nCuenta desactivada"), HttpStatus.OK);
         }
     }
 
     @PostMapping()
-    public ResponseEntity<?> SaveUsuario(
+    public ResponseEntity<?> Save(
             @RequestBody UsuarioSaveDto usuarioSaveDto) {
         if (usuarioService.SaveUsuario(usuarioSaveDto) != null) {
             return new ResponseEntity(usuarioSaveDto, HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("Error: Campos existentes "
-                    + "'usuario' o 'correo' o 'telefono'"), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje("Error de registro, posibles "
+                    + "causas: \nCampos existentes de 'usuario' o 'correo' o "
+                    + "'telefono' ó \nSi es una cuenta estudiantil, el docente "
+                    + "seleccionado no existe"), HttpStatus.OK);
         }
     }
 
@@ -103,7 +109,7 @@ public class UsuarioController {
     }
 
     @PutMapping()
-    public ResponseEntity<?> UpdateUsuario(
+    public ResponseEntity<?> Update(
             @RequestBody UsuarioUpdateDto usuarioUpdateDto) {
         if (usuarioService.UpdateUsuario(usuarioUpdateDto) != null) {
             return new ResponseEntity(usuarioUpdateDto, HttpStatus.OK);

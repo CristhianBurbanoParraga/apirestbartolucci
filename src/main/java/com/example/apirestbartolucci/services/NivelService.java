@@ -40,7 +40,8 @@ public class NivelService {
     }
 
     public Nivel SaveNivel(NivelSaveDto nivelDto) {
-        if (nivelDto.getMultimedia() == null) {
+        if (nivelDto.getMultimedia().getPublicid() == null
+                && nivelDto.getMultimedia().getUrl() == null) {
             return null;
         } else {
             Optional<Nivel> niveloptional
@@ -65,6 +66,7 @@ public class NivelService {
         if (nivel.isPresent()) {
             nivel.get().setNombre(nivelDto.getNombre());
             nivel.get().setDescripcion(nivelDto.getDescripcion());
+            nivel.get().setActivo(nivelDto.isActivo());
             return nivelRepository.save(nivel.get());
         } else {
             return null;

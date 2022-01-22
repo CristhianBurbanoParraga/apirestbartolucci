@@ -9,6 +9,7 @@ import com.example.apirestbartolucci.models.Mensaje;
 import com.example.apirestbartolucci.services.MultimediaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +28,8 @@ public class MultimediaController {
     @Autowired
     MultimediaService multimediaService;
 
-    @PostMapping(path = "/saveOtherMedia")
+    @PostMapping(path = "/saveOtherMedia",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> SaveOtherMultimedia(
             @RequestParam MultipartFile multipartFile) {
         OtherMultimediaDto otherDto

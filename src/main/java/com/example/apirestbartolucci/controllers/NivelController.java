@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -35,7 +34,7 @@ public class NivelController {
     NivelService nivelService;
 
     @GetMapping()
-    public ResponseEntity<?> GetAllNiveles() {
+    public ResponseEntity<?> GetAll() {
         ArrayList<Nivel> niveles = nivelService.GetAllNiveles();
         if (niveles.isEmpty()) {
             return new ResponseEntity(new Mensaje("No hay registros"),
@@ -46,7 +45,7 @@ public class NivelController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<?> GetNivelById(@PathVariable("id") int id) {
+    public ResponseEntity<?> GetById(@PathVariable("id") int id) {
         Optional<Nivel> nivel = nivelService.GetNivelById(id);
         if (nivel.isPresent()) {
             return new ResponseEntity(nivel, HttpStatus.OK);
@@ -57,7 +56,7 @@ public class NivelController {
     }
 
     @GetMapping(path = "/byNombre/{nombre}")
-    public ResponseEntity<?> GetNivelByNombre(
+    public ResponseEntity<?> GetByNombre(
             @PathVariable("nombre") String nombre) {
         Optional<Nivel> nivel = nivelService.GetNivelByNombre(nombre);
         if (nivel.isPresent()) {
@@ -69,7 +68,7 @@ public class NivelController {
     }
 
     @GetMapping(path = "/byStatus/{status}")
-    public ResponseEntity<?> GetAllNivelesByStatus(
+    public ResponseEntity<?> GetAllByStatus(
             @PathVariable("status") boolean activo) {
         ArrayList<Nivel> niveles = nivelService.GetNivelByStatus(activo);
         if (niveles.isEmpty()) {
@@ -81,18 +80,18 @@ public class NivelController {
     }
 
     @PostMapping()
-    public ResponseEntity<?> SaveNivel(@RequestBody NivelSaveDto nivelDto) {
+    public ResponseEntity<?> Save(@RequestBody NivelSaveDto nivelDto) {
         Nivel nivel = nivelService.SaveNivel(nivelDto);
         if (nivel == null) {
             return new ResponseEntity(new Mensaje("Error al guardar el "
-                    + "archivo o campo existente 'nombre'"), HttpStatus.OK);
+                    + "archivo o campo 'nombre' ya existe"), HttpStatus.OK);
         } else {
             return new ResponseEntity(nivel, HttpStatus.OK);
         }
     }
 
     @PutMapping()
-    public ResponseEntity<?> UpdateNivel(
+    public ResponseEntity<?> Update(
             @RequestBody NivelUpdateDto nivelDto) {
         Nivel nivel = nivelService.UpdateNivel(nivelDto);
         if (nivel != null) {
@@ -102,12 +101,6 @@ public class NivelController {
                     + String.valueOf(nivelDto.getId()) + " inexistente"),
                     HttpStatus.OK);
         }
-    }
-
-    @PutMapping(path = "/changeStatusNivel")
-    public Mensaje ChangeNivelStatus(@RequestParam("id") int id,
-            @RequestParam("activo") boolean activo) {
-        return new Mensaje(nivelService.ChangeNivelStatus(id, activo));
     }
 
 }

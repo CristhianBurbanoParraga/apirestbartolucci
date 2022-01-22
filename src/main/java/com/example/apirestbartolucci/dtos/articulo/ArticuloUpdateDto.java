@@ -2,27 +2,27 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.example.apirestbartolucci.dtos.nivel;
+package com.example.apirestbartolucci.dtos.articulo;
 
 /**
  *
  * @author criss
  */
-public class NivelUpdateDto {
+public class ArticuloUpdateDto {
 
     private int id;
     private String nombre;
-    private String descripcion;
+    private int costo;
     private boolean activo;
 
-    public NivelUpdateDto() {
+    public ArticuloUpdateDto() {
     }
 
-    public NivelUpdateDto(int id, String nombre, String descripcion,
+    public ArticuloUpdateDto(int id, String nombre, int costo,
             boolean activo) {
         this.id = id;
         this.nombre = nombre;
-        this.descripcion = descripcion;
+        this.costo = costo;
         this.activo = activo;
     }
 
@@ -42,12 +42,12 @@ public class NivelUpdateDto {
         this.nombre = nombre;
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public int getCosto() {
+        return costo;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setCosto(int costo) {
+        this.costo = costo;
     }
 
     public boolean isActivo() {
@@ -57,5 +57,4 @@ public class NivelUpdateDto {
     public void setActivo(boolean activo) {
         this.activo = activo;
     }
-
 }

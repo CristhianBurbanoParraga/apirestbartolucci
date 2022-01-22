@@ -4,14 +4,14 @@
  */
 package com.example.apirestbartolucci.models;
 
-/**
- *
- * @author criss
- */
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+//import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,15 +19,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.springframework.format.annotation.DateTimeFormat;
 
+/**
+ *
+ * @author criss
+ */
 @Entity
-@Table(name = "datosusuario")
-public class DatosUsuario implements Serializable {
+@Table(name = "estudiante")
+public class Estudiante implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,8 +40,10 @@ public class DatosUsuario implements Serializable {
     private int id;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idusuario", referencedColumnName = "id", nullable = false)
-    @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
+    @JoinColumn(name = "idusuario", referencedColumnName = "id",
+            nullable = false)
+    @JsonBackReference
+    //@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
     private Usuario usuario;
 
     @Column(length = 50, unique = false, nullable = false)
@@ -54,15 +61,30 @@ public class DatosUsuario implements Serializable {
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Column(unique = false, nullable = true)
+    @Column(unique = false, nullable = false)
     private Date fechanacimiento;
 
-    public DatosUsuario() {
+    @Column(unique = false, nullable = false)
+    private int stockcaritas;
+
+    @OneToMany(mappedBy = "estudiante", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JsonManagedReference
+    //@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
+    private Set<Grupo> grupo;
+
+    @OneToMany(mappedBy = "estudiante", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<Inventario> inventario;
+
+    public Estudiante() {
     }
 
-    public DatosUsuario(int id, Usuario usuario, String nombres,
+    public Estudiante(int id, Usuario usuario, String nombres,
             String apellidos, String telefono, String correo,
-            Date fechanacimiento) {
+            Date fechanacimiento, int stockcaritas, Set<Grupo> grupo,
+            Set<Inventario> inventario) {
         this.id = id;
         this.usuario = usuario;
         this.nombres = nombres;
@@ -70,6 +92,9 @@ public class DatosUsuario implements Serializable {
         this.telefono = telefono;
         this.correo = correo;
         this.fechanacimiento = fechanacimiento;
+        this.stockcaritas = stockcaritas;
+        this.grupo = grupo;
+        this.inventario = inventario;
     }
 
     public int getId() {
@@ -127,4 +152,29 @@ public class DatosUsuario implements Serializable {
     public void setFechanacimiento(Date fechanacimiento) {
         this.fechanacimiento = fechanacimiento;
     }
+
+    public int getStockcaritas() {
+        return stockcaritas;
+    }
+
+    public void setStockcaritas(int stockcaritas) {
+        this.stockcaritas = stockcaritas;
+    }
+
+    public Set<Grupo> getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(Set<Grupo> grupo) {
+        this.grupo = grupo;
+    }
+
+    public Set<Inventario> getInventario() {
+        return inventario;
+    }
+
+    public void setInventario(Set<Inventario> inventario) {
+        this.inventario = inventario;
+    }
+
 }
