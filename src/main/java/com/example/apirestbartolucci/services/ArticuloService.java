@@ -41,7 +41,7 @@ public class ArticuloService {
 
     public Articulo SaveArticulo(ArticuloSaveDto articuloSaveDto) {
         if (articuloSaveDto.getMultimedia().getPublicid() == null
-                && articuloSaveDto.getMultimedia().getUrl() == null) {
+                || articuloSaveDto.getMultimedia().getUrl() == null) {
             return null;
         } else {
             Optional<Articulo> articulo = articuloRepository.findByNombre(

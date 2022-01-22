@@ -4,37 +4,44 @@
  */
 package com.example.apirestbartolucci.models;
 
-/**
- *
- * @author criss
- */
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
-import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ *
+ * @author criss
+ */
 @Entity
-@Table(name = "nivel")
-public class Nivel implements Serializable {
+@Table(name = "subnivel")
+public class Subnivel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private int id;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "idnivel", nullable = false)
+    @JsonBackReference
+    private Nivel nivel;
+
     @Column(length = 50, nullable = false, unique = true)
     private String nombre;
 
     @Column(nullable = true, unique = false)
     private String descripcion;
+
+    @Column(nullable = true, unique = false)
+    private int numactividades;
 
     @Column(nullable = false, unique = false)
     private int prioridad;
@@ -48,25 +55,21 @@ public class Nivel implements Serializable {
     @Column(nullable = false, unique = false)
     private boolean activo;
 
-    @OneToMany(mappedBy = "nivel", fetch = FetchType.LAZY,
-            cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private Set<Subnivel> subnivel;
-
-    public Nivel() {
+    public Subnivel() {
     }
 
-    public Nivel(int id, String nombre, String descripcion,
-            int prioridad, String publicid, String url, boolean activo,
-            Set<Subnivel> subnivel) {
+    public Subnivel(int id, Nivel nivel, String nombre, String descripcion,
+            int numactividades, int prioridad, String publicid, String url,
+            boolean activo) {
         this.id = id;
+        this.nivel = nivel;
         this.nombre = nombre;
         this.descripcion = descripcion;
+        this.numactividades = numactividades;
         this.prioridad = prioridad;
         this.publicid = publicid;
         this.url = url;
         this.activo = activo;
-        this.subnivel = subnivel;
     }
 
     public int getId() {
@@ -75,6 +78,14 @@ public class Nivel implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public Nivel getNivel() {
+        return nivel;
+    }
+
+    public void setNivel(Nivel nivel) {
+        this.nivel = nivel;
     }
 
     public String getNombre() {
@@ -91,6 +102,14 @@ public class Nivel implements Serializable {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public int getNumactividades() {
+        return numactividades;
+    }
+
+    public void setNumactividades(int numactividades) {
+        this.numactividades = numactividades;
     }
 
     public int getPrioridad() {
@@ -123,14 +142,6 @@ public class Nivel implements Serializable {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
-    }
-
-    public Set<Subnivel> getSubnivel() {
-        return subnivel;
-    }
-
-    public void setSubnivel(Set<Subnivel> subnivel) {
-        this.subnivel = subnivel;
     }
 
 }
