@@ -25,8 +25,8 @@ import javax.persistence.Table;
  * @author criss
  */
 @Entity
-@Table(name = "subnivel")
-public class Subnivel implements Serializable {
+@Table(name = "actividad")
+public class Actividad implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,21 +34,26 @@ public class Subnivel implements Serializable {
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "idnivel", nullable = false)
+    @JoinColumn(name = "idsubnivel", nullable = false)
     @JsonBackReference
-    private Nivel nivel;
+    private Subnivel subnivel;
 
-    @Column(length = 50, nullable = false, unique = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "iddocente", nullable = false)
+    @JsonBackReference
+    private Docente docente;
+
+    @Column(length = 50, nullable = false, unique = false)
     private String nombre;
 
     @Column(nullable = true, unique = false)
     private String descripcion;
 
-    @Column(nullable = true, unique = false)
-    private int numactividades;
-
     @Column(nullable = false, unique = false)
-    private int prioridad;
+    private int recompensavalor;
+
+    @Column(length = 2, nullable = false, unique = false)
+    private String tipo;
 
     @Column(length = 30, nullable = false, unique = true)
     private String publicid;
@@ -59,27 +64,29 @@ public class Subnivel implements Serializable {
     @Column(nullable = false, unique = false)
     private boolean activo;
 
-    @OneToMany(mappedBy = "subnivel", fetch = FetchType.LAZY,
+    @OneToMany(mappedBy = "actividad", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     @JsonManagedReference
-    private Set<Actividad> actividad;
+    private Set<Historial> historial;
 
-    public Subnivel() {
+    public Actividad() {
     }
 
-    public Subnivel(int id, Nivel nivel, String nombre, String descripcion,
-            int numactividades, int prioridad, String publicid, String url,
-            boolean activo, Set<Actividad> actividad) {
+    public Actividad(int id, Subnivel subnivel, Docente docente,
+            String nombre, String descripcion, int recompensavalor, String tipo,
+            String publicid, String url, boolean activo,
+            Set<Historial> historial) {
         this.id = id;
-        this.nivel = nivel;
+        this.subnivel = subnivel;
+        this.docente = docente;
         this.nombre = nombre;
         this.descripcion = descripcion;
-        this.numactividades = numactividades;
-        this.prioridad = prioridad;
+        this.recompensavalor = recompensavalor;
+        this.tipo = tipo;
         this.publicid = publicid;
         this.url = url;
         this.activo = activo;
-        this.actividad = actividad;
+        this.historial = historial;
     }
 
     public int getId() {
@@ -90,12 +97,20 @@ public class Subnivel implements Serializable {
         this.id = id;
     }
 
-    public Nivel getNivel() {
-        return nivel;
+    public Subnivel getSubnivel() {
+        return subnivel;
     }
 
-    public void setNivel(Nivel nivel) {
-        this.nivel = nivel;
+    public void setSubnivel(Subnivel subnivel) {
+        this.subnivel = subnivel;
+    }
+
+    public Docente getDocente() {
+        return docente;
+    }
+
+    public void setDocente(Docente docente) {
+        this.docente = docente;
     }
 
     public String getNombre() {
@@ -114,20 +129,20 @@ public class Subnivel implements Serializable {
         this.descripcion = descripcion;
     }
 
-    public int getNumactividades() {
-        return numactividades;
+    public int getRecompensavalor() {
+        return recompensavalor;
     }
 
-    public void setNumactividades(int numactividades) {
-        this.numactividades = numactividades;
+    public void setRecompensavalor(int recompensavalor) {
+        this.recompensavalor = recompensavalor;
     }
 
-    public int getPrioridad() {
-        return prioridad;
+    public String getTipo() {
+        return tipo;
     }
 
-    public void setPrioridad(int prioridad) {
-        this.prioridad = prioridad;
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 
     public String getPublicid() {
@@ -154,12 +169,12 @@ public class Subnivel implements Serializable {
         this.activo = activo;
     }
 
-    public Set<Actividad> getActividad() {
-        return actividad;
+    public Set<Historial> getHistorial() {
+        return historial;
     }
 
-    public void setActividad(Set<Actividad> actividad) {
-        this.actividad = actividad;
+    public void setHistorial(Set<Historial> historial) {
+        this.historial = historial;
     }
 
 }

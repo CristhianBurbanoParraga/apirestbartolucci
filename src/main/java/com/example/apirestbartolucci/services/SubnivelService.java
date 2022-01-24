@@ -74,7 +74,8 @@ public class SubnivelService {
                             subnivelSaveDto.getDescripcion(),
                             0, count + 1,
                             subnivelSaveDto.getMultimedia().getPublicid(),
-                            subnivelSaveDto.getMultimedia().getUrl(), true);
+                            subnivelSaveDto.getMultimedia().getUrl(),
+                            true, null);
                     return subnivelRepository.save(subnivel);
                 }
             } else {

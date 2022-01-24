@@ -82,7 +82,7 @@ public class UsuarioService {
                         usuarioSaveDto.getTelefono(),
                         usuarioSaveDto.getCorreo(),
                         usuarioSaveDto.getFechanacimiento(),
-                        null);
+                        null, null);
                 docenteRepository.save(docente);
             } else {
                 usuario.setTipousuario("ES");
@@ -98,7 +98,7 @@ public class UsuarioService {
                             usuarioSaveDto.getTelefono(),
                             usuarioSaveDto.getCorreo(),
                             usuarioSaveDto.getFechanacimiento(),
-                            0, null, null);
+                            0, null, null, null);
                     estudiante = estudianteRepository.save(estudiante);
                     Docente docente = docenteRepository.findById(
                             usuarioSaveDto.getSelectedDocente().getId()).get();

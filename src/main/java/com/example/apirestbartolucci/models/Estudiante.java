@@ -78,13 +78,18 @@ public class Estudiante implements Serializable {
     @JsonManagedReference
     private Set<Inventario> inventario;
 
+    @OneToMany(mappedBy = "estudiante", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<Historial> historial;
+
     public Estudiante() {
     }
 
     public Estudiante(int id, Usuario usuario, String nombres,
             String apellidos, String telefono, String correo,
             Date fechanacimiento, int stockcaritas, Set<Grupo> grupo,
-            Set<Inventario> inventario) {
+            Set<Inventario> inventario, Set<Historial> historial) {
         this.id = id;
         this.usuario = usuario;
         this.nombres = nombres;
@@ -95,6 +100,7 @@ public class Estudiante implements Serializable {
         this.stockcaritas = stockcaritas;
         this.grupo = grupo;
         this.inventario = inventario;
+        this.historial = historial;
     }
 
     public int getId() {
@@ -175,6 +181,14 @@ public class Estudiante implements Serializable {
 
     public void setInventario(Set<Inventario> inventario) {
         this.inventario = inventario;
+    }
+
+    public Set<Historial> getHistorial() {
+        return historial;
+    }
+
+    public void setHistorial(Set<Historial> historial) {
+        this.historial = historial;
     }
 
 }

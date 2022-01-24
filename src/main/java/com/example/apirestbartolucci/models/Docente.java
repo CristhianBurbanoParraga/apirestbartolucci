@@ -70,12 +70,17 @@ public class Docente implements Serializable {
     //@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
     private Set<Grupo> grupo;
 
+    @OneToMany(mappedBy = "docente", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<Actividad> actividad;
+
     public Docente() {
     }
 
     public Docente(int id, Usuario usuario, String nombres,
             String apellidos, String telefono, String correo,
-            Date fechanacimiento, Set<Grupo> grupo) {
+            Date fechanacimiento, Set<Grupo> grupo, Set<Actividad> actividad) {
         this.id = id;
         this.usuario = usuario;
         this.nombres = nombres;
@@ -84,6 +89,7 @@ public class Docente implements Serializable {
         this.correo = correo;
         this.fechanacimiento = fechanacimiento;
         this.grupo = grupo;
+        this.actividad = actividad;
     }
 
     public int getId() {
@@ -148,6 +154,14 @@ public class Docente implements Serializable {
 
     public void setGrupo(Set<Grupo> grupo) {
         this.grupo = grupo;
+    }
+
+    public Set<Actividad> getActividad() {
+        return actividad;
+    }
+
+    public void setActividad(Set<Actividad> actividad) {
+        this.actividad = actividad;
     }
 
 }
