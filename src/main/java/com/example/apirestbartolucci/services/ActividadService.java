@@ -92,7 +92,7 @@ public class ActividadService {
                                 actividadSaveDto.getTipo(),
                                 actividadSaveDto.getMultimedia().getPublicid(),
                                 actividadSaveDto.getMultimedia().getUrl(),
-                                true, null);
+                                true, null, null);
                         return actividadRepository.save(actividad);
                     }
                 } else {

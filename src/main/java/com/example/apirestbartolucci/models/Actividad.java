@@ -69,13 +69,18 @@ public class Actividad implements Serializable {
     @JsonManagedReference
     private Set<Historial> historial;
 
+    @OneToMany(mappedBy = "actividad", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<Contenido> contenido;
+
     public Actividad() {
     }
 
     public Actividad(int id, Subnivel subnivel, Docente docente,
             String nombre, String descripcion, int recompensavalor, String tipo,
             String publicid, String url, boolean activo,
-            Set<Historial> historial) {
+            Set<Historial> historial, Set<Contenido> contenido) {
         this.id = id;
         this.subnivel = subnivel;
         this.docente = docente;
@@ -87,6 +92,7 @@ public class Actividad implements Serializable {
         this.url = url;
         this.activo = activo;
         this.historial = historial;
+        this.contenido = contenido;
     }
 
     public int getId() {
@@ -175,6 +181,14 @@ public class Actividad implements Serializable {
 
     public void setHistorial(Set<Historial> historial) {
         this.historial = historial;
+    }
+
+    public Set<Contenido> getContenido() {
+        return contenido;
+    }
+
+    public void setContenido(Set<Contenido> contenido) {
+        this.contenido = contenido;
     }
 
 }
