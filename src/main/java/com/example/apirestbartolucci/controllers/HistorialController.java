@@ -4,6 +4,7 @@
  */
 package com.example.apirestbartolucci.controllers;
 
+import com.example.apirestbartolucci.dtos.historial.HistorialSaveDto;
 import com.example.apirestbartolucci.models.Historial;
 import com.example.apirestbartolucci.models.Mensaje;
 import com.example.apirestbartolucci.services.HistorialService;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,18 +66,18 @@ public class HistorialController {
         } else {
             return new ResponseEntity(historial, HttpStatus.OK);
         }
+
     }
 
     @PostMapping(path = "/completeActividad")
-    public ResponseEntity<?> Save(
-            @RequestParam("idEstudiante") int idEstudiante,
-            @RequestParam("idActividad") int idActividad) {
+    public ResponseEntity<?> Save(@RequestBody HistorialSaveDto historialSaveDto) {
         Historial historial
-                = historialService.SaveHistorial(idEstudiante, idActividad);
+                = historialService.SaveHistorial(historialSaveDto);
         if (historial == null) {
             return new ResponseEntity(new Mensaje("Error al guardar, posibles "
                     + "causas:\nId estudiante inexistente ó\nId actividad "
-                    + "inexistente"), HttpStatus.OK);
+                    + "inexistente\nEl # de respuestas no coinciden con la "
+                    + "actividad\nStatus y respuesta son incorrectos"), HttpStatus.OK);
         } else {
             return new ResponseEntity(historial, HttpStatus.OK);
         }

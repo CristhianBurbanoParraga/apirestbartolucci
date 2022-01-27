@@ -21,21 +21,21 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ContenidoService {
-    
+
     @Autowired
     ContenidoRepository contenidoRepository;
-    
+
     @Autowired
     ActividadRepository actividadRepository;
-    
+
     public ArrayList<Contenido> GetAllContenidos() {
         return (ArrayList<Contenido>) contenidoRepository.findAll();
     }
-    
+
     public Optional<Contenido> GetContenidoById(long id) {
         return contenidoRepository.findById(id);
     }
-    
+
     public ArrayList<Contenido> GetContenidoByIdActividad(int idActividad) {
         Optional<Actividad> actividad
                 = actividadRepository.findById(idActividad);
@@ -45,11 +45,11 @@ public class ContenidoService {
             return new ArrayList<Contenido>();
         }
     }
-    
+
     public ArrayList<Contenido> GetContenidoByStatus(boolean activo) {
         return (ArrayList<Contenido>) contenidoRepository.findByActivo(activo);
     }
-    
+
     public Contenido SaveContenido(ContenidoSaveDto contenidoSaveDto) {
         Optional<Actividad> actividad
                 = actividadRepository.findById(
@@ -58,13 +58,14 @@ public class ContenidoService {
             Contenido contenido = new Contenido(0,
                     actividad.get(),
                     contenidoSaveDto.getDescripcion(),
-                    true, null);
+                    contenidoSaveDto.isIsEnunciado(),
+                    contenidoSaveDto.isIsRespuesta(), true, null);
             return contenidoRepository.save(contenido);
         } else {
             return null;
         }
     }
-    
+
     public Contenido UpdateContenido(ContenidoUpdateDto contenidoUpdateDto) {
         Optional<Contenido> contenido
                 = contenidoRepository.findById(contenidoUpdateDto.getId());
@@ -75,6 +76,8 @@ public class ContenidoService {
                 contenido.get().setActividad(actividad.get());
                 contenido.get().setDescripcion(
                         contenidoUpdateDto.getDescripcion());
+                contenido.get().setEnunciado(contenidoUpdateDto.isIsEnunciado());
+                contenido.get().setRespuesta(contenidoUpdateDto.isIsRespuesta());
                 contenido.get().setActivo(contenidoUpdateDto.isActivo());
                 return contenidoRepository.save(contenido.get());
             } else {
@@ -84,5 +87,5 @@ public class ContenidoService {
             return null;
         }
     }
-    
+
 }

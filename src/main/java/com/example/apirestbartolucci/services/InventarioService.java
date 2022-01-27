@@ -87,9 +87,7 @@ public class InventarioService {
                             inventarios.get(i).setSeleccionado(false);
                             inventarioRepository.save(inventarios.get(i));
                             break;
-                        } else {
-                            continue;
-                        }
+                        } 
                     }
                 }
                 inventario.get().setSeleccionado(seleccionado);

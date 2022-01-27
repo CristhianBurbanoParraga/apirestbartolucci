@@ -13,16 +13,18 @@ public class MultimediaSaveDto {
     private long idContenido;
     private String descripcion;
     private String tipo;
+    private boolean isInicial;
     private OtherMultimediaDto multimedia;
 
     public MultimediaSaveDto() {
     }
 
     public MultimediaSaveDto(long idContenido, String descripcion,
-            String tipo, OtherMultimediaDto multimedia) {
+            String tipo, boolean isInicial, OtherMultimediaDto multimedia) {
         this.idContenido = idContenido;
         this.descripcion = descripcion;
         this.tipo = tipo;
+        this.isInicial = isInicial;
         this.multimedia = multimedia;
     }
 
@@ -48,6 +50,14 @@ public class MultimediaSaveDto {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    public boolean isIsInicial() {
+        return isInicial;
+    }
+
+    public void setIsInicial(boolean isInicial) {
+        this.isInicial = isInicial;
     }
 
     public OtherMultimediaDto getMultimedia() {

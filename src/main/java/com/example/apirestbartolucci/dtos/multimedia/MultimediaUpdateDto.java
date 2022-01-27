@@ -14,16 +14,18 @@ public class MultimediaUpdateDto {
     private long idContenido;
     private String descripcion;
     private String tipo;
+    private boolean isInicial;
 
     public MultimediaUpdateDto() {
     }
 
     public MultimediaUpdateDto(long id, long idContenido,
-            String descripcion, String tipo) {
+            String descripcion, String tipo, boolean isInicial) {
         this.id = id;
         this.idContenido = idContenido;
         this.descripcion = descripcion;
         this.tipo = tipo;
+        this.isInicial = isInicial;
     }
 
     public long getId() {
@@ -56,6 +58,14 @@ public class MultimediaUpdateDto {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    public boolean isIsInicial() {
+        return isInicial;
+    }
+
+    public void setIsInicial(boolean isInicial) {
+        this.isInicial = isInicial;
     }
 
 }

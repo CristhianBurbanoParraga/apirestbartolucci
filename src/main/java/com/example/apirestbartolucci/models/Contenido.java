@@ -42,6 +42,12 @@ public class Contenido implements Serializable {
     private String descripcion;
 
     @Column(unique = false, nullable = false)
+    private boolean enunciado;
+
+    @Column(unique = false, nullable = false)
+    private boolean respuesta;
+
+    @Column(unique = false, nullable = false)
     private boolean activo;
 
     @OneToMany(mappedBy = "contenido", fetch = FetchType.LAZY,
@@ -53,12 +59,15 @@ public class Contenido implements Serializable {
     }
 
     public Contenido(long id, Actividad actividad, String descripcion,
-            boolean activo, Set<Multimedia> multimedia) {
+            boolean enunciado, boolean respuesta, boolean activo,
+            Set<Multimedia> multimedia) {
         this.id = id;
         this.actividad = actividad;
         this.descripcion = descripcion;
         this.activo = activo;
         this.multimedia = multimedia;
+        this.enunciado = enunciado;
+        this.enunciado = enunciado;
     }
 
     public long getId() {
@@ -83,6 +92,22 @@ public class Contenido implements Serializable {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public boolean isEnunciado() {
+        return enunciado;
+    }
+
+    public void setEnunciado(boolean enunciado) {
+        this.enunciado = enunciado;
+    }
+
+    public boolean isRespuesta() {
+        return respuesta;
+    }
+
+    public void setRespuesta(boolean respuesta) {
+        this.respuesta = respuesta;
     }
 
     public boolean isActivo() {

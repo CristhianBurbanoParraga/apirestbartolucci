@@ -13,17 +13,22 @@ public class ContenidoUpdateDto {
     private long id;
     private int idActividad;
     private String descripcion;
+    private boolean isEnunciado;
+    private boolean isRespuesta;
     private boolean activo;
 
     public ContenidoUpdateDto() {
     }
 
     public ContenidoUpdateDto(long id, int idActividad,
-            String descripcion, boolean activo) {
+            String descripcion, boolean isEnunciado, boolean isRespuesta,
+            boolean activo) {
         this.id = id;
         this.idActividad = idActividad;
         this.descripcion = descripcion;
         this.activo = activo;
+        this.isEnunciado = isEnunciado;
+        this.isRespuesta = isRespuesta;
     }
 
     public long getId() {
@@ -50,12 +55,28 @@ public class ContenidoUpdateDto {
         this.descripcion = descripcion;
     }
 
+    public boolean isIsEnunciado() {
+        return isEnunciado;
+    }
+
+    public void setIsEnunciado(boolean isEnunciado) {
+        this.isEnunciado = isEnunciado;
+    }
+
     public boolean isActivo() {
         return activo;
     }
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    public boolean isIsRespuesta() {
+        return isRespuesta;
+    }
+
+    public void setIsRespuesta(boolean isRespuesta) {
+        this.isRespuesta = isRespuesta;
     }
 
 }

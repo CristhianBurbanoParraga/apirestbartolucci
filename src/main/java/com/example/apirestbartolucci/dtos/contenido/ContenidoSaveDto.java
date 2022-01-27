@@ -12,13 +12,18 @@ public class ContenidoSaveDto {
 
     private int idActividad;
     private String descripcion;
+    private boolean isEnunciado;
+    private boolean isRespuesta;
 
     public ContenidoSaveDto() {
     }
 
-    public ContenidoSaveDto(int idActividad, String descripcion) {
+    public ContenidoSaveDto(int idActividad, String descripcion,
+            boolean isEnunciado, boolean isRespuesta) {
         this.idActividad = idActividad;
         this.descripcion = descripcion;
+        this.isEnunciado = isEnunciado;
+        this.isRespuesta = isRespuesta;
     }
 
     public int getIdActividad() {
@@ -35,5 +40,21 @@ public class ContenidoSaveDto {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public boolean isIsEnunciado() {
+        return isEnunciado;
+    }
+
+    public void setIsEnunciado(boolean isEnunciado) {
+        this.isEnunciado = isEnunciado;
+    }
+
+    public boolean isIsRespuesta() {
+        return isRespuesta;
+    }
+
+    public void setIsRespuesta(boolean isRespuesta) {
+        this.isRespuesta = isRespuesta;
     }
 }

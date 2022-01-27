@@ -25,24 +25,24 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Service
 public class MultimediaService {
-
+    
     @Autowired
     CloudinaryService cloudinaryService;
-
+    
     @Autowired
     MultimediaRepository multimediaRepository;
-
+    
     @Autowired
     ContenidoRepository contenidoRepository;
-
+    
     public ArrayList<Multimedia> GetAllMultimedias() {
         return (ArrayList<Multimedia>) multimediaRepository.findAll();
     }
-
+    
     public Optional<Multimedia> GetmultimediaById(long id) {
         return multimediaRepository.findById(id);
     }
-
+    
     public ArrayList<Multimedia> GetMultimediaByIdContenido(long idContenido) {
         Optional<Contenido> contenido
                 = contenidoRepository.findById(idContenido);
@@ -52,7 +52,7 @@ public class MultimediaService {
             return new ArrayList<Multimedia>();
         }
     }
-
+    
     public OtherMultimediaDto SaveOtherMultimedia(MultipartFile multipartFile) {
         try {
             Map map = cloudinaryService.upload(multipartFile);
@@ -64,7 +64,7 @@ public class MultimediaService {
             return null;
         }
     }
-
+    
     public Multimedia SaveMultimedia(MultimediaSaveDto multimediaSaveDto) {
         if (multimediaSaveDto.getMultimedia().getPublicid() == null
                 || multimediaSaveDto.getMultimedia().getUrl() == null) {
@@ -78,14 +78,15 @@ public class MultimediaService {
                         multimediaSaveDto.getDescripcion(),
                         multimediaSaveDto.getMultimedia().getPublicid(),
                         multimediaSaveDto.getMultimedia().getUrl(),
-                        multimediaSaveDto.getTipo());
+                        multimediaSaveDto.getTipo(),
+                        multimediaSaveDto.isIsInicial());
                 return multimediaRepository.save(multimedia);
             } else {
                 return null;
             }
         }
     }
-
+    
     public Multimedia UpdateMultimedia(
             MultimediaUpdateDto multimediaUpdateDto) {
         Optional<Multimedia> multimedia
@@ -99,6 +100,7 @@ public class MultimediaService {
                 multimedia.get().setDescripcion(
                         multimediaUpdateDto.getDescripcion());
                 multimedia.get().setTipo(multimediaUpdateDto.getTipo());
+                multimedia.get().setInicial(multimediaUpdateDto.isIsInicial());
                 return multimediaRepository.save(multimedia.get());
             } else {
                 return null;

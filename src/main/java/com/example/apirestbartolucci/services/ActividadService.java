@@ -78,23 +78,21 @@ public class ActividadService {
                 Optional<Docente> docente = docenteRepository.findById(
                         actividadSaveDto.getIdDocente());
                 if (docente.isPresent()) {
-                    if (actividadRepository.findByDocenteAndNombre(
-                            docente.get(), actividadSaveDto.getNombre())
-                            .isPresent()) {
-                        return null;
-                    } else {
-                        Actividad actividad = new Actividad(0,
-                                subnivel.get(),
-                                docente.get(),
-                                actividadSaveDto.getNombre(),
-                                actividadSaveDto.getDescripcion(),
-                                actividadSaveDto.getRecompensavalor(),
-                                actividadSaveDto.getTipo(),
-                                actividadSaveDto.getMultimedia().getPublicid(),
-                                actividadSaveDto.getMultimedia().getUrl(),
-                                true, null, null);
-                        return actividadRepository.save(actividad);
-                    }
+                    subnivel.get().setNumactividades(
+                            subnivel.get().getNumactividades() + 1);
+                    Actividad actividad = new Actividad(0,
+                            subnivel.get(),
+                            docente.get(),
+                            actividadSaveDto.getNombre(),
+                            actividadSaveDto.getDescripcion(),
+                            actividadSaveDto.getRecompensavalor(),
+                            actividadSaveDto.getTipo(),
+                            actividadSaveDto.getMultimedia().getPublicid(),
+                            actividadSaveDto.getMultimedia().getUrl(),
+                            true, null, null);
+                    subnivelRepository.save(subnivel.get());
+                    actividadRepository.save(actividad);
+                    return actividad;
                 } else {
                     return null;
                 }

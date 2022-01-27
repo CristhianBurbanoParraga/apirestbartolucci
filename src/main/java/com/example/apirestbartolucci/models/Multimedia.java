@@ -46,17 +46,21 @@ public class Multimedia implements Serializable {
     @Column(length = 3, nullable = false, unique = false)
     private String tipo;
 
+    @Column(nullable = false, unique = false)
+    private boolean inicial;
+
     public Multimedia() {
     }
 
     public Multimedia(long id, Contenido contenido, String descripcion,
-            String publicid, String url, String tipo) {
+            String publicid, String url, String tipo, boolean inicial) {
         this.id = id;
         this.contenido = contenido;
         this.descripcion = descripcion;
         this.publicid = publicid;
         this.url = url;
         this.tipo = tipo;
+        this.inicial = inicial;
     }
 
     public long getId() {
@@ -105,6 +109,14 @@ public class Multimedia implements Serializable {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
+    }
+
+    public boolean isInicial() {
+        return inicial;
+    }
+
+    public void setInicial(boolean inicial) {
+        this.inicial = inicial;
     }
 
 }
