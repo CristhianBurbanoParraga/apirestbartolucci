@@ -115,9 +115,8 @@ public class ActividadController {
         Actividad actividad = actividadService.SaveActividad(actividadSaveDto);
         if (actividad == null) {
             return new ResponseEntity(new Mensaje("Error al guardar, posibles "
-                    + "causas:\nLos campos del archivo son nulos ó\nId subnivel "
-                    + "inexistente ó\nId docente inexistente\nNombre de "
-                    + "actividad existente para este docente"), HttpStatus.OK);
+                    + "causas:\n\nId subnivel "
+                    + "inexistente ó\nId docente inexistente"), HttpStatus.OK);
         } else {
             return new ResponseEntity(actividad, HttpStatus.OK);
         }

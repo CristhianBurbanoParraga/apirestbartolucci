@@ -6,6 +6,7 @@ package com.example.apirestbartolucci.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 //import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
@@ -67,12 +68,12 @@ public class Docente implements Serializable {
     @OneToMany(mappedBy = "docente", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     @JsonManagedReference
-    //@JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
     private Set<Grupo> grupo;
 
     @OneToMany(mappedBy = "docente", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL)
     @JsonManagedReference
+    @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler"})
     private Set<Actividad> actividad;
 
     public Docente() {

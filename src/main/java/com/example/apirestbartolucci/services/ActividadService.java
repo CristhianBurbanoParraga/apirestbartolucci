@@ -68,37 +68,30 @@ public class ActividadService {
     }
 
     public Actividad SaveActividad(ActividadSaveDto actividadSaveDto) {
-        if (actividadSaveDto.getMultimedia().getPublicid() == null
-                || actividadSaveDto.getMultimedia().getUrl() == null) {
-            return null;
-        } else {
-            Optional<Subnivel> subnivel = subnivelRepository
-                    .findById(actividadSaveDto.getIdSubnivel());
-            if (subnivel.isPresent()) {
-                Optional<Docente> docente = docenteRepository.findById(
-                        actividadSaveDto.getIdDocente());
-                if (docente.isPresent()) {
-                    subnivel.get().setNumactividades(
-                            subnivel.get().getNumactividades() + 1);
-                    Actividad actividad = new Actividad(0,
-                            subnivel.get(),
-                            docente.get(),
-                            actividadSaveDto.getNombre(),
-                            actividadSaveDto.getDescripcion(),
-                            actividadSaveDto.getRecompensavalor(),
-                            actividadSaveDto.getTipo(),
-                            actividadSaveDto.getMultimedia().getPublicid(),
-                            actividadSaveDto.getMultimedia().getUrl(),
-                            true, null, null);
-                    subnivelRepository.save(subnivel.get());
-                    actividadRepository.save(actividad);
-                    return actividad;
-                } else {
-                    return null;
-                }
+        Optional<Subnivel> subnivel = subnivelRepository
+                .findById(actividadSaveDto.getIdSubnivel());
+        if (subnivel.isPresent()) {
+            Optional<Docente> docente = docenteRepository.findById(
+                    actividadSaveDto.getIdDocente());
+            if (docente.isPresent()) {
+                subnivel.get().setNumactividades(
+                        subnivel.get().getNumactividades() + 1);
+                Actividad actividad = new Actividad(0,
+                        subnivel.get(),
+                        docente.get(),
+                        actividadSaveDto.getNombre(),
+                        actividadSaveDto.getDescripcion(),
+                        actividadSaveDto.getRecompensavalor(),
+                        actividadSaveDto.getTipo(),
+                        true, null, null);
+                subnivelRepository.save(subnivel.get());
+                actividadRepository.save(actividad);
+                return actividad;
             } else {
                 return null;
             }
+        } else {
+            return null;
         }
     }
 

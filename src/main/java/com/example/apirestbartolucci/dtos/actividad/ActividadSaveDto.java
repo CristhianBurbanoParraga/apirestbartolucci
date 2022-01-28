@@ -18,21 +18,18 @@ public class ActividadSaveDto {
     private String descripcion;
     private int recompensavalor;
     private String tipo;
-    private OtherMultimediaDto multimedia;
 
     public ActividadSaveDto() {
     }
 
     public ActividadSaveDto(int idSubnivel, int idDocente, String nombre,
-            String descripcion, int recompensavalor, String tipo,
-            OtherMultimediaDto multimedia) {
+            String descripcion, int recompensavalor, String tipo) {
         this.idSubnivel = idSubnivel;
         this.idDocente = idDocente;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.recompensavalor = recompensavalor;
         this.tipo = tipo;
-        this.multimedia = multimedia;
     }
 
     public int getIdSubnivel() {
@@ -81,14 +78,6 @@ public class ActividadSaveDto {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
-    }
-
-    public OtherMultimediaDto getMultimedia() {
-        return multimedia;
-    }
-
-    public void setMultimedia(OtherMultimediaDto multimedia) {
-        this.multimedia = multimedia;
     }
 
 }

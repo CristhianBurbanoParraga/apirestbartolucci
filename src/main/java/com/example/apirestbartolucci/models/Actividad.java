@@ -55,12 +55,6 @@ public class Actividad implements Serializable {
     @Column(length = 2, nullable = false, unique = false)
     private String tipo;
 
-    @Column(length = 30, nullable = false, unique = true)
-    private String publicid;
-
-    @Column(nullable = false, unique = false)
-    private String url;
-
     @Column(nullable = false, unique = false)
     private boolean activo;
 
@@ -79,8 +73,7 @@ public class Actividad implements Serializable {
 
     public Actividad(int id, Subnivel subnivel, Docente docente,
             String nombre, String descripcion, int recompensavalor, String tipo,
-            String publicid, String url, boolean activo,
-            Set<Historial> historial, Set<Contenido> contenido) {
+            boolean activo, Set<Historial> historial, Set<Contenido> contenido) {
         this.id = id;
         this.subnivel = subnivel;
         this.docente = docente;
@@ -88,8 +81,6 @@ public class Actividad implements Serializable {
         this.descripcion = descripcion;
         this.recompensavalor = recompensavalor;
         this.tipo = tipo;
-        this.publicid = publicid;
-        this.url = url;
         this.activo = activo;
         this.historial = historial;
         this.contenido = contenido;
@@ -149,22 +140,6 @@ public class Actividad implements Serializable {
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
-    }
-
-    public String getPublicid() {
-        return publicid;
-    }
-
-    public void setPublicid(String publicid) {
-        this.publicid = publicid;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 
     public boolean isActivo() {
