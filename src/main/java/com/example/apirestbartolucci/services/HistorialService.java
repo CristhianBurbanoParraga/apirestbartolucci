@@ -71,7 +71,8 @@ public class HistorialService {
                     Historial historial = new Historial(0,
                             actividad.get(),
                             estudiante.get(),
-                            new Date());
+                            new Date(),
+                            actividad.get().getRecompensavalor());
                     estudiante.get().setStockcaritas(
                             estudiante.get().getStockcaritas()
                             + actividad.get().getRecompensavalor());

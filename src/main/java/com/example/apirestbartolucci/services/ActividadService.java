@@ -74,19 +74,34 @@ public class ActividadService {
             Optional<Docente> docente = docenteRepository.findById(
                     actividadSaveDto.getIdDocente());
             if (docente.isPresent()) {
-                subnivel.get().setNumactividades(
-                        subnivel.get().getNumactividades() + 1);
-                Actividad actividad = new Actividad(0,
-                        subnivel.get(),
-                        docente.get(),
-                        actividadSaveDto.getNombre(),
-                        actividadSaveDto.getDescripcion(),
-                        actividadSaveDto.getRecompensavalor(),
-                        actividadSaveDto.getTipo(),
-                        true, null, null);
-                subnivelRepository.save(subnivel.get());
-                actividadRepository.save(actividad);
-                return actividad;
+                int count = 0;
+                if (actividadSaveDto.getTipo().equals("EV")) {
+                    ArrayList<Actividad> actividades = actividadRepository
+                            .findBySubnivelAndDocente(subnivel.get(), docente.get());
+                    for (int i = 0; i < actividades.size(); i++) {
+                        if (actividades.get(i).getTipo().equals("EV")) {
+                            count++;
+                        }
+                    }
+                }
+                if (count >= 1) {
+                    return null;
+                } else {
+                    subnivel.get().setNumactividades(
+                            subnivel.get().getNumactividades() + 1);
+                    Actividad actividad = new Actividad(0,
+                            subnivel.get(),
+                            docente.get(),
+                            actividadSaveDto.getNombre(),
+                            actividadSaveDto.getDescripcion(),
+                            actividadSaveDto.getRecompensavalor(),
+                            actividadSaveDto.getTipo(),
+                            true, null, null);
+                    subnivelRepository.save(subnivel.get());
+                    actividadRepository.save(actividad);
+                    return actividad;
+                }
+
             } else {
                 return null;
             }

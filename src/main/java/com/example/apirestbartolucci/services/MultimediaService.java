@@ -25,24 +25,24 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Service
 public class MultimediaService {
-    
+
     @Autowired
     CloudinaryService cloudinaryService;
-    
+
     @Autowired
     MultimediaRepository multimediaRepository;
-    
+
     @Autowired
     ContenidoRepository contenidoRepository;
-    
+
     public ArrayList<Multimedia> GetAllMultimedias() {
         return (ArrayList<Multimedia>) multimediaRepository.findAll();
     }
-    
+
     public Optional<Multimedia> GetmultimediaById(long id) {
         return multimediaRepository.findById(id);
     }
-    
+
     public ArrayList<Multimedia> GetMultimediaByIdContenido(long idContenido) {
         Optional<Contenido> contenido
                 = contenidoRepository.findById(idContenido);
@@ -52,7 +52,7 @@ public class MultimediaService {
             return new ArrayList<Multimedia>();
         }
     }
-    
+
     public OtherMultimediaDto SaveOtherMultimedia(MultipartFile multipartFile) {
         try {
             Map map = cloudinaryService.upload(multipartFile);
@@ -64,7 +64,7 @@ public class MultimediaService {
             return null;
         }
     }
-    
+
     public Multimedia SaveMultimedia(MultimediaSaveDto multimediaSaveDto) {
         if (multimediaSaveDto.getMultimedia().getPublicid() == null
                 || multimediaSaveDto.getMultimedia().getUrl() == null) {
@@ -86,7 +86,7 @@ public class MultimediaService {
             }
         }
     }
-    
+
     public Multimedia UpdateMultimedia(
             MultimediaUpdateDto multimediaUpdateDto) {
         Optional<Multimedia> multimedia
@@ -101,6 +101,16 @@ public class MultimediaService {
                         multimediaUpdateDto.getDescripcion());
                 multimedia.get().setTipo(multimediaUpdateDto.getTipo());
                 multimedia.get().setInicial(multimediaUpdateDto.isIsInicial());
+                if (!multimedia.get().getPublicid()
+                        .equals(multimediaUpdateDto.getPublicid())) {
+                    try {
+                        cloudinaryService.delete(multimedia.get().getPublicid());
+                    } catch (IOException ie) {
+                        return null;
+                    }
+                    multimedia.get().setPublicid(multimediaUpdateDto.getPublicid());
+                    multimedia.get().setUrl(multimediaUpdateDto.getUrl());
+                }
                 return multimediaRepository.save(multimedia.get());
             } else {
                 return null;

@@ -50,15 +50,19 @@ public class Historial implements Serializable {
     @Column(nullable = false, unique = false)
     private Date fecha;
 
+    @Column(nullable = true, unique = false)
+    private Integer recompensaganada;
+
     public Historial() {
     }
 
     public Historial(long id, Actividad actividad, Estudiante estudiante,
-            Date fecha) {
+            Date fecha, Integer recompensaganada) {
         this.id = id;
         this.actividad = actividad;
         this.estudiante = estudiante;
         this.fecha = fecha;
+        this.recompensaganada = recompensaganada;
     }
 
     public long getId() {
@@ -91,6 +95,14 @@ public class Historial implements Serializable {
 
     public void setFecha(Date fecha) {
         this.fecha = fecha;
+    }
+
+    public Integer getRecompensaganada() {
+        return recompensaganada;
+    }
+
+    public void setRecompensaganada(Integer recompensaganada) {
+        this.recompensaganada = recompensaganada;
     }
 
 }

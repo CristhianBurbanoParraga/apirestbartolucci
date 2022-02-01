@@ -4,8 +4,6 @@
  */
 package com.example.apirestbartolucci.dtos.actividad;
 
-import com.example.apirestbartolucci.dtos.multimedia.OtherMultimediaDto;
-
 /**
  *
  * @author criss

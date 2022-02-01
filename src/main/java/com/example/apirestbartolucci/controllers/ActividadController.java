@@ -116,7 +116,8 @@ public class ActividadController {
         if (actividad == null) {
             return new ResponseEntity(new Mensaje("Error al guardar, posibles "
                     + "causas:\n\nId subnivel "
-                    + "inexistente ó\nId docente inexistente"), HttpStatus.OK);
+                    + "inexistente ó\nId docente inexistente\nYa existe una "
+                    + "actividad evaluativa en este subnivel"), HttpStatus.OK);
         } else {
             return new ResponseEntity(actividad, HttpStatus.OK);
         }

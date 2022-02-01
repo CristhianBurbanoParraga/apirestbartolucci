@@ -27,5 +27,5 @@ public interface ActividadRepository extends CrudRepository<Actividad, Integer> 
 
     public ArrayList<Actividad> findByActivo(boolean activo);
 
-    public Optional<Actividad> findByDocenteAndNombre(Docente docente, String nombre);
+    public ArrayList<Actividad> findBySubnivelAndDocente(Subnivel subnivel, Docente docente);
 }
