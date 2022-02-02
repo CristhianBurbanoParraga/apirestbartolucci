@@ -58,7 +58,7 @@ public class MultimediaService {
             Map map = cloudinaryService.upload(multipartFile);
             OtherMultimediaDto otherMultimediaDto
                     = new OtherMultimediaDto((String) map.get("public_id"),
-                            (String) map.get("url"));
+                            (String) map.get("secure_url"));
             return otherMultimediaDto;
         } catch (IOException ioe) {
             return null;
