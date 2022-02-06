@@ -17,6 +17,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface NivelRepository extends CrudRepository<Nivel, Integer> {
 
+    public ArrayList<Nivel> findByOrderByPrioridadAsc();
+
     public Optional<Nivel> findByNombre(String nombre);
 
     public ArrayList<Nivel> findByActivo(boolean activo);

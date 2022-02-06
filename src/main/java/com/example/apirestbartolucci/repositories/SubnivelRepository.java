@@ -8,6 +8,7 @@ import com.example.apirestbartolucci.models.Nivel;
 import com.example.apirestbartolucci.models.Subnivel;
 import java.util.ArrayList;
 import java.util.Optional;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SubnivelRepository extends CrudRepository<Subnivel, Integer> {
 
-    public ArrayList<Subnivel> findByNivel(Nivel nivel);
+    public ArrayList<Subnivel> findByNivel(Nivel nivel, Sort sort);
 
     public Optional<Subnivel> findByNombre(String nombre);
 

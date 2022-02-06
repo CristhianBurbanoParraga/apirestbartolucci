@@ -13,6 +13,7 @@ import com.example.apirestbartolucci.repositories.SubnivelRepository;
 import java.util.ArrayList;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 /**
@@ -48,7 +49,8 @@ public class SubnivelService {
         Optional<Nivel> nivel = nivelRepository.findById(idNivel);
         if (nivel.isPresent()) {
             return (ArrayList<Subnivel>) subnivelRepository
-                    .findByNivel(nivel.get());
+                    .findByNivel(nivel.get(), Sort.by(Sort.Direction.ASC,
+                            "prioridad"));
         } else {
             return new ArrayList<Subnivel>();
         }
@@ -67,7 +69,8 @@ public class SubnivelService {
                     return null;
                 } else {
                     int count = (int) subnivelRepository.findByNivel(
-                            nivel.get()).size();
+                            nivel.get(), Sort.by(Sort.Direction.ASC,
+                            "prioridad")).size();
                     Subnivel subnivel = new Subnivel(0,
                             nivel.get(),
                             subnivelSaveDto.getNombre(),

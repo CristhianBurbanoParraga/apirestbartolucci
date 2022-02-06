@@ -24,7 +24,8 @@ public class NivelService {
     NivelRepository nivelRepository;
 
     public ArrayList<Nivel> GetAllNiveles() {
-        return (ArrayList<Nivel>) nivelRepository.findAll();
+        //return (ArrayList<Nivel>) nivelRepository.findAll();
+        return (ArrayList<Nivel>) nivelRepository.findByOrderByPrioridadAsc();
     }
 
     public Optional<Nivel> GetNivelById(int id) {
