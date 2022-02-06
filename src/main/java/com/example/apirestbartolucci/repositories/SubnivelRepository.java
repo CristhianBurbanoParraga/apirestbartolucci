@@ -19,6 +19,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SubnivelRepository extends CrudRepository<Subnivel, Integer> {
 
+    public ArrayList<Subnivel> findByOrderByNivelAsc(Sort sort);
+
     public ArrayList<Subnivel> findByNivel(Nivel nivel, Sort sort);
 
     public Optional<Subnivel> findByNombre(String nombre);

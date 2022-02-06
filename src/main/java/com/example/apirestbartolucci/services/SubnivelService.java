@@ -30,7 +30,9 @@ public class SubnivelService {
     NivelRepository nivelRepository;
 
     public ArrayList<Subnivel> GetAllSubniveles() {
-        return (ArrayList<Subnivel>) subnivelRepository.findAll();
+        //return (ArrayList<Subnivel>) subnivelRepository.findAll();
+        return (ArrayList<Subnivel>) subnivelRepository.findByOrderByNivelAsc(
+                Sort.by(Sort.Direction.ASC, "prioridad"));
     }
 
     public Optional<Subnivel> GetSubnivelById(int id) {
