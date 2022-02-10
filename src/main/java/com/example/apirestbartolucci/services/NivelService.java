@@ -11,10 +11,15 @@ package com.example.apirestbartolucci.services;
 import com.example.apirestbartolucci.dtos.nivel.NivelSaveDto;
 import com.example.apirestbartolucci.dtos.nivel.NivelUpdateDto;
 import com.example.apirestbartolucci.models.Nivel;
+//import com.example.apirestbartolucci.models.Subnivel;
 import com.example.apirestbartolucci.repositories.NivelRepository;
+import com.example.apirestbartolucci.repositories.SubnivelRepository;
 import java.util.ArrayList;
+//import java.util.HashSet;
 import java.util.Optional;
+//import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,8 +28,17 @@ public class NivelService {
     @Autowired
     NivelRepository nivelRepository;
 
+    @Autowired
+    SubnivelRepository subnivelRepository;
+
     public ArrayList<Nivel> GetAllNiveles() {
         //return (ArrayList<Nivel>) nivelRepository.findAll();
+        /*ArrayList<Nivel> niveles = nivelRepository.findByOrderByPrioridadAsc();
+        for (int i = 0; i < niveles.size(); i++) {
+            ArrayList<Subnivel> subniveles = subnivelRepository.findByNivel(
+                    niveles.get(i), Sort.by(Sort.Direction.ASC, "prioridad"));
+            niveles.get(i).setSubnivel(new HashSet(subniveles));
+        }*/
         return (ArrayList<Nivel>) nivelRepository.findByOrderByPrioridadAsc();
     }
 

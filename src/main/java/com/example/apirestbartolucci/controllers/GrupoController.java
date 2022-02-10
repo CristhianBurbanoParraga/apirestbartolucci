@@ -4,12 +4,14 @@
  */
 package com.example.apirestbartolucci.controllers;
 
-import com.example.apirestbartolucci.models.Grupo;
+import com.example.apirestbartolucci.dtos.grupo.GrupoDto;
+import com.example.apirestbartolucci.dtos.grupo.GrupoListByDocenteDto;
+//import com.example.apirestbartolucci.models.Grupo;
 import com.example.apirestbartolucci.models.Mensaje;
 import com.example.apirestbartolucci.services.GrupoService;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Optional;
+//import java.util.Date;
+//import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +35,7 @@ public class GrupoController {
 
     @GetMapping()
     public ResponseEntity<?> GetAll() {
-        ArrayList<Grupo> grupos = grupoService.GetAllGrupos();
+        ArrayList<GrupoDto> grupos = grupoService.GetAllGrupos();
         if (grupos.isEmpty()) {
             return new ResponseEntity(new Mensaje("No hay registros"),
                     HttpStatus.OK);
@@ -44,8 +46,8 @@ public class GrupoController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> GetById(@PathVariable("id") int id) {
-        Optional<Grupo> grupo = grupoService.GetGrupoById(id);
-        if (grupo.isPresent()) {
+        GrupoDto grupo = grupoService.GetGrupoById(id);
+        if (grupo != null) {
             return new ResponseEntity(grupo, HttpStatus.OK);
         } else {
             return new ResponseEntity(new Mensaje("No existe grupo con id: "
@@ -53,7 +55,7 @@ public class GrupoController {
         }
     }
 
-    @GetMapping(path = "/byFechaRegistro")
+    /*@GetMapping(path = "/byFechaRegistro")
     public ResponseEntity<?> GetByFecharegistro(
             @RequestParam("fecha") Date fecharegistro) {
         ArrayList<Grupo> grupos
@@ -65,13 +67,13 @@ public class GrupoController {
         } else {
             return new ResponseEntity(grupos, HttpStatus.OK);
         }
-    }
+    }*/
 
     @GetMapping(path = "/byDocente")
     public ResponseEntity<?> GetByIdDocente(
             @RequestParam("idDocente") int id) {
-        ArrayList<Grupo> grupos = grupoService.GetGrupoByIdDocente(id);
-        if (grupos.isEmpty()) {
+        GrupoListByDocenteDto grupos = grupoService.GetGrupoByIdDocente(id);
+        if (grupos == null) {
             return new ResponseEntity(new Mensaje("No hay grupos con este "
                     + "docente"), HttpStatus.OK);
         } else {
@@ -79,7 +81,7 @@ public class GrupoController {
         }
     }
 
-    @GetMapping(path = "/byEstudiante")
+    /*@GetMapping(path = "/byEstudiante")
     public ResponseEntity<?> GetByIdEstudiante(
             @RequestParam("idEstudiante") int id) {
         ArrayList<Grupo> grupos = grupoService.GetGrupoByIdEstudiante(id);
@@ -89,9 +91,10 @@ public class GrupoController {
         } else {
             return new ResponseEntity(grupos, HttpStatus.OK);
         }
-    }
+    }*/
 
-    @PutMapping(path = "/changeStatus")
+    @PutMapping(path = "/changeStatus"
+)
     public Mensaje ChangeStatusGrupo(@RequestParam("id") int id,
             @RequestParam("activo") boolean activo) {
         return new Mensaje(grupoService.ChangeStatusGrupo(id, activo));
