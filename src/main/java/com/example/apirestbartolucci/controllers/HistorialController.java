@@ -4,6 +4,7 @@
  */
 package com.example.apirestbartolucci.controllers;
 
+import com.example.apirestbartolucci.dtos.historial.HistorialListDto;
 import com.example.apirestbartolucci.dtos.historial.HistorialSaveDto;
 import com.example.apirestbartolucci.models.Historial;
 import com.example.apirestbartolucci.models.Mensaje;
@@ -34,7 +35,7 @@ public class HistorialController {
 
     @GetMapping()
     public ResponseEntity<?> GetAll() {
-        ArrayList<Historial> historial = historialService.GetAllHistorial();
+        ArrayList<HistorialListDto> historial = historialService.GetAllHistorial();
         if (historial.isEmpty()) {
             return new ResponseEntity(new Mensaje("No hay registros"),
                     HttpStatus.OK);
@@ -45,8 +46,8 @@ public class HistorialController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> GetById(@PathVariable("id") long id) {
-        Optional<Historial> historial = historialService.GetHistorialById(id);
-        if (historial.isPresent()) {
+        HistorialListDto historial = historialService.GetHistorialById(id);
+        if (historial != null) {
             return new ResponseEntity(historial, HttpStatus.OK);
         } else {
             return new ResponseEntity(new Mensaje("No existe registro con id: "
@@ -57,9 +58,9 @@ public class HistorialController {
     @GetMapping(path = "/byEstudiante")
     public ResponseEntity<?> GetByEstudiante(
             @RequestParam("idEstudiante") int idEstudiante) {
-        ArrayList<Historial> historial
+        HistorialListDto historial
                 = historialService.GetHistorialByIdEstudiante(idEstudiante);
-        if (historial.isEmpty()) {
+        if (historial == null) {
             return new ResponseEntity(new Mensaje("No hay registros con "
                     + "idEstudiante: " + String.valueOf(idEstudiante)),
                     HttpStatus.OK);

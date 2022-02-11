@@ -4,6 +4,8 @@
  */
 package com.example.apirestbartolucci.services;
 
+import com.example.apirestbartolucci.dtos.historial.HistorialListActividadesDto;
+import com.example.apirestbartolucci.dtos.historial.HistorialListDto;
 import com.example.apirestbartolucci.dtos.historial.HistorialSaveDto;
 import com.example.apirestbartolucci.models.Actividad;
 import com.example.apirestbartolucci.models.Contenido;
@@ -39,21 +41,68 @@ public class HistorialService {
     @Autowired
     ContenidoRepository contenidoRepository;
 
-    public ArrayList<Historial> GetAllHistorial() {
-        return (ArrayList<Historial>) historialRepository.findAll();
+    public ArrayList<HistorialListDto> GetAllHistorial() {
+        ArrayList<Historial> historiales
+                = (ArrayList<Historial>) historialRepository.findAll();
+        ArrayList<Integer> ids = new ArrayList<Integer>();
+        ArrayList<HistorialListDto> list = new ArrayList<HistorialListDto>();
+        for (int i = 0; i < historiales.size(); i++) {
+            if (!ids.contains(historiales.get(i).getEstudiante().getId())) {
+                ids.add(historiales.get(i).getEstudiante().getId());
+                HistorialListDto listItem = GetHistorialByIdEstudiante(
+                        historiales.get(i).getEstudiante().getId());
+                list.add(listItem);
+            }
+        }
+        return list;
     }
 
-    public Optional<Historial> GetHistorialById(long id) {
-        return historialRepository.findById(id);
+    public HistorialListDto GetHistorialById(long id) {
+        Optional<Historial> historial = historialRepository.findById(id);
+        if (historial.isPresent()) {
+            ArrayList<HistorialListActividadesDto> listActividades
+                    = new ArrayList<HistorialListActividadesDto>();
+            HistorialListActividadesDto item
+                    = new HistorialListActividadesDto(historial.get().getId(),
+                            historial.get().getActividad().getId(),
+                            historial.get().getActividad().getNombre(),
+                            historial.get().getRecompensaganada());
+            listActividades.add(item);
+            HistorialListDto list = new HistorialListDto(
+                    historial.get().getEstudiante().getId(),
+                    historial.get().getEstudiante().getNombres() + " "
+                    + historial.get().getEstudiante().getApellidos(),
+                    listActividades);
+            return list;
+        } else {
+            return null;
+        }
     }
 
-    public ArrayList<Historial> GetHistorialByIdEstudiante(int idEstudiante) {
+    public HistorialListDto GetHistorialByIdEstudiante(int idEstudiante) {
         Optional<Estudiante> estudiante
                 = estudianteRepository.findById(idEstudiante);
         if (estudiante.isPresent()) {
-            return historialRepository.findByEstudiante(estudiante.get());
+            ArrayList<Historial> historiales
+                    = historialRepository.findByEstudiante(estudiante.get());
+            ArrayList<HistorialListActividadesDto> listActividades
+                    = new ArrayList<HistorialListActividadesDto>();
+            for (int i = 0; i < historiales.size(); i++) {
+                HistorialListActividadesDto item = new HistorialListActividadesDto(
+                        historiales.get(i).getId(),
+                        historiales.get(i).getActividad().getId(),
+                        historiales.get(i).getActividad().getNombre(),
+                        historiales.get(i).getRecompensaganada());
+                listActividades.add(item);
+            }
+            HistorialListDto list = new HistorialListDto(
+                    estudiante.get().getId(),
+                    estudiante.get().getNombres() + " "
+                    + estudiante.get().getApellidos(),
+                    listActividades);
+            return list;
         } else {
-            return new ArrayList<Historial>();
+            return null;
         }
     }
 
