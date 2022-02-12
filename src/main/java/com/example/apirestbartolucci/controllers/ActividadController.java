@@ -109,6 +109,21 @@ public class ActividadController {
         }
     }
 
+    @GetMapping(path = "/bySubnivelAndDocente")
+    public ResponseEntity<?> GetBySubnivelAndDocente(
+            @RequestParam("idSubnivel") int idSubnivel,
+            @RequestParam("idDocente") int idDocente) {
+        ArrayList<Actividad> actividades
+                = actividadService.GetActividadBySubnivelAndDocente(idSubnivel, idDocente);
+        if (actividades.isEmpty()) {
+            return new ResponseEntity(new Mensaje("No hay registros con idSubnivel: "
+                    + String.valueOf(idSubnivel) + "y idDocente: "
+                    + String.valueOf(idDocente)), HttpStatus.OK);
+        } else {
+            return new ResponseEntity(actividades, HttpStatus.OK);
+        }
+    }
+
     @PostMapping()
     public ResponseEntity<?> Save(
             @RequestBody ActividadSaveDto actividadSaveDto) {

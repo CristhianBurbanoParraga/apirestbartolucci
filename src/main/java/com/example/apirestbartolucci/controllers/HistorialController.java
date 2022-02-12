@@ -4,6 +4,7 @@
  */
 package com.example.apirestbartolucci.controllers;
 
+import com.example.apirestbartolucci.dtos.historial.HistorialDto;
 import com.example.apirestbartolucci.dtos.historial.HistorialListDto;
 import com.example.apirestbartolucci.dtos.historial.HistorialSaveDto;
 import com.example.apirestbartolucci.models.Historial;
@@ -46,7 +47,7 @@ public class HistorialController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> GetById(@PathVariable("id") long id) {
-        HistorialListDto historial = historialService.GetHistorialById(id);
+        HistorialDto historial = historialService.GetHistorialById(id);
         if (historial != null) {
             return new ResponseEntity(historial, HttpStatus.OK);
         } else {

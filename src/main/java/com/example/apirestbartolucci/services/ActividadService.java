@@ -59,6 +59,22 @@ public class ActividadService {
         }
     }
 
+    public ArrayList<Actividad> GetActividadBySubnivelAndDocente(
+            int idSubnivel, int idDocente) {
+        Optional<Subnivel> subnivel = subnivelRepository.findById(idSubnivel);
+        if (subnivel.isPresent()) {
+            Optional<Docente> docente = docenteRepository.findById(idDocente);
+            if (docente.isPresent()) {
+                return actividadRepository.findBySubnivelAndDocente(
+                        subnivel.get(), docente.get());
+            } else {
+                return new ArrayList<Actividad>();
+            }
+        } else {
+            return new ArrayList<Actividad>();
+        }
+    }
+
     public Optional<Actividad> GetActividadByNombre(String nombre) {
         return actividadRepository.findByNombre(nombre);
     }

@@ -4,6 +4,7 @@
  */
 package com.example.apirestbartolucci.services;
 
+import com.example.apirestbartolucci.dtos.historial.HistorialDto;
 import com.example.apirestbartolucci.dtos.historial.HistorialListActividadesDto;
 import com.example.apirestbartolucci.dtos.historial.HistorialListDto;
 import com.example.apirestbartolucci.dtos.historial.HistorialSaveDto;
@@ -57,23 +58,18 @@ public class HistorialService {
         return list;
     }
 
-    public HistorialListDto GetHistorialById(long id) {
+    public HistorialDto GetHistorialById(long id) {
         Optional<Historial> historial = historialRepository.findById(id);
         if (historial.isPresent()) {
-            ArrayList<HistorialListActividadesDto> listActividades
-                    = new ArrayList<HistorialListActividadesDto>();
-            HistorialListActividadesDto item
-                    = new HistorialListActividadesDto(historial.get().getId(),
-                            historial.get().getActividad().getId(),
-                            historial.get().getActividad().getNombre(),
-                            historial.get().getRecompensaganada());
-            listActividades.add(item);
-            HistorialListDto list = new HistorialListDto(
+            HistorialDto dto = new HistorialDto(
+                    historial.get().getId(),
                     historial.get().getEstudiante().getId(),
                     historial.get().getEstudiante().getNombres() + " "
                     + historial.get().getEstudiante().getApellidos(),
-                    listActividades);
-            return list;
+                    historial.get().getActividad().getId(),
+                    historial.get().getActividad().getNombre(),
+                    historial.get().getRecompensaganada());
+            return dto;
         } else {
             return null;
         }
