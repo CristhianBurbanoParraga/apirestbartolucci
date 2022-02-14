@@ -35,22 +35,20 @@ public class GrupoService {
     @Autowired
     EstudianteRepository estudianteRepository;
 
-    public ArrayList<GrupoDto> GetAllGrupos() {
+    public ArrayList<GrupoListByDocenteDto> GetAllGrupos() {
         ArrayList<Grupo> grupos = (ArrayList<Grupo>) grupoRepository.findAll();
-        ArrayList<GrupoDto> gruposDto = new ArrayList<GrupoDto>();
+        ArrayList<GrupoListByDocenteDto> list
+                = new ArrayList<GrupoListByDocenteDto>();
+        ArrayList<Integer> ids = new ArrayList<Integer>();
         for (int i = 0; i < grupos.size(); i++) {
-            GrupoDto gdto = new GrupoDto(grupos.get(i).getId(),
-                    grupos.get(i).getDocente().getId(),
-                    grupos.get(i).getDocente().getNombres() + " "
-                    + grupos.get(i).getDocente().getApellidos(),
-                    grupos.get(i).getEstudiante().getId(),
-                    grupos.get(i).getEstudiante().getNombres() + " "
-                    + grupos.get(i).getEstudiante().getApellidos(),
-                    grupos.get(i).getFecharegistro().toString(),
-                    grupos.get(i).isActivo());
-            gruposDto.add(gdto);
+            if (!ids.contains(grupos.get(i).getDocente().getId())) {
+                ids.add(grupos.get(i).getDocente().getId());
+                GrupoListByDocenteDto item
+                        = GetGrupoByIdDocente(grupos.get(i).getDocente().getId());
+                list.add(item);
+            }
         }
-        return gruposDto;
+        return list;
     }
 
     public GrupoDto GetGrupoById(int id) {
@@ -110,7 +108,6 @@ public class GrupoService {
             return new ArrayList<Grupo>();
         }
     }*/
-
     public String ChangeStatusGrupo(int id, boolean activo) {
         Optional<Grupo> grupo = grupoRepository.findById(id);
         if (grupo.isPresent()) {

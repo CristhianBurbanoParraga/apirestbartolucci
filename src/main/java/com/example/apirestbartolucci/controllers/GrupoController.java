@@ -35,7 +35,7 @@ public class GrupoController {
 
     @GetMapping()
     public ResponseEntity<?> GetAll() {
-        ArrayList<GrupoDto> grupos = grupoService.GetAllGrupos();
+        ArrayList<GrupoListByDocenteDto> grupos = grupoService.GetAllGrupos();
         if (grupos.isEmpty()) {
             return new ResponseEntity(new Mensaje("No hay registros"),
                     HttpStatus.OK);
