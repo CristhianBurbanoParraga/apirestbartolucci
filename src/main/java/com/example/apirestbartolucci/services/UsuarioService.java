@@ -49,6 +49,9 @@ public class UsuarioService {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    TwilioService twilioService;
+
     public ArrayList<Usuario> GetAllUsuarios() {
         return (ArrayList<Usuario>) usuarioRepository.findAll();
     }
@@ -249,6 +252,36 @@ public class UsuarioService {
             } else {
                 return "No existe un usuario con el correo "
                         + correo + " en el sistema";
+            }
+        }
+    }
+
+    public String SendPhoneRecoveryCredentials(String telefono) {
+        String user = "";
+        String password = "";
+        Optional<Docente> docente = docenteRepository.findByTelefono(telefono);
+        if (docente.isPresent()) {
+            user = docente.get().getUsuario().getUsuario();
+            password = jasyptService.DecryptValor(docente.get()
+                    .getUsuario().getClave());
+            String mensaje = "Recovery Account TOLAN\n\nCREDENTIALS\nUser: "
+                    + user + "\nPassword: " + password + "\n\nFor your security,"
+                    + " we recommend changing your user credentials directly in the app";
+            return twilioService.SendSMS(telefono, mensaje);
+        } else {
+            Optional<Estudiante> estudiante
+                    = estudianteRepository.findByTelefono(telefono);
+            if (estudiante.isPresent()) {
+                user = estudiante.get().getUsuario().getUsuario();
+                password = jasyptService.DecryptValor(estudiante.get()
+                        .getUsuario().getClave());
+                String mensaje = "Recovery Account TOLAN\n\nCREDENTIALS\nUser: "
+                        + user + "\nPassword: " + password + "\n\nFor your security,"
+                        + " we recommend changing your user credentials directly in the app";
+                return twilioService.SendSMS(telefono, mensaje);
+            } else {
+                return "No existe un usuario con el telefono "
+                        + telefono + " en el sistema";
             }
         }
     }

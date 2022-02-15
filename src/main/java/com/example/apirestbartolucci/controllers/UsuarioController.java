@@ -20,6 +20,7 @@ import java.util.Optional;
 import javax.mail.SendFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(path = "/usuario")
+@RequestMapping(path = "/usuario", produces = MediaType.APPLICATION_JSON_VALUE)
 public class UsuarioController {
 
     @Autowired
@@ -100,11 +101,18 @@ public class UsuarioController {
         }
     }
 
-    @PostMapping(path = "recoveryEmail")
+    @PostMapping(path = "/recoveryEmail")
     public ResponseEntity<?> SendEmailRecovery(
             @RequestParam("correo") String correo) throws SendFailedException {
         String message = usuarioService.SendEmailByRecoveryCredentials(correo);
         //String auxco = correo;
+        return new ResponseEntity(new Mensaje(message), HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/recoveryPhone")
+    public ResponseEntity<?> SendPhoneRecovery(
+            @RequestParam("telefono") String telefono) {
+        String message = usuarioService.SendPhoneRecoveryCredentials(telefono);
         return new ResponseEntity(new Mensaje(message), HttpStatus.OK);
     }
 

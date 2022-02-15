@@ -30,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author criss
  */
 @RestController
-@RequestMapping(path = "/multimedia")
+@RequestMapping(path = "/multimedia", produces = MediaType.APPLICATION_JSON_VALUE)
 public class MultimediaController {
 
     @Autowired
