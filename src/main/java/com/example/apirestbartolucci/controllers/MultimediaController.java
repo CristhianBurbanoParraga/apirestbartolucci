@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -89,8 +90,22 @@ public class MultimediaController {
         }
     }
 
+    @PostMapping(path = "/saveFileServer",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> SaveOtherMultimediaServer(
+            @RequestParam MultipartFile multipartFile) {
+        OtherMultimediaDto otherDto
+                = multimediaService.SaveOtherMultimediaServer(multipartFile);
+        if (otherDto == null) {
+            return new ResponseEntity(new Mensaje("Error al guardar el archivo"
+                    + " multimedia en el servidor"), HttpStatus.OK);
+        } else {
+            return new ResponseEntity(otherDto, HttpStatus.OK);
+        }
+    }
+
     @PostMapping()
-    public ResponseEntity<?> Save(MultimediaSaveDto multimediaSaveDto) {
+    public ResponseEntity<?> Save(@RequestBody MultimediaSaveDto multimediaSaveDto) {
         Multimedia multimedia
                 = multimediaService.SaveMultimedia(multimediaSaveDto);
         if (multimedia == null) {
@@ -103,7 +118,7 @@ public class MultimediaController {
     }
 
     @PutMapping()
-    public ResponseEntity<?> Update(MultimediaUpdateDto multimediaUpdateDto) {
+    public ResponseEntity<?> Update(@RequestBody MultimediaUpdateDto multimediaUpdateDto) {
         Multimedia multimedia
                 = multimediaService.UpdateMultimedia(multimediaUpdateDto);
         if (multimedia == null) {

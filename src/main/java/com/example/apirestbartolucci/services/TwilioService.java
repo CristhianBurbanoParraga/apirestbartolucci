@@ -6,7 +6,10 @@ package com.example.apirestbartolucci.services;
 
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.rest.api.v2010.account.ValidationRequest;
 import com.twilio.type.PhoneNumber;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.stereotype.Service;
 
 /**
@@ -36,6 +39,21 @@ public class TwilioService {
             return e.getMessage();
         }
 
+    }
+
+    public Map<String, String> ValidationTwilio(String phone) {
+        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+        ValidationRequest validationRequest = ValidationRequest.creator(
+                new com.twilio.type.PhoneNumber("+593" + phone))
+                .setFriendlyName("Validation phone with number +593" + phone)
+                .create();
+        Map<String, String> mapValues = new HashMap<>();
+        mapValues.put("account_sid", validationRequest.getAccountSid());
+        mapValues.put("call_sid", validationRequest.getCallSid());
+        mapValues.put("friendly_name", validationRequest.getFriendlyName());
+        mapValues.put("phone_number", validationRequest.getPhoneNumber().toString());
+        mapValues.put("validation_code", validationRequest.getValidationCode());
+        return mapValues;
     }
 
 }

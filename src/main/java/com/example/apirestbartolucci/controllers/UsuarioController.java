@@ -14,8 +14,10 @@ import com.example.apirestbartolucci.dtos.usuario.UsuarioUpdateCredentialsDto;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioUpdateDto;
 import com.example.apirestbartolucci.models.Mensaje;
 import com.example.apirestbartolucci.models.Usuario;
+import com.example.apirestbartolucci.services.TwilioService;
 import com.example.apirestbartolucci.services.UsuarioService;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Optional;
 import javax.mail.SendFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,9 @@ public class UsuarioController {
 
     @Autowired
     UsuarioService usuarioService;
+
+    @Autowired
+    TwilioService twilioService;
 
     @GetMapping()
     public ResponseEntity<?> GetAll() {

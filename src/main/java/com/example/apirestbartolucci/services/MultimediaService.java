@@ -11,10 +11,12 @@ import com.example.apirestbartolucci.models.Contenido;
 import com.example.apirestbartolucci.models.Multimedia;
 import com.example.apirestbartolucci.repositories.ContenidoRepository;
 import com.example.apirestbartolucci.repositories.MultimediaRepository;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,6 +63,27 @@ public class MultimediaService {
                             (String) map.get("secure_url"));
             return otherMultimediaDto;
         } catch (IOException ioe) {
+            return null;
+        }
+    }
+
+    public OtherMultimediaDto SaveOtherMultimediaServer(
+            MultipartFile multipartFile) {
+        try {
+            String uuid = UUID.randomUUID().toString().replace("-", "")
+                    .substring(0, 30);
+            String newName = uuid + multipartFile.getOriginalFilename()
+                    .substring(multipartFile.getOriginalFilename().lastIndexOf("."));
+            String path = "D:/Imagenes/" + newName;
+            File file = new File(path);
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdir();
+            }
+            multipartFile.transferTo(file);
+            return new OtherMultimediaDto(uuid, path);
+        } catch (IOException ioe) {
+            return null;
+        } catch (IllegalStateException i) {
             return null;
         }
     }
@@ -118,5 +141,9 @@ public class MultimediaService {
         } else {
             return null;
         }
+    }
+
+    public String GetUUID() {
+        return UUID.randomUUID().toString().replace("-", "").substring(0, 30);
     }
 }
