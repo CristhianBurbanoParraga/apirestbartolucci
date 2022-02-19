@@ -236,13 +236,10 @@ public class UsuarioService {
             user = docente.get().getUsuario().getUsuario();
             password = jasyptService.DecryptValor(docente.get()
                     .getUsuario().getClave());
-            String body = "TOLAND APP\n\nHa solicitado la recuperación de sus "
-                    + "credenciales de usuario. "
-                    + "Los cuales son los siguientes:\n\nUsuario: "
-                    + user + "\nContraseña: " + password + "\n\nPor su "
-                    + "seguridad, recomendamos cambie sus credenciales de "
-                    + "usuario directamente en la aplicación.";
-            Map<String, String> data = emailService.SendEmail(correo, body);
+            String body = "Recovery Account TOLAN\n\nCREDENTIALS\nUser: "
+                    + user + "\nPassword: " + password + "\n\nFor your security,"
+                    + " we recommend changing your user credentials directly in the app";
+            Map<String, String> data = emailService.SendEmailVersion2(correo, body);
             if (data.get("Status").equals("ok")) {
                 return "El correo de recuperación se ha enviado a " + correo;
             } else {
@@ -255,13 +252,10 @@ public class UsuarioService {
                 user = estudiante.get().getUsuario().getUsuario();
                 password = jasyptService.DecryptValor(estudiante.get()
                         .getUsuario().getClave());
-                String body = "TOLAND APP\n\nHa solicitado la recuperación "
-                        + "de sus credenciales de usuario. "
-                        + "Los cuales son los siguientes:\n\nUsuario: "
-                        + user + "\nContraseña: " + password + "\n\nPor su "
-                        + "seguridad, recomendamos cambie sus credenciales de "
-                        + "usuario directamente en la aplicación.";
-                Map<String, String> data = emailService.SendEmail(correo, body);
+                String body = "Recovery Account TOLAN\n\nCREDENTIALS\nUser: "
+                    + user + "\nPassword: " + password + "\n\nFor your security,"
+                    + " we recommend changing your user credentials directly in the app";
+                Map<String, String> data = emailService.SendEmailVersion2(correo, body);
                 if (data.get("Status").equals("ok")) {
                     return "El correo de recuperación se ha enviado a " + correo;
                 } else {

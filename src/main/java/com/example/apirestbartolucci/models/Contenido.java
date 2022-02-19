@@ -67,7 +67,7 @@ public class Contenido implements Serializable {
         this.activo = activo;
         this.multimedia = multimedia;
         this.enunciado = enunciado;
-        this.enunciado = enunciado;
+        this.respuesta = respuesta;
     }
 
     public long getId() {

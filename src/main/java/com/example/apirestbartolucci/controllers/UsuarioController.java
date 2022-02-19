@@ -11,15 +11,11 @@ package com.example.apirestbartolucci.controllers;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioCredentialsDto;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioMessageDto;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioSaveDto;
-import com.example.apirestbartolucci.dtos.usuario.UsuarioUpdateCredentialsDto;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioUpdateDto;
 import com.example.apirestbartolucci.models.Mensaje;
-import com.example.apirestbartolucci.models.Usuario;
+import com.example.apirestbartolucci.services.EmailService;
 import com.example.apirestbartolucci.services.TwilioService;
 import com.example.apirestbartolucci.services.UsuarioService;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Optional;
 import javax.mail.SendFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,6 +39,9 @@ public class UsuarioController {
 
     @Autowired
     TwilioService twilioService;
+
+    @Autowired
+    EmailService emailService;
 
     @GetMapping()
     public ResponseEntity<?> GetAll() {
