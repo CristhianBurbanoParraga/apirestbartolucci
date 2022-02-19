@@ -4,6 +4,8 @@
  */
 package com.example.apirestbartolucci.dtos.articulo;
 
+import com.example.apirestbartolucci.dtos.multimedia.OtherMultimediaDto;
+
 /**
  *
  * @author criss
@@ -14,12 +16,13 @@ public class ArticuloUpdateDto {
     private String nombre;
     private int costo;
     private boolean activo;
+    private OtherMultimediaDto multimedia;
 
     public ArticuloUpdateDto() {
     }
 
     public ArticuloUpdateDto(int id, String nombre, int costo,
-            boolean activo) {
+            boolean activo, OtherMultimediaDto multimedia) {
         this.id = id;
         this.nombre = nombre;
         this.costo = costo;
@@ -56,5 +59,13 @@ public class ArticuloUpdateDto {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    public OtherMultimediaDto getMultimedia() {
+        return multimedia;
+    }
+
+    public void setMultimedia(OtherMultimediaDto multimedia) {
+        this.multimedia = multimedia;
     }
 }

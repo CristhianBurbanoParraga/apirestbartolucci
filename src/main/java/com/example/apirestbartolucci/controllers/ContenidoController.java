@@ -4,13 +4,11 @@
  */
 package com.example.apirestbartolucci.controllers;
 
+import com.example.apirestbartolucci.dtos.contenido.ContenidoMessageDto;
 import com.example.apirestbartolucci.dtos.contenido.ContenidoSaveDto;
 import com.example.apirestbartolucci.dtos.contenido.ContenidoUpdateDto;
-import com.example.apirestbartolucci.models.Contenido;
 import com.example.apirestbartolucci.models.Mensaje;
 import com.example.apirestbartolucci.services.ContenidoService;
-import java.util.ArrayList;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,77 +35,79 @@ public class ContenidoController {
 
     @GetMapping()
     public ResponseEntity<?> GetAll() {
-        ArrayList<Contenido> contenidos = contenidoService.GetAllContenidos();
-        if (contenidos.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay registros"),
+        ContenidoMessageDto contenidos = contenidoService.GetAllContenidos();
+        if (contenidos.isStatus()) {
+            return new ResponseEntity(contenidos.getContenidos(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(contenidos, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(contenidos.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> GetById(@PathVariable("id") long id) {
-        Optional<Contenido> contenido = contenidoService.GetContenidoById(id);
-        if (contenido.isPresent()) {
-            return new ResponseEntity(contenido, HttpStatus.OK);
+        ContenidoMessageDto contenido = contenidoService.GetContenidoById(id);
+        if (contenido.isStatus()) {
+            return new ResponseEntity(contenido.getContenido(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("No existe registro con id: "
-                    + String.valueOf(id)), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(contenido.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/byActividad")
     public ResponseEntity<?> GetByActividad(
             @RequestParam("idActividad") int idActividad) {
-        ArrayList<Contenido> contenidos
+        ContenidoMessageDto contenidos
                 = contenidoService.GetContenidoByIdActividad(idActividad);
-        if (contenidos.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay registros con "
-                    + "idActividad: " + String.valueOf(idActividad)),
+        if (contenidos.isStatus()) {
+            return new ResponseEntity(contenidos.getContenidos(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(contenidos, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(contenidos.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/byStatus")
     public ResponseEntity<?> GetByStatus(
             @RequestParam("status") boolean activo) {
-        ArrayList<Contenido> contenidos
+        ContenidoMessageDto contenidos
                 = contenidoService.GetContenidoByStatus(activo);
-        if (contenidos.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay registros con "
-                    + "status: " + String.valueOf(activo)),
+        if (contenidos.isStatus()) {
+            return new ResponseEntity(contenidos.getContenidos(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(contenidos, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(contenidos.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @PostMapping()
     public ResponseEntity<?> Save(
             @RequestBody ContenidoSaveDto contenidoSaveDto) {
-        Contenido contenido = contenidoService.SaveContenido(contenidoSaveDto);
-        if (contenido == null) {
-            return new ResponseEntity(
-                    new Mensaje("Id actividad inexistente"), HttpStatus.OK);
+        ContenidoMessageDto contenido
+                = contenidoService.SaveContenido(contenidoSaveDto);
+        if (contenido.isStatus()) {
+            return new ResponseEntity(contenido.getContenido(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(contenido, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(contenido.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @PutMapping()
     public ResponseEntity<?> Update(
             @RequestBody ContenidoUpdateDto contenidoUpdateDto) {
-        Contenido contenido
+        ContenidoMessageDto contenido
                 = contenidoService.UpdateContenido(contenidoUpdateDto);
-        if (contenido == null) {
-            return new ResponseEntity(new Mensaje("Error al actualizar, posibles"
-                    + " causas:\nId inexistente o\nId actividad inexistente"),
+        if (contenido.isStatus()) {
+            return new ResponseEntity(contenido.getContenido(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(contenido, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(contenido.getMessage()),
+                    HttpStatus.OK);
         }
     }
 

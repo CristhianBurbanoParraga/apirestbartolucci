@@ -15,22 +15,20 @@ public class MultimediaUpdateDto {
     private String descripcion;
     private String tipo;
     private boolean isInicial;
-    private String publicid;
-    private String url;
+    private OtherMultimediaDto multimedia;
 
     public MultimediaUpdateDto() {
     }
 
     public MultimediaUpdateDto(long id, long idContenido,
             String descripcion, String tipo, boolean isInicial,
-            String publicid, String url) {
+            OtherMultimediaDto multimedia) {
         this.id = id;
         this.idContenido = idContenido;
         this.descripcion = descripcion;
         this.tipo = tipo;
         this.isInicial = isInicial;
-        this.publicid = publicid;
-        this.url = url;
+        this.multimedia = multimedia;
     }
 
     public long getId() {
@@ -73,20 +71,12 @@ public class MultimediaUpdateDto {
         this.isInicial = isInicial;
     }
 
-    public String getPublicid() {
-        return publicid;
+    public OtherMultimediaDto getMultimedia() {
+        return multimedia;
     }
 
-    public void setPublicid(String publicid) {
-        this.publicid = publicid;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
+    public void setMultimedia(OtherMultimediaDto multimedia) {
+        this.multimedia = multimedia;
     }
 
 }

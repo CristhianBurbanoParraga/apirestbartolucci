@@ -4,14 +4,11 @@
  */
 package com.example.apirestbartolucci.controllers;
 
+import com.example.apirestbartolucci.dtos.articulo.ArticuloMessageDto;
 import com.example.apirestbartolucci.dtos.articulo.ArticuloSaveDto;
 import com.example.apirestbartolucci.dtos.articulo.ArticuloUpdateDto;
-import com.example.apirestbartolucci.models.Articulo;
 import com.example.apirestbartolucci.models.Mensaje;
 import com.example.apirestbartolucci.services.ArticuloService;
-import io.swagger.annotations.ApiOperation;
-import java.util.ArrayList;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,76 +33,74 @@ public class ArticuloController {
     @Autowired
     ArticuloService articuloService;
 
-    @ApiOperation(value = "Descripcion de la lista")
     @GetMapping()
     public ResponseEntity<?> GetAll() {
-        ArrayList<Articulo> articulos = articuloService.GetAllArticulos();
-        if (articulos.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay registros"),
-                    HttpStatus.OK);
+        ArticuloMessageDto articulos = articuloService.GetAllArticulos();
+        if (articulos.isStatus()) {
+            return new ResponseEntity(articulos.getArticulos(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(articulos, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(articulos.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> GetById(@PathVariable("id") int id) {
-        Optional<Articulo> articulo = articuloService.GetArticuloById(id);
-        if (articulo.isPresent()) {
-            return new ResponseEntity(articulo, HttpStatus.OK);
+        ArticuloMessageDto articulo = articuloService.GetArticuloById(id);
+        if (articulo.isStatus()) {
+            return new ResponseEntity(articulo.getArticulo(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("No existe articulo con id: "
-                    + String.valueOf(id)), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(articulo.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/byNombre")
     public ResponseEntity<?> GetByNombre(
             @RequestParam("nombre") String nombre) {
-        Optional<Articulo> articulo
+        ArticuloMessageDto articulo
                 = articuloService.GetArticuloByNombre(nombre);
-        if (articulo.isPresent()) {
-            return new ResponseEntity(articulo, HttpStatus.OK);
+        if (articulo.isStatus()) {
+            return new ResponseEntity(articulo.getArticulo(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("No existe articulo con "
-                    + "nombre: " + nombre), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(articulo.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/byStatus")
     public ResponseEntity<?> GetAllByStatus(
             @RequestParam("status") boolean activo) {
-        ArrayList<Articulo> articulos
+        ArticuloMessageDto articulos
                 = articuloService.GetArticuloByStatus(activo);
-        if (articulos.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay registros con Activo: "
-                    + activo), HttpStatus.OK);
+        if (articulos.isStatus()) {
+            return new ResponseEntity(articulos.getArticulos(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(articulos, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(articulos.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @PostMapping()
     public ResponseEntity<?> Save(@RequestBody ArticuloSaveDto articuloSaveDto) {
-        Articulo articulo = articuloService.SaveArticulo(articuloSaveDto);
-        if (articulo != null) {
-            return new ResponseEntity(articulo, HttpStatus.OK);
+        ArticuloMessageDto articulo = articuloService.SaveArticulo(articuloSaveDto);
+        if (articulo.isStatus()) {
+            return new ResponseEntity(articulo.getArticulo(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("Error al guardar, posibles "
-                    + "causas: \nEl campo 'nombre' ya existe ó\nCampos del "
-                    + "archivo multimedia erroneos"), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(articulo.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @PutMapping()
     public ResponseEntity<?> Update(
             @RequestBody ArticuloUpdateDto articuloUpdateDto) {
-        Articulo articulo = articuloService.UpdateArticulo(articuloUpdateDto);
-        if (articulo != null) {
-            return new ResponseEntity(articulo, HttpStatus.OK);
+        ArticuloMessageDto articulo
+                = articuloService.UpdateArticulo(articuloUpdateDto);
+        if (articulo.isStatus()) {
+            return new ResponseEntity(articulo.getArticulo(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("Articulo con id: "
-                    + articuloUpdateDto.getId() + " inexistente"),
+            return new ResponseEntity(new Mensaje(articulo.getMessage()),
                     HttpStatus.OK);
         }
     }

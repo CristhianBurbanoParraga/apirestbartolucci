@@ -4,6 +4,7 @@
  */
 package com.example.apirestbartolucci.services;
 
+import com.example.apirestbartolucci.dtos.multimedia.MultimediaMessageDto;
 import com.example.apirestbartolucci.dtos.multimedia.MultimediaSaveDto;
 import com.example.apirestbartolucci.dtos.multimedia.MultimediaUpdateDto;
 import com.example.apirestbartolucci.dtos.multimedia.OtherMultimediaDto;
@@ -37,37 +38,59 @@ public class MultimediaService {
     @Autowired
     ContenidoRepository contenidoRepository;
 
-    public ArrayList<Multimedia> GetAllMultimedias() {
-        return (ArrayList<Multimedia>) multimediaRepository.findAll();
-    }
-
-    public Optional<Multimedia> GetmultimediaById(long id) {
-        return multimediaRepository.findById(id);
-    }
-
-    public ArrayList<Multimedia> GetMultimediaByIdContenido(long idContenido) {
-        Optional<Contenido> contenido
-                = contenidoRepository.findById(idContenido);
-        if (contenido.isPresent()) {
-            return multimediaRepository.findByContenido(contenido.get());
+    public MultimediaMessageDto GetAllMultimedias() {
+        ArrayList<Multimedia> multimedias
+                = (ArrayList<Multimedia>) multimediaRepository.findAll();
+        if (multimedias.isEmpty()) {
+            return new MultimediaMessageDto(false, "No hay registros", null, null, null);
         } else {
-            return new ArrayList<Multimedia>();
+            return new MultimediaMessageDto(true, "Ok", null, null, multimedias);
         }
     }
 
-    public OtherMultimediaDto SaveOtherMultimedia(MultipartFile multipartFile) {
+    public MultimediaMessageDto GetmultimediaById(long id) {
+        Optional<Multimedia> mulimedia = multimediaRepository.findById(id);
+        if (mulimedia.isPresent()) {
+            return new MultimediaMessageDto(true, "Ok", mulimedia.get(), null, null);
+        } else {
+            return new MultimediaMessageDto(false, "No existe un multmedia con Id: "
+                    + id, null, null, null);
+        }
+    }
+
+    public MultimediaMessageDto GetMultimediaByIdContenido(long idContenido) {
+        Optional<Contenido> contenido
+                = contenidoRepository.findById(idContenido);
+        if (contenido.isPresent()) {
+            ArrayList<Multimedia> multimedias
+                    = multimediaRepository.findByContenido(contenido.get());
+            if (multimedias.isEmpty()) {
+                return new MultimediaMessageDto(false, "No hay registros de multmedia "
+                        + "con Id de contenido: " + idContenido, null, null, null);
+            } else {
+                return new MultimediaMessageDto(true, "Ok", null, null, multimedias);
+            }
+        } else {
+            return new MultimediaMessageDto(false, "Id de contenido inexistente",
+                    null, null, null);
+        }
+    }
+
+    public MultimediaMessageDto SaveOtherMultimedia(MultipartFile multipartFile) {
         try {
             Map map = cloudinaryService.upload(multipartFile);
             OtherMultimediaDto otherMultimediaDto
                     = new OtherMultimediaDto((String) map.get("public_id"),
                             (String) map.get("secure_url"));
-            return otherMultimediaDto;
+            return new MultimediaMessageDto(true, "Ok",
+                    null, otherMultimediaDto, null);
         } catch (IOException ioe) {
-            return null;
+            return new MultimediaMessageDto(false, ioe.getMessage(),
+                    null, null, null);
         }
     }
 
-    public OtherMultimediaDto SaveOtherMultimediaServer(
+    public MultimediaMessageDto SaveOtherMultimediaServer(
             MultipartFile multipartFile) {
         try {
             String uuid = UUID.randomUUID().toString().replace("-", "")
@@ -80,18 +103,22 @@ public class MultimediaService {
                 file.getParentFile().mkdir();
             }
             multipartFile.transferTo(file);
-            return new OtherMultimediaDto(uuid, path);
+            return new MultimediaMessageDto(true, "Ok",
+                    null, new OtherMultimediaDto(uuid, path), null);
         } catch (IOException ioe) {
-            return null;
+            return new MultimediaMessageDto(false, ioe.getMessage(),
+                    null, null, null);
         } catch (IllegalStateException i) {
-            return null;
+            return new MultimediaMessageDto(false, i.getMessage(),
+                    null, null, null);
         }
     }
 
-    public Multimedia SaveMultimedia(MultimediaSaveDto multimediaSaveDto) {
+    public MultimediaMessageDto SaveMultimedia(MultimediaSaveDto multimediaSaveDto) {
         if (multimediaSaveDto.getMultimedia().getPublicid() == null
                 || multimediaSaveDto.getMultimedia().getUrl() == null) {
-            return null;
+            return new MultimediaMessageDto(false, "Los campos PublicId y Url no "
+                    + "pueden ser nulos", null, null, null);
         } else {
             Optional<Contenido> contenido = contenidoRepository.findById(
                     multimediaSaveDto.getIdContenido());
@@ -103,47 +130,49 @@ public class MultimediaService {
                         multimediaSaveDto.getMultimedia().getUrl(),
                         multimediaSaveDto.getTipo(),
                         multimediaSaveDto.isIsInicial());
-                return multimediaRepository.save(multimedia);
+                return new MultimediaMessageDto(true, "Ok",
+                        multimediaRepository.save(multimedia), null, null);
             } else {
-                return null;
+                return new MultimediaMessageDto(false, "No existe contenido con Id: "
+                        + multimediaSaveDto.getIdContenido(), null, null, null);
             }
         }
     }
 
-    public Multimedia UpdateMultimedia(
+    public MultimediaMessageDto UpdateMultimedia(
             MultimediaUpdateDto multimediaUpdateDto) {
-        Optional<Multimedia> multimedia
-                = multimediaRepository.findById(multimediaUpdateDto.getId());
-        if (multimedia.isPresent()) {
-            Optional<Contenido> contenido
-                    = contenidoRepository.findById(
-                            multimediaUpdateDto.getIdContenido());
-            if (contenido.isPresent()) {
-                multimedia.get().setContenido(contenido.get());
-                multimedia.get().setDescripcion(
-                        multimediaUpdateDto.getDescripcion());
-                multimedia.get().setTipo(multimediaUpdateDto.getTipo());
-                multimedia.get().setInicial(multimediaUpdateDto.isIsInicial());
-                if (!multimedia.get().getPublicid()
-                        .equals(multimediaUpdateDto.getPublicid())) {
-                    try {
-                        cloudinaryService.delete(multimedia.get().getPublicid());
-                    } catch (IOException ie) {
-                        return null;
-                    }
-                    multimedia.get().setPublicid(multimediaUpdateDto.getPublicid());
-                    multimedia.get().setUrl(multimediaUpdateDto.getUrl());
-                }
-                return multimediaRepository.save(multimedia.get());
-            } else {
-                return null;
-            }
+        if (multimediaUpdateDto.getMultimedia().getPublicid() == null
+                || multimediaUpdateDto.getMultimedia().getUrl() == null) {
+            return new MultimediaMessageDto(false, "Los campos PublicId y Url no "
+                    + "pueden ser nulos", null, null, null);
         } else {
-            return null;
+            Optional<Multimedia> multimedia
+                    = multimediaRepository.findById(multimediaUpdateDto.getId());
+            if (multimedia.isPresent()) {
+                Optional<Contenido> contenido
+                        = contenidoRepository.findById(
+                                multimediaUpdateDto.getIdContenido());
+                if (contenido.isPresent()) {
+                    multimedia.get().setContenido(contenido.get());
+                    multimedia.get().setDescripcion(
+                            multimediaUpdateDto.getDescripcion());
+                    multimedia.get().setTipo(multimediaUpdateDto.getTipo());
+                    multimedia.get().setInicial(multimediaUpdateDto.isIsInicial());
+                    multimedia.get().setPublicid(
+                            multimediaUpdateDto.getMultimedia().getPublicid());
+                    multimedia.get().setUrl(
+                            multimediaUpdateDto.getMultimedia().getUrl());
+                    return new MultimediaMessageDto(true, "Ok",
+                            multimediaRepository.save(multimedia.get()), null, null);
+                } else {
+                    return new MultimediaMessageDto(false, "No existe contenido con Id: "
+                            + multimediaUpdateDto.getIdContenido(), null, null, null);
+                }
+            } else {
+                return new MultimediaMessageDto(false, "Id de multimedia inexistente",
+                        null, null, null);
+            }
         }
     }
 
-    public String GetUUID() {
-        return UUID.randomUUID().toString().replace("-", "").substring(0, 30);
-    }
 }

@@ -15,21 +15,18 @@ public class ActividadUpdateDto {
     private String nombre;
     private String descripcion;
     private int recompensavalor;
-    private String tipo;
     private boolean activo;
 
     public ActividadUpdateDto() {
     }
 
     public ActividadUpdateDto(int id, int idSubnivel, String nombre,
-            String descripcion, int recompensavalor, String tipo,
-            boolean activo) {
+            String descripcion, int recompensavalor, boolean activo) {
         this.id = id;
         this.idSubnivel = idSubnivel;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.recompensavalor = recompensavalor;
-        this.tipo = tipo;
         this.activo = activo;
     }
 
@@ -71,14 +68,6 @@ public class ActividadUpdateDto {
 
     public void setRecompensavalor(int recompensavalor) {
         this.recompensavalor = recompensavalor;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
     }
 
     public boolean isActivo() {

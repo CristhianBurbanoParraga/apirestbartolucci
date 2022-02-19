@@ -8,7 +8,6 @@ import com.example.apirestbartolucci.models.Actividad;
 import com.example.apirestbartolucci.models.Docente;
 import com.example.apirestbartolucci.models.Subnivel;
 import java.util.ArrayList;
-import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -23,7 +22,7 @@ public interface ActividadRepository extends CrudRepository<Actividad, Integer> 
 
     public ArrayList<Actividad> findByDocente(Docente docente);
 
-    public Optional<Actividad> findByNombre(String nombre);
+    public ArrayList<Actividad> findByNombre(String nombre);
 
     public ArrayList<Actividad> findByActivo(boolean activo);
 

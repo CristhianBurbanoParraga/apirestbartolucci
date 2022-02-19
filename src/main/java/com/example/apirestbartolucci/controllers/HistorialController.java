@@ -4,13 +4,10 @@
  */
 package com.example.apirestbartolucci.controllers;
 
-import com.example.apirestbartolucci.dtos.historial.HistorialDto;
-import com.example.apirestbartolucci.dtos.historial.HistorialListDto;
+import com.example.apirestbartolucci.dtos.historial.HistorialMessageDto;
 import com.example.apirestbartolucci.dtos.historial.HistorialSaveDto;
-import com.example.apirestbartolucci.models.Historial;
 import com.example.apirestbartolucci.models.Mensaje;
 import com.example.apirestbartolucci.services.HistorialService;
-import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,52 +33,51 @@ public class HistorialController {
 
     @GetMapping()
     public ResponseEntity<?> GetAll() {
-        ArrayList<HistorialListDto> historial = historialService.GetAllHistorial();
-        if (historial.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay registros"),
+        HistorialMessageDto historial = historialService.GetAllHistorial();
+        if (historial.isStatus()) {
+            return new ResponseEntity(historial.getListActividadesDto(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(historial, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(historial.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> GetById(@PathVariable("id") long id) {
-        HistorialDto historial = historialService.GetHistorialById(id);
-        if (historial != null) {
-            return new ResponseEntity(historial, HttpStatus.OK);
+        HistorialMessageDto historial = historialService.GetHistorialById(id);
+        if (historial.isStatus()) {
+            return new ResponseEntity(historial.getHistorialDto(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("No existe registro con id: "
-                    + String.valueOf(id)), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(historial.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/byEstudiante")
     public ResponseEntity<?> GetByEstudiante(
             @RequestParam("idEstudiante") int idEstudiante) {
-        HistorialListDto historial
+        HistorialMessageDto historial
                 = historialService.GetHistorialByIdEstudiante(idEstudiante);
-        if (historial == null) {
-            return new ResponseEntity(new Mensaje("No hay registros con "
-                    + "idEstudiante: " + String.valueOf(idEstudiante)),
+        if (historial.isStatus()) {
+            return new ResponseEntity(historial.getListDto(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(historial, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(historial.getMessage()),
+                    HttpStatus.OK);
         }
 
     }
 
     @PostMapping(path = "/completeActividad")
     public ResponseEntity<?> Save(@RequestBody HistorialSaveDto historialSaveDto) {
-        Historial historial
+        HistorialMessageDto historial
                 = historialService.SaveHistorial(historialSaveDto);
-        if (historial == null) {
-            return new ResponseEntity(new Mensaje("Error al guardar, posibles "
-                    + "causas:\nId estudiante inexistente ó\nId actividad "
-                    + "inexistente\nEl # de respuestas no coinciden con la "
-                    + "actividad\nStatus y respuesta son incorrectos"), HttpStatus.OK);
+        if (historial.isStatus()) {
+            return new ResponseEntity(historial.getHistorial(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(historial, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(historial.getMessage()),
+                    HttpStatus.OK);
         }
     }
 }

@@ -7,14 +7,13 @@ package com.example.apirestbartolucci.services;
 import com.example.apirestbartolucci.dtos.grupo.GrupoDto;
 import com.example.apirestbartolucci.dtos.grupo.GrupoListByDocenteDto;
 import com.example.apirestbartolucci.dtos.grupo.GrupoListDetailByDocenteDto;
+import com.example.apirestbartolucci.dtos.grupo.GrupoMessageDto;
 import com.example.apirestbartolucci.models.Docente;
-//import com.example.apirestbartolucci.models.Estudiante;
 import com.example.apirestbartolucci.models.Grupo;
 import com.example.apirestbartolucci.repositories.DocenteRepository;
 import com.example.apirestbartolucci.repositories.EstudianteRepository;
 import com.example.apirestbartolucci.repositories.GrupoRepository;
 import java.util.ArrayList;
-//import java.util.Date;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,23 +34,27 @@ public class GrupoService {
     @Autowired
     EstudianteRepository estudianteRepository;
 
-    public ArrayList<GrupoListByDocenteDto> GetAllGrupos() {
+    public GrupoMessageDto GetAllGrupos() {
         ArrayList<Grupo> grupos = (ArrayList<Grupo>) grupoRepository.findAll();
-        ArrayList<GrupoListByDocenteDto> list
-                = new ArrayList<GrupoListByDocenteDto>();
-        ArrayList<Integer> ids = new ArrayList<Integer>();
-        for (int i = 0; i < grupos.size(); i++) {
-            if (!ids.contains(grupos.get(i).getDocente().getId())) {
-                ids.add(grupos.get(i).getDocente().getId());
-                GrupoListByDocenteDto item
-                        = GetGrupoByIdDocente(grupos.get(i).getDocente().getId());
-                list.add(item);
+        if (grupos.isEmpty()) {
+            return new GrupoMessageDto(false, "No hay registros", null, null, null);
+        } else {
+            ArrayList<GrupoListByDocenteDto> list
+                    = new ArrayList<>();
+            ArrayList<Integer> ids = new ArrayList<>();
+            for (int i = 0; i < grupos.size(); i++) {
+                if (!ids.contains(grupos.get(i).getDocente().getId())) {
+                    ids.add(grupos.get(i).getDocente().getId());
+                    GrupoListByDocenteDto item = GetGrupoByIdDocente(
+                            grupos.get(i).getDocente().getId()).getByDocenteDto();
+                    list.add(item);
+                }
             }
+            return new GrupoMessageDto(true, "Ok", null, null, list);
         }
-        return list;
     }
 
-    public GrupoDto GetGrupoById(int id) {
+    public GrupoMessageDto GetGrupoById(int id) {
         Optional<Grupo> grupo = grupoRepository.findById(id);
         if (grupo.isPresent()) {
             GrupoDto grupoDto = new GrupoDto(grupo.get().getId(),
@@ -63,9 +66,10 @@ public class GrupoService {
                     + grupo.get().getEstudiante().getApellidos(),
                     grupo.get().getFecharegistro().toString(),
                     grupo.get().isActivo());
-            return grupoDto;
+            return new GrupoMessageDto(true, "Ok", grupoDto, null, null);
         } else {
-            return null;
+            return new GrupoMessageDto(false, "No existe un grupo con Id: "
+                    + id, null, null, null);
         }
     }
 
@@ -73,30 +77,36 @@ public class GrupoService {
         return (ArrayList<Grupo>) grupoRepository
                 .findByFecharegistro(fecharegistro);
     }*/
-    public GrupoListByDocenteDto GetGrupoByIdDocente(int id) {
+    public GrupoMessageDto GetGrupoByIdDocente(int id) {
         Optional<Docente> docente = docenteRepository.findById(id);
         if (docente.isPresent()) {
-            GrupoListByDocenteDto listByDocente = new GrupoListByDocenteDto();
-            listByDocente.setIddocente(id);
-            listByDocente.setDocente(docente.get().getNombres() + " "
-                    + docente.get().getApellidos());
             ArrayList<Grupo> grupos = grupoRepository.findByDocente(docente.get());
-            ArrayList<GrupoListDetailByDocenteDto> detail
-                    = new ArrayList<GrupoListDetailByDocenteDto>();
-            for (int i = 0; i < grupos.size(); i++) {
-                GrupoListDetailByDocenteDto item
-                        = new GrupoListDetailByDocenteDto(grupos.get(i).getId(),
-                                grupos.get(i).getEstudiante().getId(),
-                                grupos.get(i).getEstudiante().getNombres() + " "
-                                + grupos.get(i).getEstudiante().getApellidos(),
-                                grupos.get(i).getFecharegistro().toString(),
-                                grupos.get(i).isActivo());
-                detail.add(item);
+            if (grupos.isEmpty()) {
+                return new GrupoMessageDto(false, "No hay registros de grupos "
+                        + "con el Docente con Id: " + id, null, null, null);
+            } else {
+                GrupoListByDocenteDto listByDocente = new GrupoListByDocenteDto();
+                listByDocente.setIddocente(id);
+                listByDocente.setDocente(docente.get().getNombres() + " "
+                        + docente.get().getApellidos());
+                ArrayList<GrupoListDetailByDocenteDto> detail
+                        = new ArrayList<>();
+                for (int i = 0; i < grupos.size(); i++) {
+                    GrupoListDetailByDocenteDto item
+                            = new GrupoListDetailByDocenteDto(grupos.get(i).getId(),
+                                    grupos.get(i).getEstudiante().getId(),
+                                    grupos.get(i).getEstudiante().getNombres() + " "
+                                    + grupos.get(i).getEstudiante().getApellidos(),
+                                    grupos.get(i).getFecharegistro().toString(),
+                                    grupos.get(i).isActivo());
+                    detail.add(item);
+                }
+                listByDocente.setEstudiantes(detail);
+                return new GrupoMessageDto(true, "Ok", null, listByDocente, null);
             }
-            listByDocente.setEstudiantes(detail);
-            return listByDocente;
         } else {
-            return null;
+            return new GrupoMessageDto(false, "No existe un Docente con Id: "
+                    + id, null, null, null);
         }
     }
 

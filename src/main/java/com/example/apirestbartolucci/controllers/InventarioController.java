@@ -4,6 +4,7 @@
  */
 package com.example.apirestbartolucci.controllers;
 
+import com.example.apirestbartolucci.dtos.inventario.InventarioMessageDto;
 import com.example.apirestbartolucci.models.Inventario;
 import com.example.apirestbartolucci.models.Mensaje;
 import com.example.apirestbartolucci.services.InventarioService;
@@ -34,37 +35,38 @@ public class InventarioController {
 
     @GetMapping()
     public ResponseEntity<?> GetAll() {
-        ArrayList<Inventario> inventarios
+        InventarioMessageDto inventarios
                 = inventarioService.GetAllInventarios();
-        if (inventarios.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay registros"),
+        if (inventarios.isStatus()) {
+            return new ResponseEntity(inventarios.getInventarios(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(inventarios, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(inventarios.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> GetById(@PathVariable("id") long id) {
-        Optional<Inventario> inventario = inventarioService.GetInventrioById(id);
-        if (inventario.isPresent()) {
-            return new ResponseEntity(inventario, HttpStatus.OK);
+        InventarioMessageDto inventario = inventarioService.GetInventrioById(id);
+        if (inventario.isStatus()) {
+            return new ResponseEntity(inventario.getInventario(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("No existe inventario con "
-                    + "id: " + String.valueOf(id)), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(inventario.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/byEstudiante")
     public ResponseEntity<?> GetByIdEstudiante(
             @RequestParam("idEstudiante") int id) {
-        ArrayList<Inventario> inventarios
+        InventarioMessageDto inventarios
                 = inventarioService.GetInventarioByIdEstudiante(id);
-        if (inventarios.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay inventario para el "
-                    + "estudiante con id: " + String.valueOf(id)), HttpStatus.OK);
+        if (inventarios.isStatus()) {
+            return new ResponseEntity(inventarios.getInventarios(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(inventarios, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(inventarios.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
@@ -72,15 +74,14 @@ public class InventarioController {
     public ResponseEntity<?> GetBySeleccionado(
             @RequestParam("idEstudiante") int id,
             @RequestParam("selected") boolean seleccionado) {
-        ArrayList<Inventario> inventarios
+        InventarioMessageDto inventarios
                 = inventarioService.GetInventarioByIdEstudianteAndSelect(
                         id, seleccionado);
-        if (inventarios.isEmpty()) {
-            return new ResponseEntity(new Mensaje("El estudiante con id: "
-                    + String.valueOf(id) + " no ha seleccionado ningun articulo "
-                    + "para su avatar"), HttpStatus.OK);
+        if (inventarios.isStatus()) {
+            return new ResponseEntity(inventarios.getInventarios(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(inventarios, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(inventarios.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
@@ -88,15 +89,14 @@ public class InventarioController {
     public ResponseEntity<?> GetByStatus(
             @RequestParam("idEstudiante") int id,
             @RequestParam("activo") boolean activo) {
-        ArrayList<Inventario> inventarios
+        InventarioMessageDto inventarios
                 = inventarioService.GetInventarioByIdEstudianteAndActivo(
                         id, activo);
-        if (inventarios.isEmpty()) {
-            return new ResponseEntity(new Mensaje("El estudiante con id: "
-                    + String.valueOf(id) + " no tiene articulos con status: "
-                    + String.valueOf(activo)), HttpStatus.OK);
+        if (inventarios.isStatus()) {
+            return new ResponseEntity(inventarios.getInventarios(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(inventarios, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(inventarios.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
@@ -114,15 +114,14 @@ public class InventarioController {
     public ResponseEntity<?> Save(
             @RequestParam("idEstudiante") int idEstudiante,
             @RequestParam("idArticulo") int idArticulo) {
-        Inventario inventario
+        InventarioMessageDto inventario
                 = inventarioService.SaveInventario(idEstudiante, idArticulo);
-        if (inventario == null) {
-            return new ResponseEntity(new Mensaje("Imposible adquirir articulo, "
-                    + "posibles casusas:\nId estudiante inexistente\n"
-                    + "Id articulo inexistente\nCaritas insuficientes"),
+        if (inventario.isStatus()) {
+            return new ResponseEntity(inventario.getInventario(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(inventario, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(inventario.getMessage()),
+                    HttpStatus.OK);
         }
     }
 

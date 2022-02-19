@@ -4,6 +4,7 @@
  */
 package com.example.apirestbartolucci.services;
 
+import com.example.apirestbartolucci.dtos.inventario.InventarioMessageDto;
 import com.example.apirestbartolucci.models.Articulo;
 import com.example.apirestbartolucci.models.Estudiante;
 import com.example.apirestbartolucci.models.Inventario;
@@ -33,42 +34,80 @@ public class InventarioService {
     @Autowired
     ArticuloRepository articuloRepository;
 
-    public ArrayList<Inventario> GetAllInventarios() {
-        return (ArrayList<Inventario>) inventarioRepository.findAll();
-    }
-
-    public Optional<Inventario> GetInventrioById(long id) {
-        return inventarioRepository.findById(id);
-    }
-
-    public ArrayList<Inventario> GetInventarioByIdEstudiante(int id) {
-        Optional<Estudiante> estudiante = estudianteRepository.findById(id);
-        if (estudiante.isPresent()) {
-            return inventarioRepository.findByEstudiante(estudiante.get());
+    public InventarioMessageDto GetAllInventarios() {
+        ArrayList<Inventario> inventarios
+                = (ArrayList<Inventario>) inventarioRepository.findAll();
+        if (inventarios.isEmpty()) {
+            return new InventarioMessageDto(false, "No hay registros", null, null);
         } else {
-            return new ArrayList<Inventario>();
+            return new InventarioMessageDto(true, "Ok", null, inventarios);
         }
     }
 
-    public ArrayList<Inventario> GetInventarioByIdEstudianteAndSelect(int id,
+    public InventarioMessageDto GetInventrioById(long id) {
+        Optional<Inventario> inventario = inventarioRepository.findById(id);
+        if (inventario.isPresent()) {
+            return new InventarioMessageDto(true, "Ok", inventario.get(), null);
+        } else {
+            return new InventarioMessageDto(false, "No existe un invetario con Id: "
+                    + id, null, null);
+        }
+    }
+
+    public InventarioMessageDto GetInventarioByIdEstudiante(int id) {
+        Optional<Estudiante> estudiante = estudianteRepository.findById(id);
+        if (estudiante.isPresent()) {
+            ArrayList<Inventario> inventarios
+                    = inventarioRepository.findByEstudiante(estudiante.get());
+            if (inventarios.isEmpty()) {
+                return new InventarioMessageDto(false, "No hay registros de "
+                        + "inventario para el Estudiante con Id: " + id, null, null);
+            } else {
+                return new InventarioMessageDto(true, "Ok", null, inventarios);
+            }
+        } else {
+            return new InventarioMessageDto(false, "No existe un Estudiante con Id: "
+                    + id, null, null);
+        }
+    }
+
+    public InventarioMessageDto GetInventarioByIdEstudianteAndSelect(int id,
             boolean seleccionado) {
         Optional<Estudiante> estudiante = estudianteRepository.findById(id);
         if (estudiante.isPresent()) {
-            return inventarioRepository.findByEstudianteAndSeleccionado(
-                    estudiante.get(), seleccionado);
+            ArrayList<Inventario> inventarios
+                    = inventarioRepository.findByEstudianteAndSeleccionado(
+                            estudiante.get(), seleccionado);
+            if (inventarios.isEmpty()) {
+                return new InventarioMessageDto(false, "No hay registros de "
+                        + "inventario con Selected: " + seleccionado + " para el "
+                        + "Estudiante con Id: " + id, null, null);
+            } else {
+                return new InventarioMessageDto(true, "Ok", null, inventarios);
+            }
         } else {
-            return new ArrayList<Inventario>();
+            return new InventarioMessageDto(false, "No existe un Estudiante con Id: "
+                    + id, null, null);
         }
     }
 
-    public ArrayList<Inventario> GetInventarioByIdEstudianteAndActivo(int id,
+    public InventarioMessageDto GetInventarioByIdEstudianteAndActivo(int id,
             boolean activo) {
         Optional<Estudiante> estudiante = estudianteRepository.findById(id);
         if (estudiante.isPresent()) {
-            return inventarioRepository.findByEstudianteAndActivo(
-                    estudiante.get(), activo);
+            ArrayList<Inventario> inventarios
+                    = inventarioRepository.findByEstudianteAndActivo(
+                            estudiante.get(), activo);
+            if (inventarios.isEmpty()) {
+                return new InventarioMessageDto(false, "No hay registros de "
+                        + "inventario con Estado: " + activo + " para el "
+                        + "Estudiante con Id: " + id, null, null);
+            } else {
+                return new InventarioMessageDto(true, "Ok", null, inventarios);
+            }
         } else {
-            return new ArrayList<Inventario>();
+            return new InventarioMessageDto(false, "No existe un Estudiante con Id: "
+                    + id, null, null);
         }
     }
 
@@ -87,7 +126,7 @@ public class InventarioService {
                             inventarios.get(i).setSeleccionado(false);
                             inventarioRepository.save(inventarios.get(i));
                             break;
-                        } 
+                        }
                     }
                 }
                 inventario.get().setSeleccionado(seleccionado);
@@ -106,7 +145,7 @@ public class InventarioService {
         }
     }
 
-    public Inventario SaveInventario(int idEstudiante, int idArticulo) {
+    public InventarioMessageDto SaveInventario(int idEstudiante, int idArticulo) {
         Optional<Estudiante> estudiante
                 = estudianteRepository.findById(idEstudiante);
         if (estudiante.isPresent()) {
@@ -123,15 +162,19 @@ public class InventarioService {
                             false, true);
                     estudiante.get().setStockcaritas(stock - costo);
                     estudianteRepository.save(estudiante.get());
-                    return inventarioRepository.save(inventario);
+                    return new InventarioMessageDto(true, "Ok",
+                            inventarioRepository.save(inventario), null);
                 } else {
-                    return null;
+                    return new InventarioMessageDto(false, "Valores insuficientes",
+                            null, null);
                 }
             } else {
-                return null;
+                return new InventarioMessageDto(false, "No existe un Articulo con Id: "
+                        + idArticulo, null, null);
             }
         } else {
-            return null;
+            return new InventarioMessageDto(false, "No existe un Estudiante con Id: "
+                    + idEstudiante, null, null);
         }
     }
 

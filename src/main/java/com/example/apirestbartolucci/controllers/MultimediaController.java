@@ -4,14 +4,11 @@
  */
 package com.example.apirestbartolucci.controllers;
 
+import com.example.apirestbartolucci.dtos.multimedia.MultimediaMessageDto;
 import com.example.apirestbartolucci.dtos.multimedia.MultimediaSaveDto;
 import com.example.apirestbartolucci.dtos.multimedia.MultimediaUpdateDto;
-import com.example.apirestbartolucci.dtos.multimedia.OtherMultimediaDto;
 import com.example.apirestbartolucci.models.Mensaje;
-import com.example.apirestbartolucci.models.Multimedia;
 import com.example.apirestbartolucci.services.MultimediaService;
-import java.util.ArrayList;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,25 +36,25 @@ public class MultimediaController {
 
     @GetMapping()
     public ResponseEntity<?> GetAll() {
-        ArrayList<Multimedia> multimedias
+        MultimediaMessageDto multimedias
                 = multimediaService.GetAllMultimedias();
-        if (multimedias.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay registros"),
+        if (multimedias.isStatus()) {
+            return new ResponseEntity(multimedias.getMultimedias(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(multimedias, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(multimedias.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> GetById(@PathVariable("id") long id) {
-        Optional<Multimedia> multimedia
+        MultimediaMessageDto multimedia
                 = multimediaService.GetmultimediaById(id);
-        if (multimedia.isPresent()) {
-            return new ResponseEntity(multimedia, HttpStatus.OK);
+        if (multimedia.isStatus()) {
+            return new ResponseEntity(multimedia.getMultimedia(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("No hay registros con id: "
-                    + String.valueOf(id)),
+            return new ResponseEntity(new Mensaje(multimedia.getMessage()),
                     HttpStatus.OK);
         }
     }
@@ -65,14 +62,14 @@ public class MultimediaController {
     @GetMapping(path = "/byContenido")
     public ResponseEntity<?> GetByContenido(
             @RequestParam("idContenido") long idContenido) {
-        ArrayList<Multimedia> multimeidas
+        MultimediaMessageDto multimeidas
                 = multimediaService.GetMultimediaByIdContenido(idContenido);
-        if (multimeidas.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay registros con "
-                    + "idContenido: " + String.valueOf(idContenido)),
+        if (multimeidas.isStatus()) {
+            return new ResponseEntity(multimeidas.getMultimedias(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(multimeidas, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(multimeidas.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
@@ -80,13 +77,14 @@ public class MultimediaController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> SaveOtherMultimedia(
             @RequestParam MultipartFile multipartFile) {
-        OtherMultimediaDto otherDto
+        MultimediaMessageDto otherDto
                 = multimediaService.SaveOtherMultimedia(multipartFile);
-        if (otherDto == null) {
-            return new ResponseEntity(new Mensaje("Error al guardar el archivo"
-                    + " multimedia"), HttpStatus.OK);
+        if (otherDto.isStatus()) {
+            return new ResponseEntity(otherDto.getOtherMultimediaDto(),
+                    HttpStatus.OK);
         } else {
-            return new ResponseEntity(otherDto, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(otherDto.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
@@ -94,39 +92,40 @@ public class MultimediaController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> SaveOtherMultimediaServer(
             @RequestParam MultipartFile multipartFile) {
-        OtherMultimediaDto otherDto
+        MultimediaMessageDto otherDto
                 = multimediaService.SaveOtherMultimediaServer(multipartFile);
-        if (otherDto == null) {
-            return new ResponseEntity(new Mensaje("Error al guardar el archivo"
-                    + " multimedia en el servidor"), HttpStatus.OK);
+        if (otherDto.isStatus()) {
+            return new ResponseEntity(otherDto.getOtherMultimediaDto(),
+                    HttpStatus.OK);
         } else {
-            return new ResponseEntity(otherDto, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(otherDto.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @PostMapping()
-    public ResponseEntity<?> Save(@RequestBody MultimediaSaveDto multimediaSaveDto) {
-        Multimedia multimedia
+    public ResponseEntity<?> Save(
+            @RequestBody MultimediaSaveDto multimediaSaveDto) {
+        MultimediaMessageDto multimedia
                 = multimediaService.SaveMultimedia(multimediaSaveDto);
-        if (multimedia == null) {
-            return new ResponseEntity(new Mensaje("Error al guardar, posibles "
-                    + "causas:\nCampos del archivo media nulos o\nId contenido "
-                    + "inexistente"), HttpStatus.OK);
+        if (multimedia.isStatus()) {
+            return new ResponseEntity(multimedia.getMultimedia(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(multimedia, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(multimedia.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @PutMapping()
-    public ResponseEntity<?> Update(@RequestBody MultimediaUpdateDto multimediaUpdateDto) {
-        Multimedia multimedia
+    public ResponseEntity<?> Update(
+            @RequestBody MultimediaUpdateDto multimediaUpdateDto) {
+        MultimediaMessageDto multimedia
                 = multimediaService.UpdateMultimedia(multimediaUpdateDto);
-        if (multimedia == null) {
-            return new ResponseEntity(new Mensaje("Error al guardar, posibles "
-                    + "causas:\nId multimidia inexistente o\nId contenido "
-                    + "inexistente"), HttpStatus.OK);
+        if (multimedia.isStatus()) {
+            return new ResponseEntity(multimedia.getMultimedia(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(multimedia, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(multimedia.getMessage()),
+                    HttpStatus.OK);
         }
     }
 

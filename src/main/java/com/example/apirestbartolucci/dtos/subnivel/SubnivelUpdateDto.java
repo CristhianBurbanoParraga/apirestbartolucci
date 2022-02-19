@@ -4,6 +4,8 @@
  */
 package com.example.apirestbartolucci.dtos.subnivel;
 
+import com.example.apirestbartolucci.dtos.multimedia.OtherMultimediaDto;
+
 /**
  *
  * @author criss
@@ -14,16 +16,18 @@ public class SubnivelUpdateDto {
     private String nombre;
     private String descripcion;
     private boolean activo;
+    private OtherMultimediaDto multimedia;
 
     public SubnivelUpdateDto() {
     }
 
     public SubnivelUpdateDto(int id, String nombre, String descripcion,
-            boolean activo) {
+            boolean activo, OtherMultimediaDto multimedia) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.activo = activo;
+        this.multimedia = multimedia;
     }
 
     public int getId() {
@@ -56,5 +60,13 @@ public class SubnivelUpdateDto {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    public OtherMultimediaDto getMultimedia() {
+        return multimedia;
+    }
+
+    public void setMultimedia(OtherMultimediaDto multimedia) {
+        this.multimedia = multimedia;
     }
 }

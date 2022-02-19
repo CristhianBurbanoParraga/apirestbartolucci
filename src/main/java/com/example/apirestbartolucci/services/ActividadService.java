@@ -4,6 +4,7 @@
  */
 package com.example.apirestbartolucci.services;
 
+import com.example.apirestbartolucci.dtos.actividad.ActividadMessageDto;
 import com.example.apirestbartolucci.dtos.actividad.ActividadSaveDto;
 import com.example.apirestbartolucci.dtos.actividad.ActividadUpdateDto;
 import com.example.apirestbartolucci.models.Actividad;
@@ -33,57 +34,109 @@ public class ActividadService {
     @Autowired
     DocenteRepository docenteRepository;
 
-    public ArrayList<Actividad> GetAllActividades() {
-        return (ArrayList<Actividad>) actividadRepository.findAll();
+    public ActividadMessageDto GetAllActividades() {
+        ArrayList<Actividad> actividades
+                = (ArrayList<Actividad>) actividadRepository.findAll();
+        if (actividades.isEmpty()) {
+            return new ActividadMessageDto(false, "No hay registros", null, null);
+        } else {
+            return new ActividadMessageDto(true, "Ok", null, actividades);
+        }
     }
 
-    public Optional<Actividad> GetActividadById(int id) {
-        return actividadRepository.findById(id);
+    public ActividadMessageDto GetActividadById(int id) {
+        Optional<Actividad> actividad = actividadRepository.findById(id);
+        if (actividad.isPresent()) {
+            return new ActividadMessageDto(true, "Ok", actividad.get(), null);
+        } else {
+            return new ActividadMessageDto(false,
+                    "No existe actividad con Id: " + id, null, null);
+        }
     }
 
-    public ArrayList<Actividad> GetActividadByIdSubnivel(int idSubnivel) {
+    public ActividadMessageDto GetActividadByIdSubnivel(int idSubnivel) {
         Optional<Subnivel> subnivel = subnivelRepository.findById(idSubnivel);
         if (subnivel.isPresent()) {
-            return actividadRepository.findBySubnivel(subnivel.get());
+            ArrayList<Actividad> actividades
+                    = actividadRepository.findBySubnivel(subnivel.get());
+            if (actividades.isEmpty()) {
+                return new ActividadMessageDto(false, "No existen actividades "
+                        + "registradas con el Id Subnivel: " + idSubnivel,
+                        null, null);
+            } else {
+                return new ActividadMessageDto(true, "Ok", null, actividades);
+            }
         } else {
-            return new ArrayList<Actividad>();
+            return new ActividadMessageDto(false, "Id Subnivel inexistente",
+                    null, null);
         }
     }
 
-    public ArrayList<Actividad> GetActividadByIdDocente(int idDocente) {
+    public ActividadMessageDto GetActividadByIdDocente(int idDocente) {
         Optional<Docente> docente = docenteRepository.findById(idDocente);
         if (docente.isPresent()) {
-            return actividadRepository.findByDocente(docente.get());
+            ArrayList<Actividad> actividades
+                    = actividadRepository.findByDocente(docente.get());
+            if (actividades.isEmpty()) {
+                return new ActividadMessageDto(false, "No existen actividades "
+                        + "registradas con el Id Docente: " + idDocente,
+                        null, null);
+            } else {
+                return new ActividadMessageDto(true, "Ok", null, actividades);
+            }
         } else {
-            return new ArrayList<Actividad>();
+            return new ActividadMessageDto(false, "Id Docente inexistente",
+                    null, null);
         }
     }
 
-    public ArrayList<Actividad> GetActividadBySubnivelAndDocente(
+    public ActividadMessageDto GetActividadBySubnivelAndDocente(
             int idSubnivel, int idDocente) {
         Optional<Subnivel> subnivel = subnivelRepository.findById(idSubnivel);
         if (subnivel.isPresent()) {
             Optional<Docente> docente = docenteRepository.findById(idDocente);
             if (docente.isPresent()) {
-                return actividadRepository.findBySubnivelAndDocente(
-                        subnivel.get(), docente.get());
+                ArrayList<Actividad> actividades = actividadRepository
+                        .findBySubnivelAndDocente(subnivel.get(), docente.get());
+                if (actividades.isEmpty()) {
+                    return new ActividadMessageDto(false, "No existen actividades "
+                            + "registradas con el Id Subnivel: " + idSubnivel
+                            + " y Id Docente: " + idDocente,
+                            null, null);
+                } else {
+                    return new ActividadMessageDto(true, "Ok", null, actividades);
+                }
             } else {
-                return new ArrayList<Actividad>();
+                return new ActividadMessageDto(false, "Id Docente inexistente",
+                        null, null);
             }
         } else {
-            return new ArrayList<Actividad>();
+            return new ActividadMessageDto(false, "Id Subnivel inexistente",
+                    null, null);
         }
     }
 
-    public Optional<Actividad> GetActividadByNombre(String nombre) {
-        return actividadRepository.findByNombre(nombre);
+    public ActividadMessageDto GetActividadByNombre(String nombre) {
+        ArrayList<Actividad> actividades = actividadRepository.findByNombre(nombre);
+        if (actividades.isEmpty()) {
+            return new ActividadMessageDto(false, "No existe actividades con Nombre: "
+                    + nombre, null, null);
+        } else {
+            return new ActividadMessageDto(true, "Ok", null, actividades);
+        }
     }
 
-    public ArrayList<Actividad> GetActividadByStatus(boolean activo) {
-        return actividadRepository.findByActivo(activo);
+    public ActividadMessageDto GetActividadByStatus(boolean activo) {
+        ArrayList<Actividad> actividades = actividadRepository.findByActivo(activo);
+        if (actividades.isEmpty()) {
+            return new ActividadMessageDto(false, "No existe actividades con Estado: "
+                    + activo, null, null);
+        } else {
+            return new ActividadMessageDto(true, "Ok", null, actividades);
+        }
     }
 
-    public Actividad SaveActividad(ActividadSaveDto actividadSaveDto) {
+    public ActividadMessageDto SaveActividad(ActividadSaveDto actividadSaveDto) {
         Optional<Subnivel> subnivel = subnivelRepository
                 .findById(actividadSaveDto.getIdSubnivel());
         if (subnivel.isPresent()) {
@@ -101,7 +154,9 @@ public class ActividadService {
                     }
                 }
                 if (count >= 1) {
-                    return null;
+                    return new ActividadMessageDto(false,
+                            "Ya existe una actividad de tipo Evaluativa en "
+                            + "este Subnivel", null, null);
                 } else {
                     subnivel.get().setNumactividades(
                             subnivel.get().getNumactividades() + 1);
@@ -115,18 +170,21 @@ public class ActividadService {
                             true, null, null);
                     subnivelRepository.save(subnivel.get());
                     actividadRepository.save(actividad);
-                    return actividad;
+                    return new ActividadMessageDto(true,
+                            "Ok", actividad, null);
                 }
 
             } else {
-                return null;
+                return new ActividadMessageDto(false,
+                        "Id de Docente inexistente", null, null);
             }
         } else {
-            return null;
+            return new ActividadMessageDto(false,
+                    "Id de Subnivel inexistente", null, null);
         }
     }
 
-    public Actividad UpdateActividad(ActividadUpdateDto actividadUpdateDto) {
+    public ActividadMessageDto UpdateActividad(ActividadUpdateDto actividadUpdateDto) {
         Optional<Actividad> actividad
                 = actividadRepository.findById(actividadUpdateDto.getId());
         if (actividad.isPresent()) {
@@ -139,14 +197,16 @@ public class ActividadService {
                         actividadUpdateDto.getDescripcion());
                 actividad.get().setRecompensavalor(
                         actividadUpdateDto.getRecompensavalor());
-                actividad.get().setTipo(actividadUpdateDto.getTipo());
                 actividad.get().setActivo(actividadUpdateDto.isActivo());
-                return actividadRepository.save(actividad.get());
+                return new ActividadMessageDto(true,
+                        "Ok", actividadRepository.save(actividad.get()), null);
             } else {
-                return null;
+                return new ActividadMessageDto(false,
+                        "Id de Subnivel inexistente", null, null);
             }
         } else {
-            return null;
+            return new ActividadMessageDto(false,
+                    "Id de Actividad inexistente", null, null);
         }
     }
 }

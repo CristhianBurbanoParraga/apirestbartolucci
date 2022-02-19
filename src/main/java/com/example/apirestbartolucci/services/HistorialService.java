@@ -7,6 +7,7 @@ package com.example.apirestbartolucci.services;
 import com.example.apirestbartolucci.dtos.historial.HistorialDto;
 import com.example.apirestbartolucci.dtos.historial.HistorialListActividadesDto;
 import com.example.apirestbartolucci.dtos.historial.HistorialListDto;
+import com.example.apirestbartolucci.dtos.historial.HistorialMessageDto;
 import com.example.apirestbartolucci.dtos.historial.HistorialSaveDto;
 import com.example.apirestbartolucci.models.Actividad;
 import com.example.apirestbartolucci.models.Contenido;
@@ -42,23 +43,29 @@ public class HistorialService {
     @Autowired
     ContenidoRepository contenidoRepository;
 
-    public ArrayList<HistorialListDto> GetAllHistorial() {
+    public HistorialMessageDto GetAllHistorial() {
         ArrayList<Historial> historiales
                 = (ArrayList<Historial>) historialRepository.findAll();
-        ArrayList<Integer> ids = new ArrayList<Integer>();
-        ArrayList<HistorialListDto> list = new ArrayList<HistorialListDto>();
-        for (int i = 0; i < historiales.size(); i++) {
-            if (!ids.contains(historiales.get(i).getEstudiante().getId())) {
-                ids.add(historiales.get(i).getEstudiante().getId());
-                HistorialListDto listItem = GetHistorialByIdEstudiante(
-                        historiales.get(i).getEstudiante().getId());
-                list.add(listItem);
+        if (historiales.isEmpty()) {
+            return new HistorialMessageDto(false, "No hay registros",
+                    null, null, null, null);
+        } else {
+            ArrayList<Integer> ids = new ArrayList<>();
+            ArrayList<HistorialListDto> list = new ArrayList<>();
+            for (int i = 0; i < historiales.size(); i++) {
+                if (!ids.contains(historiales.get(i).getEstudiante().getId())) {
+                    ids.add(historiales.get(i).getEstudiante().getId());
+                    HistorialListDto listItem = GetHistorialByIdEstudiante(
+                            historiales.get(i).getEstudiante().getId()).getListDto();
+                    list.add(listItem);
+                }
             }
+            return new HistorialMessageDto(true, "Ok",
+                    null, null, null, list);
         }
-        return list;
     }
 
-    public HistorialDto GetHistorialById(long id) {
+    public HistorialMessageDto GetHistorialById(long id) {
         Optional<Historial> historial = historialRepository.findById(id);
         if (historial.isPresent()) {
             HistorialDto dto = new HistorialDto(
@@ -69,40 +76,49 @@ public class HistorialService {
                     historial.get().getActividad().getId(),
                     historial.get().getActividad().getNombre(),
                     historial.get().getRecompensaganada());
-            return dto;
+            return new HistorialMessageDto(true, "Ok",
+                    null, dto, null, null);
         } else {
-            return null;
+            return new HistorialMessageDto(false, "No existe historial con Id: "
+                    + id, null, null, null, null);
         }
     }
 
-    public HistorialListDto GetHistorialByIdEstudiante(int idEstudiante) {
+    public HistorialMessageDto GetHistorialByIdEstudiante(int idEstudiante) {
         Optional<Estudiante> estudiante
                 = estudianteRepository.findById(idEstudiante);
         if (estudiante.isPresent()) {
             ArrayList<Historial> historiales
                     = historialRepository.findByEstudiante(estudiante.get());
-            ArrayList<HistorialListActividadesDto> listActividades
-                    = new ArrayList<HistorialListActividadesDto>();
-            for (int i = 0; i < historiales.size(); i++) {
-                HistorialListActividadesDto item = new HistorialListActividadesDto(
-                        historiales.get(i).getId(),
-                        historiales.get(i).getActividad().getId(),
-                        historiales.get(i).getActividad().getNombre(),
-                        historiales.get(i).getRecompensaganada());
-                listActividades.add(item);
+            if (historiales.isEmpty()) {
+                return new HistorialMessageDto(false, "No hay registros de "
+                        + "historial para el Estudiante con Id: " + idEstudiante,
+                        null, null, null, null);
+            } else {
+                ArrayList<HistorialListActividadesDto> listActividades
+                        = new ArrayList<>();
+                for (int i = 0; i < historiales.size(); i++) {
+                    HistorialListActividadesDto item = new HistorialListActividadesDto(
+                            historiales.get(i).getId(),
+                            historiales.get(i).getActividad().getId(),
+                            historiales.get(i).getActividad().getNombre(),
+                            historiales.get(i).getRecompensaganada());
+                    listActividades.add(item);
+                }
+                HistorialListDto list = new HistorialListDto(
+                        estudiante.get().getId(),
+                        estudiante.get().getNombres() + " "
+                        + estudiante.get().getApellidos(),
+                        listActividades);
+                return new HistorialMessageDto(true, "Ok", null, null, list, null);
             }
-            HistorialListDto list = new HistorialListDto(
-                    estudiante.get().getId(),
-                    estudiante.get().getNombres() + " "
-                    + estudiante.get().getApellidos(),
-                    listActividades);
-            return list;
         } else {
-            return null;
+            return new HistorialMessageDto(false, "No existe un Estudiante con Id: "
+                    + idEstudiante, null, null, null, null);
         }
     }
 
-    public Historial SaveHistorial(HistorialSaveDto historialSaveDto) {
+    public HistorialMessageDto SaveHistorial(HistorialSaveDto historialSaveDto) {
         Optional<Estudiante> estudiante = estudianteRepository.findById(
                 historialSaveDto.getIdEstudiante());
         if (estudiante.isPresent()) {
@@ -111,7 +127,9 @@ public class HistorialService {
             if (actividad.isPresent()) {
                 if (!historialSaveDto.isStatusRespuesta()
                         && historialSaveDto.getIdsContenido().isEmpty()) {
-                    return null;
+                    return new HistorialMessageDto(false, "Los campos de respuesta "
+                            + "estan vacios y falsos, debe especificar almenos uno",
+                            null, null, null, null);
                 } else {
                     Historial historial = new Historial(0,
                             actividad.get(),
@@ -124,8 +142,8 @@ public class HistorialService {
                     if (historialSaveDto.isStatusRespuesta()
                             && historialSaveDto.getIdsContenido().isEmpty()) {
                         estudianteRepository.save(estudiante.get());
-                        historialRepository.save(historial);
-                        return historial;
+                        return new HistorialMessageDto(true, "Ok",
+                                historialRepository.save(historial), null, null, null);
                     } else {
                         int count = historialSaveDto.getIdsContenido().size();
                         int countAux = 0;
@@ -144,17 +162,22 @@ public class HistorialService {
                         if (count == countAux) {
                             estudianteRepository.save(estudiante.get());
                             historialRepository.save(historial);
-                            return historial;
+                            return new HistorialMessageDto(true, "Ok",
+                                    historialRepository.save(historial), null,
+                                    null, null);
                         } else {
-                            return null;
+                            return new HistorialMessageDto(false, "Las respuestas "
+                                    + "no son correctas", null, null, null, null);
                         }
                     }
                 }
             } else {
-                return null;
+                return new HistorialMessageDto(false, "No existe una Actividad con Id: "
+                        + historialSaveDto.getIdActividad(), null, null, null, null);
             }
         } else {
-            return null;
+            return new HistorialMessageDto(false, "No existe un Estudiante con Id: "
+                    + historialSaveDto.getIdEstudiante(), null, null, null, null);
         }
     }
 }

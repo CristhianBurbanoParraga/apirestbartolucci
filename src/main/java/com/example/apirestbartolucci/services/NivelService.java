@@ -8,18 +8,15 @@ package com.example.apirestbartolucci.services;
  *
  * @author criss
  */
+import com.example.apirestbartolucci.dtos.nivel.NivelMessageDto;
 import com.example.apirestbartolucci.dtos.nivel.NivelSaveDto;
 import com.example.apirestbartolucci.dtos.nivel.NivelUpdateDto;
 import com.example.apirestbartolucci.models.Nivel;
-//import com.example.apirestbartolucci.models.Subnivel;
 import com.example.apirestbartolucci.repositories.NivelRepository;
 import com.example.apirestbartolucci.repositories.SubnivelRepository;
 import java.util.ArrayList;
-//import java.util.HashSet;
 import java.util.Optional;
-//import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,38 +28,57 @@ public class NivelService {
     @Autowired
     SubnivelRepository subnivelRepository;
 
-    public ArrayList<Nivel> GetAllNiveles() {
-        //return (ArrayList<Nivel>) nivelRepository.findAll();
-        /*ArrayList<Nivel> niveles = nivelRepository.findByOrderByPrioridadAsc();
-        for (int i = 0; i < niveles.size(); i++) {
-            ArrayList<Subnivel> subniveles = subnivelRepository.findByNivel(
-                    niveles.get(i), Sort.by(Sort.Direction.ASC, "prioridad"));
-            niveles.get(i).setSubnivel(new HashSet(subniveles));
-        }*/
-        return (ArrayList<Nivel>) nivelRepository.findByOrderByPrioridadAsc();
+    public NivelMessageDto GetAllNiveles() {
+        ArrayList<Nivel> niveles
+                = (ArrayList<Nivel>) nivelRepository.findByOrderByPrioridadAsc();
+        if (niveles.isEmpty()) {
+            return new NivelMessageDto(false, "No hay registros", null, null);
+        } else {
+            return new NivelMessageDto(true, "Ok", null, niveles);
+        }
     }
 
-    public Optional<Nivel> GetNivelById(int id) {
-        return nivelRepository.findById(id);
+    public NivelMessageDto GetNivelById(int id) {
+        Optional<Nivel> nivel = nivelRepository.findById(id);
+        if (nivel.isPresent()) {
+            return new NivelMessageDto(true, "Ok", nivel.get(), null);
+        } else {
+            return new NivelMessageDto(false, "Id de nivel inexistente", null, null);
+        }
     }
 
-    public Optional<Nivel> GetNivelByNombre(String nombre) {
-        return nivelRepository.findByNombre(nombre);
+    public NivelMessageDto GetNivelByNombre(String nombre) {
+        Optional<Nivel> nivel = nivelRepository.findByNombre(nombre);
+        if (nivel.isPresent()) {
+            return new NivelMessageDto(true, "Ok", nivel.get(), null);
+        } else {
+            return new NivelMessageDto(false, "No hay nivel con Nombre: "
+                    + nombre, null, null);
+        }
     }
 
-    public ArrayList<Nivel> GetNivelByStatus(boolean activo) {
-        return (ArrayList<Nivel>) nivelRepository.findByActivo(activo);
+    public NivelMessageDto GetNivelByStatus(boolean activo) {
+        ArrayList<Nivel> niveles
+                = (ArrayList<Nivel>) nivelRepository.findByActivo(activo);
+        if (niveles.isEmpty()) {
+            return new NivelMessageDto(false, "No hay niveles con Estado: "
+                    + activo, null, null);
+        } else {
+            return new NivelMessageDto(true, "Ok", null, niveles);
+        }
     }
 
-    public Nivel SaveNivel(NivelSaveDto nivelDto) {
+    public NivelMessageDto SaveNivel(NivelSaveDto nivelDto) {
         if (nivelDto.getMultimedia().getPublicid() == null
                 || nivelDto.getMultimedia().getUrl() == null) {
-            return null;
+            return new NivelMessageDto(false, "Los campos PublicId y Url no"
+                    + " pueden ser nulos", null, null);
         } else {
             Optional<Nivel> niveloptional
                     = nivelRepository.findByNombre(nivelDto.getNombre());
             if (niveloptional.isPresent()) {
-                return null;
+                return new NivelMessageDto(false, "Ya existe un nivel con Nombre: "
+                        + nivelDto.getNombre(), null, null);
             } else {
                 int count = (int) nivelRepository.count();
                 Nivel nivel = new Nivel(0, nivelDto.getNombre(),
@@ -71,32 +87,30 @@ public class NivelService {
                         nivelDto.getMultimedia().getPublicid(),
                         nivelDto.getMultimedia().getUrl(),
                         true, null);
-                return nivelRepository.save(nivel);
+                return new NivelMessageDto(true, "Ok",
+                        nivelRepository.save(nivel), null);
             }
         }
     }
 
-    public Nivel UpdateNivel(NivelUpdateDto nivelDto) {
-        Optional<Nivel> nivel = nivelRepository.findById(nivelDto.getId());
-        if (nivel.isPresent()) {
-            nivel.get().setNombre(nivelDto.getNombre());
-            nivel.get().setDescripcion(nivelDto.getDescripcion());
-            nivel.get().setActivo(nivelDto.isActivo());
-            return nivelRepository.save(nivel.get());
+    public NivelMessageDto UpdateNivel(NivelUpdateDto nivelDto) {
+        if (nivelDto.getMultimedia().getPublicid() == null
+                || nivelDto.getMultimedia().getUrl() == null) {
+            return new NivelMessageDto(false, "Los campos PublicId y Url no"
+                    + " pueden ser nulos", null, null);
         } else {
-            return null;
-        }
-    }
-
-    public String ChangeNivelStatus(int id, boolean activo) {
-        Optional<Nivel> nivel = nivelRepository.findById(id);
-        if (nivel.isPresent()) {
-            nivel.get().setActivo(activo);
-            nivelRepository.save(nivel.get());
-            return "Estado del Nivel con id: " + String.valueOf(id)
-                    + " cambiada a: " + String.valueOf(activo);
-        } else {
-            return "No existe el Nivel con id: " + String.valueOf(id);
+            Optional<Nivel> nivel = nivelRepository.findById(nivelDto.getId());
+            if (nivel.isPresent()) {
+                nivel.get().setNombre(nivelDto.getNombre());
+                nivel.get().setDescripcion(nivelDto.getDescripcion());
+                nivel.get().setActivo(nivelDto.isActivo());
+                nivel.get().setPublicid(nivelDto.getMultimedia().getPublicid());
+                nivel.get().setUrl(nivelDto.getMultimedia().getUrl());
+                return new NivelMessageDto(true, "Ok",
+                        nivelRepository.save(nivel.get()), null);
+            } else {
+                return new NivelMessageDto(false, "Id de nivel inexistente", null, null);
+            }
         }
     }
 

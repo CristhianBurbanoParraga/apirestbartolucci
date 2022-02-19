@@ -4,6 +4,7 @@
  */
 package com.example.apirestbartolucci.services;
 
+import com.example.apirestbartolucci.dtos.subnivel.SubnivelMessageDto;
 import com.example.apirestbartolucci.dtos.subnivel.SubnivelSaveDto;
 import com.example.apirestbartolucci.dtos.subnivel.SubnivelUpdateDto;
 import com.example.apirestbartolucci.models.Nivel;
@@ -29,46 +30,77 @@ public class SubnivelService {
     @Autowired
     NivelRepository nivelRepository;
 
-    public ArrayList<Subnivel> GetAllSubniveles() {
-        //return (ArrayList<Subnivel>) subnivelRepository.findAll();
-        return (ArrayList<Subnivel>) subnivelRepository.findByOrderByNivelAsc(
-                Sort.by(Sort.Direction.ASC, "prioridad"));
-    }
-
-    public Optional<Subnivel> GetSubnivelById(int id) {
-        return subnivelRepository.findById(id);
-    }
-
-    public Optional<Subnivel> GetSubnivelByNombre(String nombre) {
-        return subnivelRepository.findByNombre(nombre);
-    }
-
-    public ArrayList<Subnivel> GetSubnivelByStatus(boolean activo) {
-        return (ArrayList<Subnivel>) subnivelRepository.findByActivo(activo);
-    }
-
-    public ArrayList<Subnivel> GetSubnivelByIdNivel(int idNivel) {
-        Optional<Nivel> nivel = nivelRepository.findById(idNivel);
-        if (nivel.isPresent()) {
-            return (ArrayList<Subnivel>) subnivelRepository
-                    .findByNivel(nivel.get(), Sort.by(Sort.Direction.ASC,
-                            "prioridad"));
+    public SubnivelMessageDto GetAllSubniveles() {
+        ArrayList<Subnivel> subniveles
+                = (ArrayList<Subnivel>) subnivelRepository.findByOrderByNivelAsc(
+                        Sort.by(Sort.Direction.ASC, "prioridad"));
+        if (subniveles.isEmpty()) {
+            return new SubnivelMessageDto(false, "No hay registros", null, null);
         } else {
-            return new ArrayList<Subnivel>();
+            return new SubnivelMessageDto(true, "Ok", null, subniveles);
         }
     }
 
-    public Subnivel SaveSubnivel(SubnivelSaveDto subnivelSaveDto) {
+    public SubnivelMessageDto GetSubnivelById(int id) {
+        Optional<Subnivel> subnivel = subnivelRepository.findById(id);
+        if (subnivel.isPresent()) {
+            return new SubnivelMessageDto(true, "Ok", subnivel.get(), null);
+        } else {
+            return new SubnivelMessageDto(false, "Id de subnivel inexistente", null, null);
+        }
+    }
+
+    public SubnivelMessageDto GetSubnivelByNombre(String nombre) {
+        Optional<Subnivel> subnivel = subnivelRepository.findByNombre(nombre);
+        if (subnivel.isPresent()) {
+            return new SubnivelMessageDto(true, "Ok", subnivel.get(), null);
+        } else {
+            return new SubnivelMessageDto(false, "No existe subnivel con Nombre: "
+                    + nombre, null, null);
+        }
+    }
+
+    public SubnivelMessageDto GetSubnivelByStatus(boolean activo) {
+        ArrayList<Subnivel> subniveles
+                = (ArrayList<Subnivel>) subnivelRepository.findByActivo(activo);
+        if (subniveles.isEmpty()) {
+            return new SubnivelMessageDto(false, "No existe subniveles con Estado: "
+                    + activo, null, null);
+        } else {
+            return new SubnivelMessageDto(true, "Ok", null, subniveles);
+        }
+    }
+
+    public SubnivelMessageDto GetSubnivelByIdNivel(int idNivel) {
+        Optional<Nivel> nivel = nivelRepository.findById(idNivel);
+        if (nivel.isPresent()) {
+            ArrayList<Subnivel> subniveles = (ArrayList<Subnivel>) subnivelRepository
+                    .findByNivel(nivel.get(), Sort.by(Sort.Direction.ASC,
+                            "prioridad"));
+            if (subniveles.isEmpty()) {
+                return new SubnivelMessageDto(false, "No hay subniveles con id de Nivel: "
+                        + idNivel, null, null);
+            } else {
+                return new SubnivelMessageDto(true, "Ok", null, subniveles);
+            }
+        } else {
+            return new SubnivelMessageDto(false, "Id nivel inexistente", null, null);
+        }
+    }
+
+    public SubnivelMessageDto SaveSubnivel(SubnivelSaveDto subnivelSaveDto) {
         if (subnivelSaveDto.getMultimedia().getPublicid() == null
                 || subnivelSaveDto.getMultimedia().getUrl() == null) {
-            return null;
+            return new SubnivelMessageDto(false, "Los campos PublicId y Url no "
+                    + "deben ser nulos", null, null);
         } else {
             Optional<Nivel> nivel
                     = nivelRepository.findById(subnivelSaveDto.getIdNivel());
             if (nivel.isPresent()) {
                 if (subnivelRepository.findByNombre(
                         subnivelSaveDto.getNombre()).isPresent()) {
-                    return null;
+                    return new SubnivelMessageDto(false, "Ya existe subnivel con"
+                            + " Nombre: " + subnivelSaveDto.getNombre(), null, null);
                 } else {
                     int count = (int) subnivelRepository.findByNivel(
                             nivel.get(), Sort.by(Sort.Direction.ASC,
@@ -81,24 +113,36 @@ public class SubnivelService {
                             subnivelSaveDto.getMultimedia().getPublicid(),
                             subnivelSaveDto.getMultimedia().getUrl(),
                             true, null);
-                    return subnivelRepository.save(subnivel);
+                    return new SubnivelMessageDto(true, "Ok",
+                            subnivelRepository.save(subnivel), null);
                 }
             } else {
-                return null;
+                return new SubnivelMessageDto(false, "Id de nivel inexistente", null, null);
             }
         }
     }
 
-    public Subnivel UpdateSubnivel(SubnivelUpdateDto subnivelUpdateDto) {
-        Optional<Subnivel> subnivel
-                = subnivelRepository.findById(subnivelUpdateDto.getId());
-        if (subnivel.isPresent()) {
-            subnivel.get().setNombre(subnivelUpdateDto.getNombre());
-            subnivel.get().setDescripcion(subnivelUpdateDto.getDescripcion());
-            subnivel.get().setActivo(subnivelUpdateDto.isActivo());
-            return subnivelRepository.save(subnivel.get());
+    public SubnivelMessageDto UpdateSubnivel(SubnivelUpdateDto subnivelUpdateDto) {
+        if (subnivelUpdateDto.getMultimedia().getPublicid() == null
+                || subnivelUpdateDto.getMultimedia().getUrl() == null) {
+            return new SubnivelMessageDto(false, "Los campos PublicId y Url no "
+                    + "deben ser nulos", null, null);
         } else {
-            return null;
+            Optional<Subnivel> subnivel
+                    = subnivelRepository.findById(subnivelUpdateDto.getId());
+            if (subnivel.isPresent()) {
+                subnivel.get().setNombre(subnivelUpdateDto.getNombre());
+                subnivel.get().setDescripcion(subnivelUpdateDto.getDescripcion());
+                subnivel.get().setActivo(subnivelUpdateDto.isActivo());
+                subnivel.get().setPublicid(
+                        subnivelUpdateDto.getMultimedia().getPublicid());
+                subnivel.get().setUrl(subnivelUpdateDto.getMultimedia().getUrl());
+                return new SubnivelMessageDto(true, "Ok",
+                        subnivelRepository.save(subnivel.get()), null);
+            } else {
+                return new SubnivelMessageDto(false, "Id de subnivel inexistente",
+                        null, null);
+            }
         }
     }
 

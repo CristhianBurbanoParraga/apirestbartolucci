@@ -4,13 +4,11 @@
  */
 package com.example.apirestbartolucci.controllers;
 
+import com.example.apirestbartolucci.dtos.subnivel.SubnivelMessageDto;
 import com.example.apirestbartolucci.dtos.subnivel.SubnivelSaveDto;
 import com.example.apirestbartolucci.dtos.subnivel.SubnivelUpdateDto;
 import com.example.apirestbartolucci.models.Mensaje;
-import com.example.apirestbartolucci.models.Subnivel;
 import com.example.apirestbartolucci.services.SubnivelService;
-import java.util.ArrayList;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,85 +35,87 @@ public class SubnivelController {
 
     @GetMapping()
     public ResponseEntity<?> GetAll() {
-        ArrayList<Subnivel> subniveles = subnivelService.GetAllSubniveles();
-        if (subniveles.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay registros"),
+        SubnivelMessageDto subniveles = subnivelService.GetAllSubniveles();
+        if (subniveles.isStatus()) {
+            return new ResponseEntity(subniveles.getSubniveles(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(subniveles, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(subniveles.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> GetById(@PathVariable("id") int id) {
-        Optional<Subnivel> subnivel = subnivelService.GetSubnivelById(id);
-        if (subnivel.isPresent()) {
-            return new ResponseEntity(subnivel, HttpStatus.OK);
+        SubnivelMessageDto subnivel = subnivelService.GetSubnivelById(id);
+        if (subnivel.isStatus()) {
+            return new ResponseEntity(subnivel.getSubnivel(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("No existe registro con id: "
-                    + String.valueOf(id)), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(subnivel.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/byNombre")
     public ResponseEntity<?> GetByNombre(
             @RequestParam("nombre") String nombre) {
-        Optional<Subnivel> subnivel
+        SubnivelMessageDto subnivel
                 = subnivelService.GetSubnivelByNombre(nombre);
-        if (subnivel.isPresent()) {
-            return new ResponseEntity(subnivel, HttpStatus.OK);
+        if (subnivel.isStatus()) {
+            return new ResponseEntity(subnivel.getSubnivel(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("No existe registro "
-                    + "con nombre: " + nombre), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(subnivel.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/byStatus")
     public ResponseEntity<?> GetAllByStatus(
             @RequestParam("status") boolean activo) {
-        ArrayList<Subnivel> subniveles = subnivelService.GetSubnivelByStatus(activo);
-        if (subniveles.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay registros con Activo: "
-                    + activo), HttpStatus.OK);
+        SubnivelMessageDto subniveles
+                = subnivelService.GetSubnivelByStatus(activo);
+        if (subniveles.isStatus()) {
+            return new ResponseEntity(subniveles.getSubniveles(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(subniveles, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(subniveles.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/byNivel")
     public ResponseEntity<?> GetByNivel(@RequestParam("idNivel") int idNivel) {
-        ArrayList<Subnivel> subniveles
+        SubnivelMessageDto subniveles
                 = subnivelService.GetSubnivelByIdNivel(idNivel);
-        if (subniveles.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay registros con idNivel: "
-                    + String.valueOf(idNivel)), HttpStatus.OK);
+        if (subniveles.isStatus()) {
+            return new ResponseEntity(subniveles.getSubniveles(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(subniveles, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(subniveles.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @PostMapping()
     public ResponseEntity<?> Save(@RequestBody SubnivelSaveDto subnivelSaveDto) {
-        Subnivel subnivel = subnivelService.SaveSubnivel(subnivelSaveDto);
-        if (subnivel == null) {
-            return new ResponseEntity(new Mensaje("Error al guardar el archivo,"
-                    + " o campo 'nombre' ya existe, o Nivel inexistente"),
+        SubnivelMessageDto subnivel = subnivelService.SaveSubnivel(subnivelSaveDto);
+        if (subnivel.isStatus()) {
+            return new ResponseEntity(subnivel.getSubnivel(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(subnivel, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(subnivel.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @PutMapping()
     public ResponseEntity<?> Update(
             @RequestBody SubnivelUpdateDto subnivelUpdateDto) {
-        Subnivel subnivel = subnivelService.UpdateSubnivel(subnivelUpdateDto);
-        if (subnivel != null) {
-            return new ResponseEntity(subnivel, HttpStatus.OK);
+        SubnivelMessageDto subnivel
+                = subnivelService.UpdateSubnivel(subnivelUpdateDto);
+        if (subnivel.isStatus()) {
+            return new ResponseEntity(subnivel.getSubnivel(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("Subnivel con id: "
-                    + String.valueOf(subnivelUpdateDto.getId())
-                    + " inexistente"), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(subnivel.getMessage()),
+                    HttpStatus.OK);
         }
     }
 }

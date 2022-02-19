@@ -8,13 +8,11 @@ package com.example.apirestbartolucci.controllers;
  *
  * @author criss
  */
+import com.example.apirestbartolucci.dtos.nivel.NivelMessageDto;
 import com.example.apirestbartolucci.dtos.nivel.NivelSaveDto;
 import com.example.apirestbartolucci.dtos.nivel.NivelUpdateDto;
 import com.example.apirestbartolucci.models.Mensaje;
-import com.example.apirestbartolucci.models.Nivel;
 import com.example.apirestbartolucci.services.NivelService;
-import java.util.ArrayList;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -36,70 +34,65 @@ public class NivelController {
 
     @GetMapping()
     public ResponseEntity<?> GetAll() {
-        ArrayList<Nivel> niveles = nivelService.GetAllNiveles();
-        if (niveles.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay registros"),
+        NivelMessageDto niveles = nivelService.GetAllNiveles();
+        if (niveles.isStatus()) {
+            return new ResponseEntity(niveles.getNiveles(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(niveles, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(niveles.getMessage()), HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> GetById(@PathVariable("id") int id) {
-        Optional<Nivel> nivel = nivelService.GetNivelById(id);
-        if (nivel.isPresent()) {
-            return new ResponseEntity(nivel, HttpStatus.OK);
+        NivelMessageDto nivel = nivelService.GetNivelById(id);
+        if (nivel.isStatus()) {
+            return new ResponseEntity(nivel.getNivel(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("No existe registro con id: "
-                    + String.valueOf(id)), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(nivel.getMessage()), HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/byNombre/{nombre}")
     public ResponseEntity<?> GetByNombre(
             @PathVariable("nombre") String nombre) {
-        Optional<Nivel> nivel = nivelService.GetNivelByNombre(nombre);
-        if (nivel.isPresent()) {
-            return new ResponseEntity(nivel, HttpStatus.OK);
+        NivelMessageDto nivel = nivelService.GetNivelByNombre(nombre);
+        if (nivel.isStatus()) {
+            return new ResponseEntity(nivel.getNivel(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("No existe registro "
-                    + "con nombre: " + nombre), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(nivel.getMessage()), HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/byStatus/{status}")
     public ResponseEntity<?> GetAllByStatus(
             @PathVariable("status") boolean activo) {
-        ArrayList<Nivel> niveles = nivelService.GetNivelByStatus(activo);
-        if (niveles.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay registros con Activo: "
-                    + activo), HttpStatus.OK);
+        NivelMessageDto niveles = nivelService.GetNivelByStatus(activo);
+        if (niveles.isStatus()) {
+            return new ResponseEntity(niveles.getNiveles(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(niveles, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(niveles.getMessage()), HttpStatus.OK);
         }
     }
 
     @PostMapping()
     public ResponseEntity<?> Save(@RequestBody NivelSaveDto nivelDto) {
-        Nivel nivel = nivelService.SaveNivel(nivelDto);
-        if (nivel == null) {
-            return new ResponseEntity(new Mensaje("Error al guardar el "
-                    + "archivo o campo 'nombre' ya existe"), HttpStatus.OK);
+        NivelMessageDto nivel = nivelService.SaveNivel(nivelDto);
+        if (nivel.isStatus()) {
+            return new ResponseEntity(nivel.getNivel(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(nivel, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(nivel.getMessage()), HttpStatus.OK);
         }
     }
 
     @PutMapping()
     public ResponseEntity<?> Update(
             @RequestBody NivelUpdateDto nivelDto) {
-        Nivel nivel = nivelService.UpdateNivel(nivelDto);
-        if (nivel != null) {
-            return new ResponseEntity(nivel, HttpStatus.OK);
+        NivelMessageDto nivel = nivelService.UpdateNivel(nivelDto);
+        if (nivel.isStatus()) {
+            return new ResponseEntity(nivel.getNivel(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("Nivel con id: "
-                    + String.valueOf(nivelDto.getId()) + " inexistente"),
+            return new ResponseEntity(new Mensaje(nivel.getMessage()),
                     HttpStatus.OK);
         }
     }

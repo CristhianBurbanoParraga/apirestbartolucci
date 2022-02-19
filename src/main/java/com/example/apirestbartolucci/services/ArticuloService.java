@@ -4,6 +4,7 @@
  */
 package com.example.apirestbartolucci.services;
 
+import com.example.apirestbartolucci.dtos.articulo.ArticuloMessageDto;
 import com.example.apirestbartolucci.dtos.articulo.ArticuloSaveDto;
 import com.example.apirestbartolucci.dtos.articulo.ArticuloUpdateDto;
 import com.example.apirestbartolucci.models.Articulo;
@@ -23,52 +24,91 @@ public class ArticuloService {
     @Autowired
     ArticuloRepository articuloRepository;
 
-    public ArrayList<Articulo> GetAllArticulos() {
-        return (ArrayList<Articulo>) articuloRepository.findAll();
+    public ArticuloMessageDto GetAllArticulos() {
+        ArrayList<Articulo> articulos
+                = (ArrayList<Articulo>) articuloRepository.findAll();
+        if (articulos.isEmpty()) {
+            return new ArticuloMessageDto(false, "No hay registros", null, null);
+        } else {
+            return new ArticuloMessageDto(true, "Ok", null, articulos);
+        }
     }
 
-    public Optional<Articulo> GetArticuloById(int id) {
-        return articuloRepository.findById(id);
+    public ArticuloMessageDto GetArticuloById(int id) {
+        Optional<Articulo> articulo = articuloRepository.findById(id);
+        if (articulo.isPresent()) {
+            return new ArticuloMessageDto(true, "Ok", articulo.get(), null);
+        } else {
+            return new ArticuloMessageDto(false, "No existe articulo con Id: "
+                    + id, null, null);
+        }
     }
 
-    public Optional<Articulo> GetArticuloByNombre(String nombre) {
-        return articuloRepository.findByNombre(nombre);
+    public ArticuloMessageDto GetArticuloByNombre(String nombre) {
+        Optional<Articulo> articulo = articuloRepository.findByNombre(nombre);
+        if (articulo.isPresent()) {
+            return new ArticuloMessageDto(true, "Ok", articulo.get(), null);
+        } else {
+            return new ArticuloMessageDto(false, "No existe articulo con Nombre: "
+                    + nombre, null, null);
+        }
     }
 
-    public ArrayList<Articulo> GetArticuloByStatus(boolean activo) {
-        return (ArrayList<Articulo>) articuloRepository.findByActivo(activo);
+    public ArticuloMessageDto GetArticuloByStatus(boolean activo) {
+        ArrayList<Articulo> articulos
+                = (ArrayList<Articulo>) articuloRepository.findByActivo(activo);
+        if (articulos.isEmpty()) {
+            return new ArticuloMessageDto(false, "No hay articulos con Estado: "
+                    + activo, null, null);
+        } else {
+            return new ArticuloMessageDto(true, "Ok", null, articulos);
+        }
     }
 
-    public Articulo SaveArticulo(ArticuloSaveDto articuloSaveDto) {
+    public ArticuloMessageDto SaveArticulo(ArticuloSaveDto articuloSaveDto) {
         if (articuloSaveDto.getMultimedia().getPublicid() == null
                 || articuloSaveDto.getMultimedia().getUrl() == null) {
-            return null;
+            return new ArticuloMessageDto(false, "Los campos PublicId y Url no "
+                    + "pueden ser nulos", null, null);
         } else {
             Optional<Articulo> articulo = articuloRepository.findByNombre(
                     articuloSaveDto.getNombre());
             if (articulo.isPresent()) {
-                return null;
+                return new ArticuloMessageDto(false, "Ya existe un articulo "
+                        + "registrado con el Nombre: " + articuloSaveDto.getNombre(),
+                        null, null);
             } else {
                 Articulo newarticulo = new Articulo(0,
                         articuloSaveDto.getNombre(),
                         articuloSaveDto.getCosto(),
                         articuloSaveDto.getMultimedia().getPublicid(),
                         articuloSaveDto.getMultimedia().getUrl(), true, null);
-                return articuloRepository.save(newarticulo);
+                return new ArticuloMessageDto(true, "Ok",
+                        articuloRepository.save(newarticulo), null);
             }
         }
     }
 
-    public Articulo UpdateArticulo(ArticuloUpdateDto articuloUpdateDto) {
-        Optional<Articulo> articulo
-                = articuloRepository.findById(articuloUpdateDto.getId());
-        if (articulo.isPresent()) {
-            articulo.get().setNombre(articuloUpdateDto.getNombre());
-            articulo.get().setCosto(articuloUpdateDto.getCosto());
-            articulo.get().setActivo(articuloUpdateDto.isActivo());
-            return articuloRepository.save(articulo.get());
+    public ArticuloMessageDto UpdateArticulo(ArticuloUpdateDto articuloUpdateDto) {
+        if (articuloUpdateDto.getMultimedia().getPublicid() == null
+                || articuloUpdateDto.getMultimedia().getUrl() == null) {
+            return new ArticuloMessageDto(false, "Los campos PublicId y Url no "
+                    + "pueden ser nulos", null, null);
         } else {
-            return null;
+            Optional<Articulo> articulo
+                    = articuloRepository.findById(articuloUpdateDto.getId());
+            if (articulo.isPresent()) {
+                articulo.get().setNombre(articuloUpdateDto.getNombre());
+                articulo.get().setCosto(articuloUpdateDto.getCosto());
+                articulo.get().setPublicid(articuloUpdateDto.getMultimedia().getPublicid());
+                articulo.get().setUrl(articuloUpdateDto.getMultimedia().getUrl());
+                articulo.get().setActivo(articuloUpdateDto.isActivo());
+                return new ArticuloMessageDto(true, "Ok",
+                        articuloRepository.save(articulo.get()), null);
+            } else {
+                return new ArticuloMessageDto(false, "Id de Articulo inexistente",
+                        null, null);
+            }
         }
     }
 

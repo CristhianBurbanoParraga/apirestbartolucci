@@ -17,6 +17,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class UsuarioUpdateDto {
 
     private int id;
+    private String usuario;
+    private String clave;
+    private boolean isDocente = false;
     private String nombres;
     private String apellidos;
     private String telefono;
@@ -26,21 +29,23 @@ public class UsuarioUpdateDto {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date fechanacimiento;
-    private boolean isDocente = false;
+    private boolean activo;
 
     public UsuarioUpdateDto() {
     }
 
-    public UsuarioUpdateDto(int id, String nombres, String apellidos,
-            String telefono, String correo, Date fechanacimiento,
-            boolean isDocente) {
+    public UsuarioUpdateDto(int id, String usuario, String clave,
+            String nombres, String apellidos, String telefono, String correo,
+            Date fechanacimiento, boolean activo) {
         this.id = id;
+        this.usuario = usuario;
+        this.clave = clave;
         this.nombres = nombres;
         this.apellidos = apellidos;
         this.telefono = telefono;
         this.correo = correo;
         this.fechanacimiento = fechanacimiento;
-        this.isDocente = isDocente;
+        this.activo = activo;
     }
 
     public int getId() {
@@ -49,6 +54,30 @@ public class UsuarioUpdateDto {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
+    }
+
+    public String getClave() {
+        return clave;
+    }
+
+    public void setClave(String clave) {
+        this.clave = clave;
+    }
+
+    public boolean isIsDocente() {
+        return isDocente;
+    }
+
+    public void setIsDocente(boolean isDocente) {
+        this.isDocente = isDocente;
     }
 
     public String getNombres() {
@@ -91,12 +120,12 @@ public class UsuarioUpdateDto {
         this.fechanacimiento = fechanacimiento;
     }
 
-    public boolean isIsDocente() {
-        return isDocente;
+    public boolean isActivo() {
+        return activo;
     }
 
-    public void setIsDocente(boolean isDocente) {
-        this.isDocente = isDocente;
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 
 }

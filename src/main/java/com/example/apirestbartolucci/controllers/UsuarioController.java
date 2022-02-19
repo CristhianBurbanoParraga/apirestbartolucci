@@ -9,6 +9,7 @@ package com.example.apirestbartolucci.controllers;
  * @author criss
  */
 import com.example.apirestbartolucci.dtos.usuario.UsuarioCredentialsDto;
+import com.example.apirestbartolucci.dtos.usuario.UsuarioMessageDto;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioSaveDto;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioUpdateCredentialsDto;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioUpdateDto;
@@ -45,24 +46,24 @@ public class UsuarioController {
 
     @GetMapping()
     public ResponseEntity<?> GetAll() {
-        ArrayList<Usuario> usuarios = usuarioService.GetAllUsuarios();
-        if (usuarios.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay registros"),
+        UsuarioMessageDto usuarios = usuarioService.GetAllUsuarios();
+        if (usuarios.isStatus()) {
+            return new ResponseEntity(usuarios.getUsuarios(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(usuarios, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(usuarios.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> GetById(@PathVariable("id") int id) {
-        Optional<Usuario> usuario = usuarioService.GetUsuarioById(id);
-        if (usuario.isPresent()) {
-            return new ResponseEntity(usuario,
-                    HttpStatus.OK);
+        UsuarioMessageDto usuario = usuarioService.GetUsuarioById(id);
+        if (usuario.isStatus()) {
+            return new ResponseEntity(usuario.getUsuario(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("No existe registro con id: "
-                    + String.valueOf(id)), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(usuario.getMessage()),
+                    HttpStatus.OK);
         }
 
     }
@@ -70,39 +71,38 @@ public class UsuarioController {
     @GetMapping(path = "/byStatusAccount")
     public ResponseEntity<?> GetAllAccountsByStatus(
             @RequestParam("activo") boolean activo) {
-        ArrayList<Usuario> usuarios = usuarioService.GetAllUsuariosByActivo(activo);
-        if (usuarios.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay registros"),
+        UsuarioMessageDto usuarios = usuarioService.GetAllUsuariosByActivo(activo);
+        if (usuarios.isStatus()) {
+            return new ResponseEntity(usuarios.getUsuarios(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(usuarios, HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(usuarios.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @PostMapping(path = "/login")
     public ResponseEntity<?> GetByCredentials(
             @RequestBody UsuarioCredentialsDto credentiales) {
-        Optional<Usuario> optionalUsuario
+        UsuarioMessageDto optionalUsuario
                 = usuarioService.LoginByUsuarioAndClave(credentiales);
-        if (optionalUsuario.isPresent()) {
-            return new ResponseEntity(optionalUsuario, HttpStatus.OK);
+        if (optionalUsuario.isStatus()) {
+            return new ResponseEntity(optionalUsuario.getUsuario(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("Acceso denegado, "
-                    + "posibles causas: \nCredenciales "
-                    + "incorrectas ó \nCuenta desactivada"), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(optionalUsuario.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
     @PostMapping()
     public ResponseEntity<?> Save(
             @RequestBody UsuarioSaveDto usuarioSaveDto) {
-        if (usuarioService.SaveUsuario(usuarioSaveDto) != null) {
-            return new ResponseEntity(usuarioSaveDto, HttpStatus.OK);
+        UsuarioMessageDto usuario = usuarioService.SaveUsuario(usuarioSaveDto);
+        if (usuario.isStatus()) {
+            return new ResponseEntity(usuario.getSaveDto(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("Error de registro, posibles "
-                    + "causas: \nCampos existentes de 'usuario' o 'correo' o "
-                    + "'telefono' ó \nSi es una cuenta estudiantil, el docente "
-                    + "seleccionado no existe"), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(usuario.getMessage()),
+                    HttpStatus.OK);
         }
     }
 
@@ -110,7 +110,6 @@ public class UsuarioController {
     public ResponseEntity<?> SendEmailRecovery(
             @RequestParam("correo") String correo) throws SendFailedException {
         String message = usuarioService.SendEmailByRecoveryCredentials(correo);
-        //String auxco = correo;
         return new ResponseEntity(new Mensaje(message), HttpStatus.OK);
     }
 
@@ -124,33 +123,12 @@ public class UsuarioController {
     @PutMapping()
     public ResponseEntity<?> Update(
             @RequestBody UsuarioUpdateDto usuarioUpdateDto) {
-        if (usuarioService.UpdateUsuario(usuarioUpdateDto) != null) {
-            return new ResponseEntity(usuarioUpdateDto, HttpStatus.OK);
+        UsuarioMessageDto usuario = usuarioService.UpdateUsuario(usuarioUpdateDto);
+        if (usuario.isStatus()) {
+            return new ResponseEntity(usuario.getUpdateDto(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje("Usuario con id: "
-                    + String.valueOf(usuarioUpdateDto.getId())
-                    + " inexistente"), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(usuario.getMessage()), HttpStatus.OK);
         }
-    }
-
-    @PutMapping(path = "/onlyCredentials")
-    public ResponseEntity<?> UpdateOnlyCredentials(
-            @RequestBody UsuarioUpdateCredentialsDto usuarioUpdateCredentialsDto) {
-        Usuario usuario
-                = usuarioService.UpdateCredentials(usuarioUpdateCredentialsDto);
-        if (usuario != null) {
-            return new ResponseEntity(usuario, HttpStatus.OK);
-        } else {
-            return new ResponseEntity(new Mensaje("Usuario con id: "
-                    + String.valueOf(usuarioUpdateCredentialsDto.getId())
-                    + " inexistente"), HttpStatus.OK);
-        }
-    }
-
-    @PutMapping(path = "/changeStatusAccount")
-    public Mensaje ChangeUsuarioStatus(@RequestParam("id") int id,
-            @RequestParam("activo") boolean activo) {
-        return new Mensaje(usuarioService.ChangeUsuarioStatus(id, activo));
     }
 
 }
