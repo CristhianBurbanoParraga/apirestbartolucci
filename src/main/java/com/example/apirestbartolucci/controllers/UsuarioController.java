@@ -13,8 +13,6 @@ import com.example.apirestbartolucci.dtos.usuario.UsuarioMessageDto;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioSaveDto;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioUpdateDto;
 import com.example.apirestbartolucci.models.Mensaje;
-import com.example.apirestbartolucci.services.EmailService;
-import com.example.apirestbartolucci.services.TwilioService;
 import com.example.apirestbartolucci.services.UsuarioService;
 import javax.mail.SendFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +34,6 @@ public class UsuarioController {
 
     @Autowired
     UsuarioService usuarioService;
-
-    @Autowired
-    TwilioService twilioService;
-
-    @Autowired
-    EmailService emailService;
 
     @GetMapping()
     public ResponseEntity<?> GetAll() {
@@ -115,8 +107,9 @@ public class UsuarioController {
     @PostMapping(path = "/recoveryPhone")
     public ResponseEntity<?> SendPhoneRecovery(
             @RequestParam("telefono") String telefono) {
-        String message = usuarioService.SendPhoneRecoveryCredentials(telefono);
-        return new ResponseEntity(new Mensaje(message), HttpStatus.OK);
+        //String message = usuarioService.SendPhoneRecoveryCredentials(telefono);
+        //String message = twilioService.SendSMSVersion2(telefono, "Hola ha sido hakeada,no es broma jajaja");
+        return new ResponseEntity(new Mensaje("El servicio esta suspendido por el momento"), HttpStatus.OK);
     }
 
     @PutMapping()
