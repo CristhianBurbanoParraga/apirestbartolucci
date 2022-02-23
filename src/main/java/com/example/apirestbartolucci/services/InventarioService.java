@@ -14,7 +14,6 @@ import com.example.apirestbartolucci.repositories.InventarioRepository;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
-import jdk.nashorn.internal.objects.NativeArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

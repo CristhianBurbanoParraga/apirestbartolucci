@@ -4,6 +4,7 @@
  */
 package com.example.apirestbartolucci.services;
 
+import com.example.apirestbartolucci.dtos.actividad.ActividadListTypeEvaluativaDto;
 import com.example.apirestbartolucci.dtos.actividad.ActividadMessageDto;
 import com.example.apirestbartolucci.dtos.actividad.ActividadSaveDto;
 import com.example.apirestbartolucci.dtos.actividad.ActividadUpdateDto;
@@ -38,19 +39,19 @@ public class ActividadService {
         ArrayList<Actividad> actividades
                 = (ArrayList<Actividad>) actividadRepository.findAll();
         if (actividades.isEmpty()) {
-            return new ActividadMessageDto(false, "No hay registros", null, null);
+            return new ActividadMessageDto(false, "No hay registros", null, null, null);
         } else {
-            return new ActividadMessageDto(true, "Ok", null, actividades);
+            return new ActividadMessageDto(true, "Ok", null, null, actividades);
         }
     }
 
     public ActividadMessageDto GetActividadById(int id) {
         Optional<Actividad> actividad = actividadRepository.findById(id);
         if (actividad.isPresent()) {
-            return new ActividadMessageDto(true, "Ok", actividad.get(), null);
+            return new ActividadMessageDto(true, "Ok", actividad.get(), null, null);
         } else {
             return new ActividadMessageDto(false,
-                    "No existe actividad con Id: " + id, null, null);
+                    "No existe actividad con Id: " + id, null, null, null);
         }
     }
 
@@ -62,13 +63,13 @@ public class ActividadService {
             if (actividades.isEmpty()) {
                 return new ActividadMessageDto(false, "No existen actividades "
                         + "registradas con el Id Subnivel: " + idSubnivel,
-                        null, null);
+                        null, null, null);
             } else {
-                return new ActividadMessageDto(true, "Ok", null, actividades);
+                return new ActividadMessageDto(true, "Ok", null, null, actividades);
             }
         } else {
             return new ActividadMessageDto(false, "Id Subnivel inexistente",
-                    null, null);
+                    null, null, null);
         }
     }
 
@@ -80,13 +81,13 @@ public class ActividadService {
             if (actividades.isEmpty()) {
                 return new ActividadMessageDto(false, "No existen actividades "
                         + "registradas con el Id Docente: " + idDocente,
-                        null, null);
+                        null, null, null);
             } else {
-                return new ActividadMessageDto(true, "Ok", null, actividades);
+                return new ActividadMessageDto(true, "Ok", null, null, actividades);
             }
         } else {
             return new ActividadMessageDto(false, "Id Docente inexistente",
-                    null, null);
+                    null, null, null);
         }
     }
 
@@ -102,17 +103,17 @@ public class ActividadService {
                     return new ActividadMessageDto(false, "No existen actividades "
                             + "registradas con el Id Subnivel: " + idSubnivel
                             + " y Id Docente: " + idDocente,
-                            null, null);
+                            null, null, null);
                 } else {
-                    return new ActividadMessageDto(true, "Ok", null, actividades);
+                    return new ActividadMessageDto(true, "Ok", null, null, actividades);
                 }
             } else {
                 return new ActividadMessageDto(false, "Id Docente inexistente",
-                        null, null);
+                        null, null, null);
             }
         } else {
             return new ActividadMessageDto(false, "Id Subnivel inexistente",
-                    null, null);
+                    null, null, null);
         }
     }
 
@@ -120,9 +121,9 @@ public class ActividadService {
         ArrayList<Actividad> actividades = actividadRepository.findByNombre(nombre);
         if (actividades.isEmpty()) {
             return new ActividadMessageDto(false, "No existe actividades con Nombre: "
-                    + nombre, null, null);
+                    + nombre, null, null, null);
         } else {
-            return new ActividadMessageDto(true, "Ok", null, actividades);
+            return new ActividadMessageDto(true, "Ok", null, null, actividades);
         }
     }
 
@@ -130,9 +131,46 @@ public class ActividadService {
         ArrayList<Actividad> actividades = actividadRepository.findByActivo(activo);
         if (actividades.isEmpty()) {
             return new ActividadMessageDto(false, "No existe actividades con Estado: "
-                    + activo, null, null);
+                    + activo, null, null, null);
         } else {
-            return new ActividadMessageDto(true, "Ok", null, actividades);
+            return new ActividadMessageDto(true, "Ok", null, null, actividades);
+        }
+    }
+
+    public ActividadMessageDto GetActividadEvByNivelAndDocente(int idDocente) {
+        Optional<Docente> docente = docenteRepository.findById(idDocente);
+        if (docente.isPresent()) {
+            ArrayList<Actividad> actividades = actividadRepository
+                    .findByDocenteAndTipo(docente.get(), "EV");
+            ArrayList<Integer> idsNivel = new ArrayList<>();
+            ArrayList<ActividadListTypeEvaluativaDto> list = new ArrayList<>();
+            for (int i = 0; i < actividades.size(); i++) {
+                if (idsNivel.contains(actividades.get(i).getSubnivel()
+                        .getNivel().getId())) {
+                    int index = -1;
+                    for (int j = 0; j < list.size(); j++) {
+                        if (list.get(j).getIdNivel() == actividades.get(i)
+                                .getSubnivel().getNivel().getId()) {
+                            index = j;
+                            break;
+                        }
+                    }
+                    list.get(index).getActividades().add(actividades.get(i));
+                } else {
+                    idsNivel.add(actividades.get(i).getSubnivel().getNivel().getId());
+                    ArrayList<Actividad> itemDetil = new ArrayList<>();
+                    itemDetil.add(actividades.get(i));
+                    ActividadListTypeEvaluativaDto item
+                            = new ActividadListTypeEvaluativaDto(actividades.get(i)
+                                    .getSubnivel().getNivel().getId(),
+                                    actividades.get(i).getSubnivel().getNivel()
+                                            .getNombre(), itemDetil);
+                    list.add(item);
+                }
+            }
+            return new ActividadMessageDto(true, "Ok", null, list, null);
+        } else {
+            return new ActividadMessageDto(false, "Id de docente inexistente", null, null, null);
         }
     }
 
@@ -156,7 +194,7 @@ public class ActividadService {
                 if (count >= 1) {
                     return new ActividadMessageDto(false,
                             "Ya existe una actividad de tipo Evaluativa en "
-                            + "este Subnivel", null, null);
+                            + "este Subnivel", null, null, null);
                 } else {
                     subnivel.get().setNumactividades(
                             subnivel.get().getNumactividades() + 1);
@@ -171,16 +209,16 @@ public class ActividadService {
                     subnivelRepository.save(subnivel.get());
                     actividadRepository.save(actividad);
                     return new ActividadMessageDto(true,
-                            "Ok", actividad, null);
+                            "Ok", actividad, null, null);
                 }
 
             } else {
                 return new ActividadMessageDto(false,
-                        "Id de Docente inexistente", null, null);
+                        "Id de Docente inexistente", null, null, null);
             }
         } else {
             return new ActividadMessageDto(false,
-                    "Id de Subnivel inexistente", null, null);
+                    "Id de Subnivel inexistente", null, null, null);
         }
     }
 
@@ -199,14 +237,14 @@ public class ActividadService {
                         actividadUpdateDto.getRecompensavalor());
                 actividad.get().setActivo(actividadUpdateDto.isActivo());
                 return new ActividadMessageDto(true,
-                        "Ok", actividadRepository.save(actividad.get()), null);
+                        "Ok", actividadRepository.save(actividad.get()), null, null);
             } else {
                 return new ActividadMessageDto(false,
-                        "Id de Subnivel inexistente", null, null);
+                        "Id de Subnivel inexistente", null, null, null);
             }
         } else {
             return new ActividadMessageDto(false,
-                    "Id de Actividad inexistente", null, null);
+                    "Id de Actividad inexistente", null, null, null);
         }
     }
 }

@@ -125,6 +125,20 @@ public class ActividadController {
         }
     }
 
+    @GetMapping(path = "/byTypeEvaluativa")
+    public ResponseEntity<?> GetByDocenteAndTypeEval(
+            @RequestParam("idDocente") int idDocente) {
+        ActividadMessageDto actividades
+                = actividadService.GetActividadEvByNivelAndDocente(idDocente);
+        if (actividades.isStatus()) {
+            return new ResponseEntity(actividades.getActividadesEv(),
+                    HttpStatus.OK);
+        } else {
+            return new ResponseEntity(new Mensaje(actividades.getMessage()),
+                    HttpStatus.OK);
+        }
+    }
+
     @PostMapping()
     public ResponseEntity<?> Save(
             @RequestBody ActividadSaveDto actividadSaveDto) {
