@@ -142,33 +142,38 @@ public class ActividadService {
         if (docente.isPresent()) {
             ArrayList<Actividad> actividades = actividadRepository
                     .findByDocenteAndTipo(docente.get(), "EV");
-            ArrayList<Integer> idsNivel = new ArrayList<>();
-            ArrayList<ActividadListTypeEvaluativaDto> list = new ArrayList<>();
-            for (int i = 0; i < actividades.size(); i++) {
-                if (idsNivel.contains(actividades.get(i).getSubnivel()
-                        .getNivel().getId())) {
-                    int index = -1;
-                    for (int j = 0; j < list.size(); j++) {
-                        if (list.get(j).getIdNivel() == actividades.get(i)
-                                .getSubnivel().getNivel().getId()) {
-                            index = j;
-                            break;
+            if (actividades.isEmpty()) {
+                return new ActividadMessageDto(false, "Este docente no ha creado "
+                        + "actividades de tipo Evaluativas", null, null, null);
+            } else {
+                ArrayList<Integer> idsNivel = new ArrayList<>();
+                ArrayList<ActividadListTypeEvaluativaDto> list = new ArrayList<>();
+                for (int i = 0; i < actividades.size(); i++) {
+                    if (idsNivel.contains(actividades.get(i).getSubnivel()
+                            .getNivel().getId())) {
+                        int index = -1;
+                        for (int j = 0; j < list.size(); j++) {
+                            if (list.get(j).getIdNivel() == actividades.get(i)
+                                    .getSubnivel().getNivel().getId()) {
+                                index = j;
+                                break;
+                            }
                         }
+                        list.get(index).getActividades().add(actividades.get(i));
+                    } else {
+                        idsNivel.add(actividades.get(i).getSubnivel().getNivel().getId());
+                        ArrayList<Actividad> itemDetil = new ArrayList<>();
+                        itemDetil.add(actividades.get(i));
+                        ActividadListTypeEvaluativaDto item
+                                = new ActividadListTypeEvaluativaDto(actividades.get(i)
+                                        .getSubnivel().getNivel().getId(),
+                                        actividades.get(i).getSubnivel().getNivel()
+                                                .getNombre(), itemDetil);
+                        list.add(item);
                     }
-                    list.get(index).getActividades().add(actividades.get(i));
-                } else {
-                    idsNivel.add(actividades.get(i).getSubnivel().getNivel().getId());
-                    ArrayList<Actividad> itemDetil = new ArrayList<>();
-                    itemDetil.add(actividades.get(i));
-                    ActividadListTypeEvaluativaDto item
-                            = new ActividadListTypeEvaluativaDto(actividades.get(i)
-                                    .getSubnivel().getNivel().getId(),
-                                    actividades.get(i).getSubnivel().getNivel()
-                                            .getNombre(), itemDetil);
-                    list.add(item);
                 }
+                return new ActividadMessageDto(true, "Ok", null, list, null);
             }
-            return new ActividadMessageDto(true, "Ok", null, list, null);
         } else {
             return new ActividadMessageDto(false, "Id de docente inexistente", null, null, null);
         }
