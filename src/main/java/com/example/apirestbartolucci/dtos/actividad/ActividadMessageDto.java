@@ -28,6 +28,7 @@ public class ActividadMessageDto {
         this.status = status;
         this.message = message;
         this.actividad = actividad;
+        this.actividadesEv = actividadesEv;
         this.actividades = actividades;
     }
 
