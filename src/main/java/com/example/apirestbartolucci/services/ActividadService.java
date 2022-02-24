@@ -105,7 +105,14 @@ public class ActividadService {
                             + " y Id Docente: " + idDocente,
                             null, null, null);
                 } else {
-                    return new ActividadMessageDto(true, "Ok", null, null, actividades);
+                    ArrayList<Actividad> actividadesAux = new ArrayList<>();
+                    for (int i = 0; i < actividades.size(); i++) {
+                        if (actividades.get(i).isActivo()
+                                && actividades.get(i).getTipo().equals("AC")) {
+                            actividadesAux.add(actividades.get(i));
+                        }
+                    }
+                    return new ActividadMessageDto(true, "Ok", null, null, actividadesAux);
                 }
             } else {
                 return new ActividadMessageDto(false, "Id Docente inexistente",
@@ -149,27 +156,29 @@ public class ActividadService {
                 ArrayList<Integer> idsNivel = new ArrayList<>();
                 ArrayList<ActividadListTypeEvaluativaDto> list = new ArrayList<>();
                 for (int i = 0; i < actividades.size(); i++) {
-                    if (idsNivel.contains(actividades.get(i).getSubnivel()
-                            .getNivel().getId())) {
-                        int index = -1;
-                        for (int j = 0; j < list.size(); j++) {
-                            if (list.get(j).getIdNivel() == actividades.get(i)
-                                    .getSubnivel().getNivel().getId()) {
-                                index = j;
-                                break;
+                    if (actividades.get(i).isActivo()) {
+                        if (idsNivel.contains(actividades.get(i).getSubnivel()
+                                .getNivel().getId())) {
+                            int index = -1;
+                            for (int j = 0; j < list.size(); j++) {
+                                if (list.get(j).getIdNivel() == actividades.get(i)
+                                        .getSubnivel().getNivel().getId()) {
+                                    index = j;
+                                    break;
+                                }
                             }
+                            list.get(index).getActividades().add(actividades.get(i));
+                        } else {
+                            idsNivel.add(actividades.get(i).getSubnivel().getNivel().getId());
+                            ArrayList<Actividad> itemDetil = new ArrayList<>();
+                            itemDetil.add(actividades.get(i));
+                            ActividadListTypeEvaluativaDto item
+                                    = new ActividadListTypeEvaluativaDto(actividades.get(i)
+                                            .getSubnivel().getNivel().getId(),
+                                            actividades.get(i).getSubnivel().getNivel()
+                                                    .getNombre(), itemDetil);
+                            list.add(item);
                         }
-                        list.get(index).getActividades().add(actividades.get(i));
-                    } else {
-                        idsNivel.add(actividades.get(i).getSubnivel().getNivel().getId());
-                        ArrayList<Actividad> itemDetil = new ArrayList<>();
-                        itemDetil.add(actividades.get(i));
-                        ActividadListTypeEvaluativaDto item
-                                = new ActividadListTypeEvaluativaDto(actividades.get(i)
-                                        .getSubnivel().getNivel().getId(),
-                                        actividades.get(i).getSubnivel().getNivel()
-                                                .getNombre(), itemDetil);
-                        list.add(item);
                     }
                 }
                 return new ActividadMessageDto(true, "Ok", null, list, null);

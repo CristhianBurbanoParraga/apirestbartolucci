@@ -147,7 +147,7 @@ public class ActividadController {
         if (actividad.isStatus()) {
             return new ResponseEntity(actividad.getActividad(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(actividad.getMessage(), HttpStatus.OK);
+            return new ResponseEntity(new Mensaje(actividad.getMessage()), HttpStatus.OK);
         }
     }
 
