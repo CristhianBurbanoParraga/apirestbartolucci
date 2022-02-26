@@ -36,7 +36,7 @@ public class NivelController {
     public ResponseEntity<?> GetAll() {
         NivelMessageDto niveles = nivelService.GetAllNiveles();
         if (niveles.isStatus()) {
-            return new ResponseEntity(niveles.getNiveles(),
+            return new ResponseEntity(niveles.getNivelesDto(),
                     HttpStatus.OK);
         } else {
             return new ResponseEntity(new Mensaje(niveles.getMessage()), HttpStatus.OK);

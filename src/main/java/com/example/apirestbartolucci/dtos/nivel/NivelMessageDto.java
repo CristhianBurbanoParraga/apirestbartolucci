@@ -17,16 +17,18 @@ public class NivelMessageDto {
     private String message;
     private Nivel nivel;
     private ArrayList<Nivel> niveles;
+    private ArrayList<NivelDto> nivelesDto;
 
     public NivelMessageDto() {
     }
 
     public NivelMessageDto(boolean status, String message, Nivel nivel,
-            ArrayList<Nivel> niveles) {
+            ArrayList<Nivel> niveles, ArrayList<NivelDto> nivelesDto) {
         this.status = status;
         this.message = message;
         this.nivel = nivel;
         this.niveles = niveles;
+        this.nivelesDto = nivelesDto;
     }
 
     public boolean isStatus() {
@@ -59,5 +61,13 @@ public class NivelMessageDto {
 
     public void setNiveles(ArrayList<Nivel> niveles) {
         this.niveles = niveles;
+    }
+
+    public ArrayList<NivelDto> getNivelesDto() {
+        return nivelesDto;
+    }
+
+    public void setNivelesDto(ArrayList<NivelDto> nivelesDto) {
+        this.nivelesDto = nivelesDto;
     }
 }
