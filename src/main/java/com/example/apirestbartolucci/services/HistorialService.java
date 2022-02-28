@@ -125,49 +125,55 @@ public class HistorialService {
             Optional<Actividad> actividad = actividadRepository.findById(
                     historialSaveDto.getIdActividad());
             if (actividad.isPresent()) {
-                if (!historialSaveDto.isStatusRespuesta()
-                        && historialSaveDto.getIdsContenido().isEmpty()) {
-                    return new HistorialMessageDto(false, "Los campos de respuesta "
-                            + "estan vacios y falsos, debe especificar almenos uno",
+                if (historialRepository.findByActividadAndEstudiante(
+                        actividad.get(), estudiante.get()).isPresent()) {
+                    return new HistorialMessageDto(false, "Esta Actividad ya fue realizada",
                             null, null, null, null);
                 } else {
-                    Historial historial = new Historial(0,
-                            actividad.get(),
-                            estudiante.get(),
-                            new Date(),
-                            actividad.get().getRecompensavalor());
-                    estudiante.get().setStockcaritas(
-                            estudiante.get().getStockcaritas()
-                            + actividad.get().getRecompensavalor());
-                    if (historialSaveDto.isStatusRespuesta()
+                    if (!historialSaveDto.isStatusRespuesta()
                             && historialSaveDto.getIdsContenido().isEmpty()) {
-                        estudianteRepository.save(estudiante.get());
-                        return new HistorialMessageDto(true, "Ok",
-                                historialRepository.save(historial), null, null, null);
+                        return new HistorialMessageDto(false, "Los campos de respuesta "
+                                + "estan vacios y falsos, debe especificar almenos uno",
+                                null, null, null, null);
                     } else {
-                        int count = historialSaveDto.getIdsContenido().size();
-                        int countAux = 0;
-                        ArrayList<Contenido> contenidos
-                                = contenidoRepository.findByActividad(actividad.get());
-                        for (Map.Entry<String, Long> entry
-                                : historialSaveDto.getIdsContenido().entrySet()) {
-                            for (int j = 0; j < contenidos.size(); j++) {
-                                if (contenidos.get(j).getId() == entry.getValue()
-                                        && contenidos.get(j).isRespuesta()) {
-                                    countAux++;
-                                    break;
+                        Historial historial = new Historial(0,
+                                actividad.get(),
+                                estudiante.get(),
+                                new Date(),
+                                actividad.get().getRecompensavalor());
+                        estudiante.get().setStockcaritas(
+                                estudiante.get().getStockcaritas()
+                                + actividad.get().getRecompensavalor());
+                        if (historialSaveDto.isStatusRespuesta()
+                                && historialSaveDto.getIdsContenido().isEmpty()) {
+                            estudianteRepository.save(estudiante.get());
+                            return new HistorialMessageDto(true, "Ok",
+                                    historialRepository.save(historial), null, null, null);
+                        } else {
+                            int count = historialSaveDto.getIdsContenido().size();
+                            int countAux = 0;
+                            ArrayList<Contenido> contenidos
+                                    = contenidoRepository.findByActividad(actividad.get());
+                            for (Map.Entry<String, Long> entry
+                                    : historialSaveDto.getIdsContenido().entrySet()) {
+                                for (int j = 0; j < contenidos.size(); j++) {
+                                    if (contenidos.get(j).getId() == entry.getValue()
+                                            && contenidos.get(j).isRespuesta()) {
+                                        countAux++;
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                        if (count == countAux) {
-                            estudianteRepository.save(estudiante.get());
-                            historialRepository.save(historial);
-                            return new HistorialMessageDto(true, "Ok",
-                                    historialRepository.save(historial), null,
-                                    null, null);
-                        } else {
-                            return new HistorialMessageDto(false, "Las respuestas "
-                                    + "no son correctas", null, null, null, null);
+                            if (count == countAux) {
+                                estudianteRepository.save(estudiante.get());
+                                historialRepository.save(historial);
+                                return new HistorialMessageDto(true, "Ok",
+                                        historialRepository.save(historial), null,
+                                        null, null);
+                            } else {
+                                return new HistorialMessageDto(false, "Las respuestas "
+                                        + "no son correctas", null, null, null, null);
+                            }
                         }
                     }
                 }

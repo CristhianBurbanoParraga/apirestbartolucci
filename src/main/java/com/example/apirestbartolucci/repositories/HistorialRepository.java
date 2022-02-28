@@ -4,9 +4,11 @@
  */
 package com.example.apirestbartolucci.repositories;
 
+import com.example.apirestbartolucci.models.Actividad;
 import com.example.apirestbartolucci.models.Estudiante;
 import com.example.apirestbartolucci.models.Historial;
 import java.util.ArrayList;
+import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,4 +20,6 @@ import org.springframework.stereotype.Repository;
 public interface HistorialRepository extends CrudRepository<Historial, Long> {
 
     public ArrayList<Historial> findByEstudiante(Estudiante estudiante);
+
+    public Optional<Historial> findByActividadAndEstudiante(Actividad actividad, Estudiante estudiante);
 }
