@@ -79,7 +79,7 @@ public class SubnivelService {
                             "prioridad"));
             if (subniveles.isEmpty()) {
                 return new SubnivelMessageDto(false, "No hay subniveles con id de Nivel: "
-                        + idNivel, null, null);
+                        + idNivel, null, new ArrayList<>());
             } else {
                 return new SubnivelMessageDto(true, "Ok", null, subniveles);
             }
