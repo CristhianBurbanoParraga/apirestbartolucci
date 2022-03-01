@@ -101,6 +101,11 @@ public class SubnivelService {
                         subnivelSaveDto.getNombre()).isPresent()) {
                     return new SubnivelMessageDto(false, "Ya existe subnivel con"
                             + " Nombre: " + subnivelSaveDto.getNombre(), null, null);
+                } else if (subnivelRepository.findByPublicid(
+                        subnivelSaveDto.getMultimedia().getPublicid()).isPresent()) {
+                    return new SubnivelMessageDto(false, "Ya existe subnivel con"
+                            + " publicid: " + subnivelSaveDto.getMultimedia()
+                                    .getPublicid(), null, null);
                 } else {
                     int count = (int) subnivelRepository.findByNivel(
                             nivel.get(), Sort.by(Sort.Direction.ASC,

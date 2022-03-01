@@ -77,6 +77,11 @@ public class ArticuloService {
                 return new ArticuloMessageDto(false, "Ya existe un articulo "
                         + "registrado con el Nombre: " + articuloSaveDto.getNombre(),
                         null, null);
+            } else if (articuloRepository.findByPublicid(
+                    articuloSaveDto.getMultimedia().getPublicid()).isPresent()) {
+                return new ArticuloMessageDto(false, "Ya existe un articulo "
+                        + "registrado con el Publicid: " + articuloSaveDto.getMultimedia().getPublicid(),
+                        null, null);
             } else {
                 Articulo newarticulo = new Articulo(0,
                         articuloSaveDto.getNombre(),

@@ -21,5 +21,7 @@ public interface NivelRepository extends CrudRepository<Nivel, Integer> {
 
     public Optional<Nivel> findByNombre(String nombre);
 
+    public Optional<Nivel> findByPublicid(String publicid);
+
     public ArrayList<Nivel> findByActivo(boolean activo);
 }

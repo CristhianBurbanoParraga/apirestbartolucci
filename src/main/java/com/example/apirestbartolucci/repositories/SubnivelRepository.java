@@ -25,5 +25,7 @@ public interface SubnivelRepository extends CrudRepository<Subnivel, Integer> {
 
     public Optional<Subnivel> findByNombre(String nombre);
 
+    public Optional<Subnivel> findByPublicid(String publicid);
+
     public ArrayList<Subnivel> findByActivo(boolean activo);
 }

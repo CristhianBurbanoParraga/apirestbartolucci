@@ -7,6 +7,7 @@ package com.example.apirestbartolucci.repositories;
 import com.example.apirestbartolucci.models.Contenido;
 import com.example.apirestbartolucci.models.Multimedia;
 import java.util.ArrayList;
+import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,5 +19,7 @@ import org.springframework.stereotype.Repository;
 public interface MultimediaRepository extends CrudRepository<Multimedia, Long> {
 
     public ArrayList<Multimedia> findByContenido(Contenido contenido);
+
+    public Optional<Multimedia> findByPublicid(String publicid);
 
 }

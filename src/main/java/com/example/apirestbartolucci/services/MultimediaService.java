@@ -119,6 +119,10 @@ public class MultimediaService {
                 || multimediaSaveDto.getMultimedia().getUrl() == null) {
             return new MultimediaMessageDto(false, "Los campos PublicId y Url no "
                     + "pueden ser nulos", null, null, null);
+        } else if (multimediaRepository.findByPublicid(
+                multimediaSaveDto.getMultimedia().getPublicid()).isPresent()) {
+            return new MultimediaMessageDto(false, "Ya existe un registro con Publicid: "
+                    + multimediaSaveDto.getMultimedia().getPublicid(), null, null, null);
         } else {
             Optional<Contenido> contenido = contenidoRepository.findById(
                     multimediaSaveDto.getIdContenido());

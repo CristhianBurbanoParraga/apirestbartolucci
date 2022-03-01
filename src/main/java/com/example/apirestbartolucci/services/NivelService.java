@@ -109,6 +109,10 @@ public class NivelService {
             if (niveloptional.isPresent()) {
                 return new NivelMessageDto(false, "Ya existe un nivel con Nombre: "
                         + nivelDto.getNombre(), null, null, null);
+            } else if (nivelRepository.findByPublicid(nivelDto.getMultimedia()
+                    .getPublicid()).isPresent()) {
+                return new NivelMessageDto(false, "Ya existe un nivel con Publicid: "
+                        + nivelDto.getMultimedia().getPublicid(), null, null, null);
             } else {
                 int count = (int) nivelRepository.count();
                 Nivel nivel = new Nivel(0, nivelDto.getNombre(),

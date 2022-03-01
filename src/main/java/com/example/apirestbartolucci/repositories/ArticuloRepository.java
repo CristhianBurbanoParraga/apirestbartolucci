@@ -19,5 +19,7 @@ public interface ArticuloRepository extends CrudRepository<Articulo, Integer> {
 
     public Optional<Articulo> findByNombre(String nombre);
 
+    public Optional<Articulo> findByPublicid(String publicid);
+
     public ArrayList<Articulo> findByActivo(boolean activo);
 }
