@@ -37,7 +37,7 @@ public class SubnivelController {
     public ResponseEntity<?> GetAll() {
         SubnivelMessageDto subniveles = subnivelService.GetAllSubniveles();
         if (subniveles.isStatus()) {
-            return new ResponseEntity(subniveles.getSubniveles(),
+            return new ResponseEntity(subniveles.getSubnivelesDto(),
                     HttpStatus.OK);
         } else {
             return new ResponseEntity(new Mensaje(subniveles.getMessage()),

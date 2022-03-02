@@ -37,7 +37,7 @@ public class ActividadController {
     public ResponseEntity<?> GetAll() {
         ActividadMessageDto actividades = actividadService.GetAllActividades();
         if (actividades.isStatus()) {
-            return new ResponseEntity(actividades.getActividades(),
+            return new ResponseEntity(actividades.getActividadesDtos(),
                     HttpStatus.OK);
         } else {
             return new ResponseEntity(new Mensaje(actividades.getMessage()),

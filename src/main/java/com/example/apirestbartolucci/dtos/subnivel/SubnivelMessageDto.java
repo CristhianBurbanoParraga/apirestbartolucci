@@ -17,16 +17,18 @@ public class SubnivelMessageDto {
     private String message;
     private Subnivel subnivel;
     private ArrayList<Subnivel> subniveles;
+    private ArrayList<SubnivelTwoVersionDto> subnivelesDto;
 
     public SubnivelMessageDto() {
     }
 
     public SubnivelMessageDto(boolean status, String message, Subnivel subnivel,
-            ArrayList<Subnivel> subniveles) {
+            ArrayList<Subnivel> subniveles, ArrayList<SubnivelTwoVersionDto> subnivelesDto) {
         this.status = status;
         this.message = message;
         this.subnivel = subnivel;
         this.subniveles = subniveles;
+        this.subnivelesDto = subnivelesDto;
     }
 
     public boolean isStatus() {
@@ -59,5 +61,13 @@ public class SubnivelMessageDto {
 
     public void setSubniveles(ArrayList<Subnivel> subniveles) {
         this.subniveles = subniveles;
+    }
+
+    public ArrayList<SubnivelTwoVersionDto> getSubnivelesDto() {
+        return subnivelesDto;
+    }
+
+    public void setSubnivelesDto(ArrayList<SubnivelTwoVersionDto> subnivelesDto) {
+        this.subnivelesDto = subnivelesDto;
     }
 }

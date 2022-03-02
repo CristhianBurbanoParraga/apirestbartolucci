@@ -18,6 +18,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ActividadRepository extends CrudRepository<Actividad, Integer> {
 
+    public ArrayList<Actividad> findByOrderByIdAsc();
+
     public ArrayList<Actividad> findBySubnivel(Subnivel subnivel);
 
     public ArrayList<Actividad> findByDocente(Docente docente);

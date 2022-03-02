@@ -8,9 +8,11 @@ package com.example.apirestbartolucci.dtos.subnivel;
  *
  * @author criss
  */
-public class SubnivelDto {
+public class SubnivelTwoVersionDto {
 
     private int id;
+    private int idNivel;
+    private String nivel;
     private String nombre;
     private String descripcion;
     private int numactividades;
@@ -19,13 +21,15 @@ public class SubnivelDto {
     private String url;
     private boolean activo;
 
-    public SubnivelDto() {
+    public SubnivelTwoVersionDto() {
     }
 
-    public SubnivelDto(int id, String nombre, String descripcion,
-            int numactividades, int prioridad, String publicid, String url,
-            boolean activo) {
+    public SubnivelTwoVersionDto(int id, int idNivel, String nivel,
+            String nombre, String descripcion, int numactividades, int prioridad,
+            String publicid, String url, boolean activo) {
         this.id = id;
+        this.idNivel = idNivel;
+        this.nivel = nivel;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.numactividades = numactividades;
@@ -41,6 +45,22 @@ public class SubnivelDto {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getIdNivel() {
+        return idNivel;
+    }
+
+    public void setIdNivel(int idNivel) {
+        this.idNivel = idNivel;
+    }
+
+    public String getNivel() {
+        return nivel;
+    }
+
+    public void setNivel(String nivel) {
+        this.nivel = nivel;
     }
 
     public String getNombre() {
@@ -98,5 +118,4 @@ public class SubnivelDto {
     public void setActivo(boolean activo) {
         this.activo = activo;
     }
-
 }
