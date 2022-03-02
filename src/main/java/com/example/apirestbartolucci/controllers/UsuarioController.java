@@ -59,6 +59,19 @@ public class UsuarioController {
 
     }
 
+    @GetMapping(path = "/byTipo")
+    public ResponseEntity<?> GetByTipo(
+            @RequestParam("tipo") String tipo) {
+        UsuarioMessageDto usuarios = usuarioService.GetAllUsuarioByTipo(tipo);
+        if (usuarios.isStatus()) {
+            return new ResponseEntity(usuarios.getUsuariosDto(),
+                    HttpStatus.OK);
+        } else {
+            return new ResponseEntity(new Mensaje(usuarios.getMessage()),
+                    HttpStatus.OK);
+        }
+    }
+
     @GetMapping(path = "/byStatusAccount")
     public ResponseEntity<?> GetAllAccountsByStatus(
             @RequestParam("activo") boolean activo) {

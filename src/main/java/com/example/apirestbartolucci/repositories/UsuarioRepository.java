@@ -19,5 +19,7 @@ public interface UsuarioRepository extends CrudRepository<Usuario, Integer> {
 
     public Optional<Usuario> findByUsuario(String usuario);
 
+    public ArrayList<Usuario> findByTipousuario(String tipousuario);
+
     public ArrayList<Usuario> findByActivo(boolean activo);
 }
