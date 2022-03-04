@@ -127,15 +127,22 @@ public class MultimediaService {
             Optional<Contenido> contenido = contenidoRepository.findById(
                     multimediaSaveDto.getIdContenido());
             if (contenido.isPresent()) {
-                Multimedia multimedia = new Multimedia(0,
-                        contenido.get(),
-                        multimediaSaveDto.getDescripcion(),
-                        multimediaSaveDto.getMultimedia().getPublicid(),
-                        multimediaSaveDto.getMultimedia().getUrl(),
-                        multimediaSaveDto.getTipo(),
-                        multimediaSaveDto.isIsInicial());
-                return new MultimediaMessageDto(true, "Ok",
-                        multimediaRepository.save(multimedia), null, null);
+                ArrayList<Multimedia> multimedias
+                        = multimediaRepository.findByContenido(contenido.get());
+                if (multimedias.size() < 3) {
+                    Multimedia multimedia = new Multimedia(0,
+                            contenido.get(),
+                            multimediaSaveDto.getDescripcion(),
+                            multimediaSaveDto.getMultimedia().getPublicid(),
+                            multimediaSaveDto.getMultimedia().getUrl(),
+                            multimediaSaveDto.getTipo(),
+                            multimediaSaveDto.isIsInicial());
+                    return new MultimediaMessageDto(true, "Ok",
+                            multimediaRepository.save(multimedia), null, null);
+                } else {
+                    return new MultimediaMessageDto(false, "Este Contenido ya tiene"
+                            + " las 3 multimedias permitidas", null, null, null);
+                }
             } else {
                 return new MultimediaMessageDto(false, "No existe contenido con Id: "
                         + multimediaSaveDto.getIdContenido(), null, null, null);
