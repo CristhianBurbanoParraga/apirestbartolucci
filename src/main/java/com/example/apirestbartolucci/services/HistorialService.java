@@ -11,11 +11,15 @@ import com.example.apirestbartolucci.dtos.historial.HistorialMessageDto;
 import com.example.apirestbartolucci.dtos.historial.HistorialSaveDto;
 import com.example.apirestbartolucci.models.Actividad;
 import com.example.apirestbartolucci.models.Contenido;
+import com.example.apirestbartolucci.models.Docente;
 import com.example.apirestbartolucci.models.Estudiante;
+import com.example.apirestbartolucci.models.Grupo;
 import com.example.apirestbartolucci.models.Historial;
 import com.example.apirestbartolucci.repositories.ActividadRepository;
 import com.example.apirestbartolucci.repositories.ContenidoRepository;
+import com.example.apirestbartolucci.repositories.DocenteRepository;
 import com.example.apirestbartolucci.repositories.EstudianteRepository;
+import com.example.apirestbartolucci.repositories.GrupoRepository;
 import com.example.apirestbartolucci.repositories.HistorialRepository;
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,6 +46,12 @@ public class HistorialService {
 
     @Autowired
     ContenidoRepository contenidoRepository;
+
+    @Autowired
+    DocenteRepository docenteRepository;
+
+    @Autowired
+    GrupoRepository grupoRepository;
 
     public HistorialMessageDto GetAllHistorial() {
         ArrayList<Historial> historiales
@@ -102,6 +112,8 @@ public class HistorialService {
                             historiales.get(i).getId(),
                             historiales.get(i).getActividad().getId(),
                             historiales.get(i).getActividad().getNombre(),
+                            historiales.get(i).getActividad().getDescripcion(),
+                            historiales.get(i).getFecha().toString(),
                             historiales.get(i).getRecompensaganada());
                     listActividades.add(item);
                 }
@@ -115,6 +127,41 @@ public class HistorialService {
         } else {
             return new HistorialMessageDto(false, "No existe un Estudiante con Id: "
                     + idEstudiante, null, null, null, null);
+        }
+    }
+
+    public HistorialMessageDto GetHistorialByIdDocente(int idDocente) {
+        Optional<Docente> docente = docenteRepository.findById(idDocente);
+        if (docente.isPresent()) {
+            ArrayList<Grupo> grupos = grupoRepository.findByDocente(docente.get());
+            if (grupos.isEmpty()) {
+                return new HistorialMessageDto(false, "El docente no tiene estudiantes asignados",
+                        null, null, null, null);
+            } else {
+                ArrayList<Integer> ids = new ArrayList<>();
+                ArrayList<HistorialListDto> list = new ArrayList<>();
+                for (int i = 0; i < grupos.size(); i++) {
+                    if (!ids.contains(grupos.get(i).getEstudiante().getId())) {
+                        ids.add(grupos.get(i).getEstudiante().getId());
+                        HistorialListDto listItem = GetHistorialByIdEstudiante(
+                                grupos.get(i).getEstudiante().getId()).getListDto();
+                        if (listItem != null) {
+                            list.add(listItem);
+                        }
+                    }
+                }
+                if (list.isEmpty()) {
+                    return new HistorialMessageDto(false, "Los estudiantes de este docente no han hecho actividades",
+                            null, null, null, new ArrayList<>());
+                } else {
+                    return new HistorialMessageDto(true, "Ok",
+                            null, null, null, list);
+                }
+
+            }
+        } else {
+            return new HistorialMessageDto(false, "Id docente inexistente",
+                    null, null, null, null);
         }
     }
 

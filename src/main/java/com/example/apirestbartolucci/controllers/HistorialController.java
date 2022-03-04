@@ -69,6 +69,21 @@ public class HistorialController {
 
     }
 
+    @GetMapping(path = "/byDocente")
+    public ResponseEntity<?> GetByDocente(
+            @RequestParam("idDocente") int idDocente) {
+        HistorialMessageDto historial
+                = historialService.GetHistorialByIdDocente(idDocente);
+        if (historial.isStatus()) {
+            return new ResponseEntity(historial.getListActividadesDto(),
+                    HttpStatus.OK);
+        } else {
+            return new ResponseEntity(new Mensaje(historial.getMessage()),
+                    HttpStatus.OK);
+        }
+
+    }
+
     @PostMapping(path = "/completeActividad")
     public ResponseEntity<?> Save(@RequestBody HistorialSaveDto historialSaveDto) {
         HistorialMessageDto historial

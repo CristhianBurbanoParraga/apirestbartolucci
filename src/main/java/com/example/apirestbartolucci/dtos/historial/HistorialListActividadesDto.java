@@ -13,16 +13,20 @@ public class HistorialListActividadesDto {
     private long id;
     private int idactividad;
     private String nombre;
+    private String descripcion;
+    private String fecha;
     private int recompensa;
 
     public HistorialListActividadesDto() {
     }
 
     public HistorialListActividadesDto(long id, int idactividad, String nombre,
-            int recompensa) {
+            String descripcion, String fecha, int recompensa) {
         this.id = id;
         this.idactividad = idactividad;
         this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.fecha = fecha;
         this.recompensa = recompensa;
     }
 
@@ -50,6 +54,22 @@ public class HistorialListActividadesDto {
         this.nombre = nombre;
     }
 
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
     public int getRecompensa() {
         return recompensa;
     }
@@ -57,4 +77,5 @@ public class HistorialListActividadesDto {
     public void setRecompensa(int recompensa) {
         this.recompensa = recompensa;
     }
+
 }
