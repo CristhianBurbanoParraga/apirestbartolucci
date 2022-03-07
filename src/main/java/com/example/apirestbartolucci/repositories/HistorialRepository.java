@@ -21,5 +21,7 @@ public interface HistorialRepository extends CrudRepository<Historial, Long> {
 
     public ArrayList<Historial> findByEstudiante(Estudiante estudiante);
 
+    public ArrayList<Historial> findByActividad(Actividad actividad);
+
     public Optional<Historial> findByActividadAndEstudiante(Actividad actividad, Estudiante estudiante);
 }

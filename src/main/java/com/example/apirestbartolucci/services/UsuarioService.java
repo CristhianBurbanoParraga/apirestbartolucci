@@ -83,11 +83,12 @@ public class UsuarioService {
             ArrayList<UsuarioDto> usuariosDto = new ArrayList<>();
             for (int i = 0; i < usuarios.size(); i++) {
                 UsuarioDto item = new UsuarioDto();
-                item.setId(usuarios.get(i).getId());
+                item.setIdUsuario(usuarios.get(i).getId());
                 item.setTipo(usuarios.get(i).getTipousuario());
                 item.setActivo(usuarios.get(i).isActivo());
                 if (usuarios.get(i).getDocente() == null
                         && usuarios.get(i).getEstudiante() != null) {
+                    item.setIdPersona(usuarios.get(i).getEstudiante().getId());
                     item.setNombres(usuarios.get(i).getEstudiante().getNombres());
                     item.setApellidos(usuarios.get(i).getEstudiante().getApellidos());
                     item.setTelefono(usuarios.get(i).getEstudiante().getTelefono());
@@ -96,6 +97,7 @@ public class UsuarioService {
                             usuarios.get(i).getEstudiante().getFechanacimiento());
                 } else if (usuarios.get(i).getEstudiante() == null
                         && usuarios.get(i).getDocente() != null) {
+                    item.setIdPersona(usuarios.get(i).getDocente().getId());
                     item.setNombres(usuarios.get(i).getDocente().getNombres());
                     item.setApellidos(usuarios.get(i).getDocente().getApellidos());
                     item.setTelefono(usuarios.get(i).getDocente().getTelefono());

@@ -118,7 +118,7 @@ public class ActividadController {
                 = actividadService.GetActividadBySubnivelAndDocente(idSubnivel,
                         idDocente);
         if (actividades.isStatus()) {
-            return new ResponseEntity(actividades.getActividades(), HttpStatus.OK);
+            return new ResponseEntity(actividades.getActividadesOtherDtos(), HttpStatus.OK);
         } else {
             return new ResponseEntity(new Mensaje(actividades.getMessage()),
                     HttpStatus.OK);

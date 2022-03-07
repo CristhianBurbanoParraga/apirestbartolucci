@@ -19,19 +19,22 @@ public class ActividadMessageDto {
     private ArrayList<ActividadListTypeEvaluativaDto> actividadesEv;
     private ArrayList<Actividad> actividades;
     private ArrayList<ActividadDto> actividadesDtos;
+    private ArrayList<ActividadOtherDto> actividadesOtherDtos;
 
     public ActividadMessageDto() {
     }
 
     public ActividadMessageDto(boolean status, String message,
             Actividad actividad, ArrayList<ActividadListTypeEvaluativaDto> actividadesEv,
-            ArrayList<Actividad> actividades, ArrayList<ActividadDto> actividadesDtos) {
+            ArrayList<Actividad> actividades, ArrayList<ActividadDto> actividadesDtos,
+            ArrayList<ActividadOtherDto> actividadesOtherDtos) {
         this.status = status;
         this.message = message;
         this.actividad = actividad;
         this.actividadesEv = actividadesEv;
         this.actividades = actividades;
         this.actividadesDtos = actividadesDtos;
+        this.actividadesOtherDtos = actividadesOtherDtos;
     }
 
     public boolean isStatus() {
@@ -80,6 +83,14 @@ public class ActividadMessageDto {
 
     public void setActividadesDtos(ArrayList<ActividadDto> actividadesDtos) {
         this.actividadesDtos = actividadesDtos;
+    }
+
+    public ArrayList<ActividadOtherDto> getActividadesOtherDtos() {
+        return actividadesOtherDtos;
+    }
+
+    public void setActividadesOtherDtos(ArrayList<ActividadOtherDto> actividadesOtherDtos) {
+        this.actividadesOtherDtos = actividadesOtherDtos;
     }
 
 }
