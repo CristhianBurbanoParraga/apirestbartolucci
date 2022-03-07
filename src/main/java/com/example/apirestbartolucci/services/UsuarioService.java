@@ -187,18 +187,45 @@ public class UsuarioService {
         Optional<Usuario> usuario
                 = usuarioRepository.findById(usuarioUpdateDto.getId());
         if (usuario.isPresent()) {
-            usuario.get().setUsuario(usuarioUpdateDto.getUsuario());
+            if (!usuario.get().getUsuario().equals(usuarioUpdateDto.getUsuario())) {
+                Optional<Usuario> u
+                        = usuarioRepository.findByUsuario(usuarioUpdateDto.getUsuario());
+                if (u.isPresent()) {
+                    return new UsuarioMessageDto(false, "El usuario: "
+                            + usuarioUpdateDto.getUsuario() + " ya está en uso",
+                            null, null, null, null, null);
+                } else {
+                    usuario.get().setUsuario(usuarioUpdateDto.getUsuario());
+                }
+            }
             usuario.get().setClave(usuarioUpdateDto.getClave());
             usuario.get().setActivo(usuarioUpdateDto.isActivo());
-            usuarioRepository.save(usuario.get());
+            //usuarioRepository.save(usuario.get());
             if (usuarioUpdateDto.isIsDocente()) {
                 Optional<Docente> docente = docenteRepository.findById(
                         usuario.get().getDocente().getId());
                 if (docente.isPresent()) {
+                    if (!docente.get().getTelefono().equals(usuarioUpdateDto.getTelefono())) {
+                        Optional<Docente> d = docenteRepository.findByTelefono(usuarioUpdateDto.getTelefono());
+                        if (d.isPresent()) {
+                            return new UsuarioMessageDto(false, "El Telefono: "
+                                    + usuarioUpdateDto.getTelefono() + " ya está en uso",
+                                    null, null, null, null, null);
+                        } else {
+                            docente.get().setTelefono(usuarioUpdateDto.getTelefono());
+                            d = docenteRepository.findByCorreo(usuarioUpdateDto.getCorreo());
+                            if (d.isPresent()) {
+                                return new UsuarioMessageDto(false, "El Correo: "
+                                        + usuarioUpdateDto.getCorreo() + " ya está en uso",
+                                        null, null, null, null, null);
+                            } else {
+                                docente.get().setCorreo(usuarioUpdateDto.getCorreo());
+                            }
+                        }
+                    }
+                    usuarioRepository.save(usuario.get());
                     docente.get().setNombres(usuarioUpdateDto.getNombres());
                     docente.get().setApellidos(usuarioUpdateDto.getApellidos());
-                    docente.get().setTelefono(usuarioUpdateDto.getTelefono());
-                    docente.get().setCorreo(usuarioUpdateDto.getCorreo());
                     docente.get().setFechanacimiento(
                             usuarioUpdateDto.getFechanacimiento());
                     docenteRepository.save(docente.get());
@@ -212,10 +239,27 @@ public class UsuarioService {
                 Optional<Estudiante> estudiante = estudianteRepository.findById(
                         usuario.get().getEstudiante().getId());
                 if (estudiante.isPresent()) {
+                    if (!estudiante.get().getTelefono().equals(usuarioUpdateDto.getTelefono())) {
+                        Optional<Docente> d = docenteRepository.findByTelefono(usuarioUpdateDto.getTelefono());
+                        if (d.isPresent()) {
+                            return new UsuarioMessageDto(false, "El Telefono: "
+                                    + usuarioUpdateDto.getTelefono() + " ya está en uso",
+                                    null, null, null, null, null);
+                        } else {
+                            estudiante.get().setTelefono(usuarioUpdateDto.getTelefono());
+                            d = docenteRepository.findByCorreo(usuarioUpdateDto.getCorreo());
+                            if (d.isPresent()) {
+                                return new UsuarioMessageDto(false, "El Correo: "
+                                        + usuarioUpdateDto.getCorreo() + " ya está en uso",
+                                        null, null, null, null, null);
+                            } else {
+                                estudiante.get().setCorreo(usuarioUpdateDto.getCorreo());
+                            }
+                        }
+                    }
+                    usuarioRepository.save(usuario.get());
                     estudiante.get().setNombres(usuarioUpdateDto.getNombres());
                     estudiante.get().setApellidos(usuarioUpdateDto.getApellidos());
-                    estudiante.get().setTelefono(usuarioUpdateDto.getTelefono());
-                    estudiante.get().setCorreo(usuarioUpdateDto.getCorreo());
                     estudiante.get().setFechanacimiento(
                             usuarioUpdateDto.getFechanacimiento());
                     estudianteRepository.save(estudiante.get());
