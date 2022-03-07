@@ -240,14 +240,14 @@ public class UsuarioService {
                         usuario.get().getEstudiante().getId());
                 if (estudiante.isPresent()) {
                     if (!estudiante.get().getTelefono().equals(usuarioUpdateDto.getTelefono())) {
-                        Optional<Docente> d = docenteRepository.findByTelefono(usuarioUpdateDto.getTelefono());
+                        Optional<Estudiante> d = estudianteRepository.findByTelefono(usuarioUpdateDto.getTelefono());
                         if (d.isPresent()) {
                             return new UsuarioMessageDto(false, "El Telefono: "
                                     + usuarioUpdateDto.getTelefono() + " ya está en uso",
                                     null, null, null, null, null);
                         } else {
                             estudiante.get().setTelefono(usuarioUpdateDto.getTelefono());
-                            d = docenteRepository.findByCorreo(usuarioUpdateDto.getCorreo());
+                            d = estudianteRepository.findByCorreo(usuarioUpdateDto.getCorreo());
                             if (d.isPresent()) {
                                 return new UsuarioMessageDto(false, "El Correo: "
                                         + usuarioUpdateDto.getCorreo() + " ya está en uso",
