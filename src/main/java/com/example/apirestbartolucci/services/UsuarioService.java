@@ -8,8 +8,11 @@ package com.example.apirestbartolucci.services;
  *
  * @author criss
  */
+import com.example.apirestbartolucci.dtos.docente.DocenteDto;
+import com.example.apirestbartolucci.dtos.estudiante.EstudianteDto;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioCredentialsDto;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioDto;
+import com.example.apirestbartolucci.dtos.usuario.UsuarioLoginDto;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioMessageDto;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioSaveDto;
 import com.example.apirestbartolucci.dtos.usuario.UsuarioUpdateDto;
@@ -57,19 +60,21 @@ public class UsuarioService {
         ArrayList<Usuario> usuarios
                 = (ArrayList<Usuario>) usuarioRepository.findAll();
         if (usuarios.isEmpty()) {
-            return new UsuarioMessageDto(false, "No hay registros", null,
+            return new UsuarioMessageDto(false, "No hay registros", null, null,
                     null, null, null, null);
         } else {
-            return new UsuarioMessageDto(true, "Ok", null, null, null, usuarios, null);
+            return new UsuarioMessageDto(true, "Ok", null, null, null, null, 
+usuarios, null);
         }
     }
 
     public UsuarioMessageDto GetUsuarioById(int id) {
         Optional<Usuario> usuario = usuarioRepository.findById(id);
         if (usuario.isPresent()) {
-            return new UsuarioMessageDto(true, "Ok", usuario.get(), null, null, null, null);
+            return new UsuarioMessageDto(true, "Ok", usuario.get(), null, null,
+ null, null, null);
         } else {
-            return new UsuarioMessageDto(false, "Id de usuario inexistente", null,
+            return new UsuarioMessageDto(false, "Id de usuario inexistente", null, null,
                     null, null, null, null);
         }
     }
@@ -78,7 +83,7 @@ public class UsuarioService {
         ArrayList<Usuario> usuarios = usuarioRepository.findByTipousuario(tipo);
         if (usuarios.isEmpty()) {
             return new UsuarioMessageDto(false, "No hay usuarios de Tipo: "
-                    + tipo, null, null, null, null, null);
+                    + tipo, null, null, null, null, null, null);
         } else {
             ArrayList<UsuarioDto> usuariosDto = new ArrayList<>();
             for (int i = 0; i < usuarios.size(); i++) {
@@ -113,7 +118,8 @@ public class UsuarioService {
                 }
                 usuariosDto.add(item);
             }
-            return new UsuarioMessageDto(true, "Ok", null, null, null, null, usuariosDto);
+            return new UsuarioMessageDto(true, "Ok", null, null, null, null, 
+null, usuariosDto);
         }
     }
 
@@ -122,9 +128,10 @@ public class UsuarioService {
                 = (ArrayList<Usuario>) usuarioRepository.findByActivo(activo);
         if (usuarios.isEmpty()) {
             return new UsuarioMessageDto(false, "No hay usuarios con Estado: "
-                    + activo, null, null, null, null, null);
+                    + activo, null, null, null, null, null, null);
         } else {
-            return new UsuarioMessageDto(true, "Ok", null, null, null, usuarios, null);
+            return new UsuarioMessageDto(true, "Ok", null, null, null, null, 
+usuarios, null);
         }
     }
 
@@ -133,7 +140,8 @@ public class UsuarioService {
                 usuarioSaveDto.getCorreo(),
                 usuarioSaveDto.getTelefono());
         if (!validation.equals("Ok")) {
-            return new UsuarioMessageDto(false, validation, null, null, null, null, null);
+            return new UsuarioMessageDto(false, validation, null, null, null, null, 
+null, null);
         } else {
             Usuario usuario = new Usuario();
             usuario.setUsuario(usuarioSaveDto.getUsuario());
@@ -152,7 +160,8 @@ public class UsuarioService {
                         usuarioSaveDto.getFechanacimiento(),
                         null, null);
                 docenteRepository.save(docente);
-                return new UsuarioMessageDto(true, "Ok", null, usuarioSaveDto, null, null, null);
+                return new UsuarioMessageDto(true, "Ok", null, null, usuarioSaveDto,
+ null, null, null);
             } else {
                 usuario.setTipousuario("ES");
                 if (ExistsDocenteSelectedSave(
@@ -174,10 +183,11 @@ public class UsuarioService {
                     Grupo grupo = new Grupo(0, docente, estudiante,
                             new Date(), true);
                     grupoRepository.save(grupo);
-                    return new UsuarioMessageDto(true, "Ok", null, usuarioSaveDto, null, null, null);
+                    return new UsuarioMessageDto(true, "Ok", null, null,
+ usuarioSaveDto, null, null, null);
                 } else {
                     return new UsuarioMessageDto(false, "El docente seleccionado"
-                            + " no existe", null, null, null, null, null);
+                            + " no existe", null, null, null, null, null, null);
                 }
             }
         }
@@ -193,7 +203,7 @@ public class UsuarioService {
                 if (u.isPresent()) {
                     return new UsuarioMessageDto(false, "El usuario: "
                             + usuarioUpdateDto.getUsuario() + " ya está en uso",
-                            null, null, null, null, null);
+                            null, null, null, null, null, null);
                 } else {
                     usuario.get().setUsuario(usuarioUpdateDto.getUsuario());
                 }
@@ -210,14 +220,14 @@ public class UsuarioService {
                         if (d.isPresent()) {
                             return new UsuarioMessageDto(false, "El Telefono: "
                                     + usuarioUpdateDto.getTelefono() + " ya está en uso",
-                                    null, null, null, null, null);
+                                    null, null, null, null, null, null);
                         } else {
                             docente.get().setTelefono(usuarioUpdateDto.getTelefono());
                             d = docenteRepository.findByCorreo(usuarioUpdateDto.getCorreo());
                             if (d.isPresent()) {
                                 return new UsuarioMessageDto(false, "El Correo: "
                                         + usuarioUpdateDto.getCorreo() + " ya está en uso",
-                                        null, null, null, null, null);
+                                        null, null, null, null, null, null);
                             } else {
                                 docente.get().setCorreo(usuarioUpdateDto.getCorreo());
                             }
@@ -230,10 +240,10 @@ public class UsuarioService {
                             usuarioUpdateDto.getFechanacimiento());
                     docenteRepository.save(docente.get());
                     return new UsuarioMessageDto(true, "Ok",
-                            null, null, usuarioUpdateDto, null, null);
+                            null, null, null, usuarioUpdateDto, null, null);
                 } else {
                     return new UsuarioMessageDto(false, "Id de docente inexistente",
-                            null, null, null, null, null);
+                            null, null, null, null, null, null);
                 }
             } else {
                 Optional<Estudiante> estudiante = estudianteRepository.findById(
@@ -244,14 +254,14 @@ public class UsuarioService {
                         if (d.isPresent()) {
                             return new UsuarioMessageDto(false, "El Telefono: "
                                     + usuarioUpdateDto.getTelefono() + " ya está en uso",
-                                    null, null, null, null, null);
+                                    null, null, null, null, null, null);
                         } else {
                             estudiante.get().setTelefono(usuarioUpdateDto.getTelefono());
                             d = estudianteRepository.findByCorreo(usuarioUpdateDto.getCorreo());
                             if (d.isPresent()) {
                                 return new UsuarioMessageDto(false, "El Correo: "
                                         + usuarioUpdateDto.getCorreo() + " ya está en uso",
-                                        null, null, null, null, null);
+                                        null, null, null, null, null, null);
                             } else {
                                 estudiante.get().setCorreo(usuarioUpdateDto.getCorreo());
                             }
@@ -264,15 +274,15 @@ public class UsuarioService {
                             usuarioUpdateDto.getFechanacimiento());
                     estudianteRepository.save(estudiante.get());
                     return new UsuarioMessageDto(true, "Ok",
-                            null, null, usuarioUpdateDto, null, null);
+                            null, null, null, usuarioUpdateDto, null, null);
                 } else {
                     return new UsuarioMessageDto(false, "Id de estudiante inexistente",
-                            null, null, null, null, null);
+                            null, null, null, null, null, null);
                 }
             }
         } else {
             return new UsuarioMessageDto(false, "Id de usuario inexistente",
-                    null, null, null, null, null);
+                    null, null, null, null, null, null);
         }
     }
 
@@ -297,21 +307,62 @@ public class UsuarioService {
                 String decif = jasyptService.DecryptValor(optionalUsuario.get()
                         .getClave());
                 if (decif.equals(credenciales.getPassword())) {
+                    UsuarioLoginDto userLogin = new UsuarioLoginDto();
+                    if (optionalUsuario.get().getDocente() == null
+                            && optionalUsuario.get().getEstudiante() != null) {
+                        EstudianteDto estudianteDto = new EstudianteDto(
+                                optionalUsuario.get().getEstudiante().getId(),
+                                optionalUsuario.get().getEstudiante().getNombres(),
+                                optionalUsuario.get().getEstudiante().getApellidos(),
+                                optionalUsuario.get().getEstudiante().getTelefono(),
+                                optionalUsuario.get().getEstudiante().getCorreo(),
+                                optionalUsuario.get().getEstudiante().getFechanacimiento(),
+                                optionalUsuario.get().getEstudiante().getStockcaritas(),
+                                optionalUsuario.get().getEstudiante().getGrupo(),
+                                optionalUsuario.get().getEstudiante().getInventario());
+                        userLogin.setId(optionalUsuario.get().getId());
+                        userLogin.setUsuario(optionalUsuario.get().getUsuario());
+                        userLogin.setClave(optionalUsuario.get().getClave());
+                        userLogin.setTipousuario(optionalUsuario.get().getTipousuario());
+                        userLogin.setActivo(optionalUsuario.get().isActivo());
+                        userLogin.setEstudiante(estudianteDto);
+                    } else if (optionalUsuario.get().getDocente() != null
+                            && optionalUsuario.get().getEstudiante() == null) {
+                        DocenteDto docenteDto = new DocenteDto(
+                                optionalUsuario.get().getDocente().getId(),
+                                optionalUsuario.get().getDocente().getNombres(),
+                                optionalUsuario.get().getDocente().getApellidos(),
+                                optionalUsuario.get().getDocente().getTelefono(),
+                                optionalUsuario.get().getDocente().getCorreo(),
+                                optionalUsuario.get().getDocente().getFechanacimiento());
+                        userLogin.setId(optionalUsuario.get().getId());
+                        userLogin.setUsuario(optionalUsuario.get().getUsuario());
+                        userLogin.setClave(optionalUsuario.get().getClave());
+                        userLogin.setTipousuario(optionalUsuario.get().getTipousuario());
+                        userLogin.setActivo(optionalUsuario.get().isActivo());
+                        userLogin.setDocente(docenteDto);
+                    } else {
+                        userLogin.setId(optionalUsuario.get().getId());
+                        userLogin.setUsuario(optionalUsuario.get().getUsuario());
+                        userLogin.setClave(optionalUsuario.get().getClave());
+                        userLogin.setTipousuario(optionalUsuario.get().getTipousuario());
+                        userLogin.setActivo(optionalUsuario.get().isActivo());
+                    }
                     return new UsuarioMessageDto(true, "Ok",
-                            optionalUsuario.get(), null, null, null, null);
+                            null, userLogin, null, null, null, null);
                 } else {
                     return new UsuarioMessageDto(false, "La clave es incorrecta",
-                            null, null, null, null, null);
+                            null, null, null, null, null, null);
                 }
             } else {
                 return new UsuarioMessageDto(false, "El usuario: "
                         + credenciales.getUsername() + " tiene desactivada la cuenta",
-                        null, null, null, null, null);
+                        null, null, null, null, null, null);
             }
         } else {
             return new UsuarioMessageDto(false, "El usuario: "
                     + credenciales.getUsername() + " no existe en el sistema",
-                    null, null, null, null, null);
+                    null, null, null, null, null, null);
         }
     }
 

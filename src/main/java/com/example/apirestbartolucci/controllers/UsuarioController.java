@@ -91,7 +91,7 @@ public class UsuarioController {
         UsuarioMessageDto optionalUsuario
                 = usuarioService.LoginByUsuarioAndClave(credentiales);
         if (optionalUsuario.isStatus()) {
-            return new ResponseEntity(optionalUsuario.getUsuario(), HttpStatus.OK);
+            return new ResponseEntity(optionalUsuario.getUsuarioLoginDto(), HttpStatus.OK);
         } else {
             return new ResponseEntity(new Mensaje(optionalUsuario.getMessage()),
                     HttpStatus.OK);

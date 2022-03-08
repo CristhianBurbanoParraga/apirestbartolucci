@@ -16,6 +16,7 @@ public class UsuarioMessageDto {
     private boolean status;
     private String message;
     private Usuario usuario;
+    private UsuarioLoginDto usuarioLoginDto;
     private UsuarioSaveDto saveDto;
     private UsuarioUpdateDto updateDto;
     private ArrayList<Usuario> usuarios;
@@ -25,11 +26,12 @@ public class UsuarioMessageDto {
     }
 
     public UsuarioMessageDto(boolean status, String message, Usuario usuario,
-            UsuarioSaveDto saveDto, UsuarioUpdateDto updateDto,
+            UsuarioLoginDto usuarioLoginDto, UsuarioSaveDto saveDto, UsuarioUpdateDto updateDto,
             ArrayList<Usuario> usuarios, ArrayList<UsuarioDto> usuariosDto) {
         this.status = status;
         this.message = message;
         this.usuario = usuario;
+        this.usuarioLoginDto = usuarioLoginDto;
         this.saveDto = saveDto;
         this.updateDto = updateDto;
         this.usuarios = usuarios;
@@ -58,6 +60,14 @@ public class UsuarioMessageDto {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public UsuarioLoginDto getUsuarioLoginDto() {
+        return usuarioLoginDto;
+    }
+
+    public void setUsuarioLoginDto(UsuarioLoginDto usuarioLoginDto) {
+        this.usuarioLoginDto = usuarioLoginDto;
     }
 
     public UsuarioSaveDto getSaveDto() {
