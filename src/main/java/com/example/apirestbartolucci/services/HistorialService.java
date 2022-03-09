@@ -165,6 +165,29 @@ public class HistorialService {
         }
     }
 
+    public int GetCountHistorialByEstudianteAndNivel(int idNivel,
+            int idEstudiante) {
+        Optional<Estudiante> estudiante = estudianteRepository.findById(idEstudiante);
+        if (estudiante.isPresent()) {
+            ArrayList<Historial> historiales
+                    = historialRepository.findByEstudiante(estudiante.get());
+            if (historiales.isEmpty()) {
+                return -1;
+            } else {
+                int count = 0;
+                for (int i = 0; i < historiales.size(); i++) {
+                    if (historiales.get(i).getActividad().getSubnivel()
+                            .getNivel().getId() == idNivel) {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        } else {
+            return -1;
+        }
+    }
+
     public HistorialMessageDto SaveHistorial(HistorialSaveDto historialSaveDto) {
         Optional<Estudiante> estudiante = estudianteRepository.findById(
                 historialSaveDto.getIdEstudiante());
