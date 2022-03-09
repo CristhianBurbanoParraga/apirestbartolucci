@@ -9,6 +9,8 @@ import com.example.apirestbartolucci.dtos.actividad.ActividadSaveDto;
 import com.example.apirestbartolucci.dtos.actividad.ActividadUpdateDto;
 import com.example.apirestbartolucci.models.Mensaje;
 import com.example.apirestbartolucci.services.ActividadService;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -135,6 +137,23 @@ public class ActividadController {
                     HttpStatus.OK);
         } else {
             return new ResponseEntity(new Mensaje(actividades.getMessage()),
+                    HttpStatus.OK);
+        }
+    }
+
+    @GetMapping(path = "/countByNivelAndDocente")
+    public ResponseEntity<?> GetCountByNivelAndDocente(
+            @RequestParam("idNivel") int idNivel,
+            @RequestParam("idDocente") int idDocente) {
+        Map<String, Integer> mapValue = new HashMap<>();
+        int count = actividadService.GetCountActividadByNivelAndDocente(
+                idNivel, idDocente);
+        if (count < 0) {
+            return new ResponseEntity(new Mensaje("Docente inexistento o sin items"),
+                    HttpStatus.OK);
+        } else {
+            mapValue.put("count", count);
+            return new ResponseEntity(mapValue,
                     HttpStatus.OK);
         }
     }

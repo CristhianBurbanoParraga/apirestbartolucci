@@ -235,6 +235,27 @@ public class ActividadService {
         }
     }
 
+    public int GetCountActividadByNivelAndDocente(int idNivel, int idDocente) {
+        Optional<Docente> docente = docenteRepository.findById(idDocente);
+        if (docente.isPresent()) {
+            ArrayList<Actividad> actividades
+                    = actividadRepository.findByDocente(docente.get());
+            if (actividades.isEmpty()) {
+                return -1;
+            } else {
+                int count = 0;
+                for (int i = 0; i < actividades.size(); i++) {
+                    if (actividades.get(i).getSubnivel().getNivel().getId() == idNivel) {
+                        count++;
+                    }
+                }
+                return count;
+            }
+        } else {
+            return -1;
+        }
+    }
+
     public ActividadMessageDto SaveActividad(ActividadSaveDto actividadSaveDto) {
         Optional<Subnivel> subnivel = subnivelRepository
                 .findById(actividadSaveDto.getIdSubnivel());
