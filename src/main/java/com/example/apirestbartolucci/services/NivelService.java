@@ -8,6 +8,7 @@ package com.example.apirestbartolucci.services;
  *
  * @author criss
  */
+import com.example.apirestbartolucci.dtos.actividad.ActividadOtherDto;
 import com.example.apirestbartolucci.dtos.nivel.NivelDto;
 import com.example.apirestbartolucci.dtos.nivel.NivelMessageDto;
 import com.example.apirestbartolucci.dtos.nivel.NivelSaveDto;
@@ -15,6 +16,7 @@ import com.example.apirestbartolucci.dtos.nivel.NivelUpdateDto;
 import com.example.apirestbartolucci.dtos.subnivel.SubnivelDto;
 import com.example.apirestbartolucci.dtos.subnivel.SubnivelMessageDto;
 import com.example.apirestbartolucci.models.Nivel;
+import com.example.apirestbartolucci.models.Subnivel;
 import com.example.apirestbartolucci.repositories.NivelRepository;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -29,6 +31,9 @@ public class NivelService {
 
     @Autowired
     SubnivelService subnivelService;
+
+    @Autowired
+    ActividadService actividadService;
 
     public NivelMessageDto GetAllNiveles() {
         ArrayList<Nivel> niveles
@@ -50,7 +55,8 @@ public class NivelService {
                             subniveles.getSubniveles().get(j).getPrioridad(),
                             subniveles.getSubniveles().get(j).getPublicid(),
                             subniveles.getSubniveles().get(j).getUrl(),
-                            subniveles.getSubniveles().get(j).isActivo());
+                            subniveles.getSubniveles().get(j).isActivo(),
+                            new ArrayList<>());
                     subnivelesDto.add(item2);
                 }
                 NivelDto item = new NivelDto(
@@ -63,6 +69,56 @@ public class NivelService {
                         niveles.get(i).isActivo(),
                         subnivelesDto);
                 nivelesDto.add(item);
+            }
+            return new NivelMessageDto(true, "Ok", null, null, nivelesDto);
+        }
+    }
+
+    public NivelMessageDto GetNivelByDocenteAndEstudiante(int idDocente,
+            int idEstudiante) {
+        ArrayList<Nivel> niveles
+                = (ArrayList<Nivel>) nivelRepository.findByOrderByPrioridadAsc();
+        if (niveles.isEmpty()) {
+            return new NivelMessageDto(false, "No hay registros", null, null, new ArrayList<>());
+        } else {
+            ArrayList<NivelDto> nivelesDto = new ArrayList<>();
+            for (int i = 0; i < niveles.size(); i++) {
+                ArrayList<Subnivel> subniveles = subnivelService.GetSubnivelByIdNivel(
+                        niveles.get(i).getId()).getSubniveles();
+                ArrayList<SubnivelDto> subnivelesDto = new ArrayList<>();
+                for (int j = 0; j < subniveles.size(); j++) {
+                    ArrayList<ActividadOtherDto> actividadesDto
+                            = actividadService.GetActividadBySubnivelAndDocente(
+                                    subniveles.get(j).getId(), idDocente).getActividadesOtherDtos();
+                    for (int k = 0; k < actividadesDto.size(); k++) {
+                        for (int l = 0; l < actividadesDto.get(k).getHistorial().size(); l++) {
+                            if (actividadesDto.get(k).getHistorial().get(l).getIdEstudiante() != idEstudiante) {
+                                actividadesDto.get(k).getHistorial().remove(l);
+                            }
+                        }
+                    }
+                    SubnivelDto subnivelDtoItem = new SubnivelDto(
+                            subniveles.get(j).getId(),
+                            subniveles.get(j).getNombre(),
+                            subniveles.get(j).getDescripcion(),
+                            subniveles.get(j).getNumactividades(),
+                            subniveles.get(j).getPrioridad(),
+                            subniveles.get(j).getPublicid(),
+                            subniveles.get(j).getUrl(),
+                            subniveles.get(j).isActivo(),
+                            actividadesDto);
+                    subnivelesDto.add(subnivelDtoItem);
+                }
+                NivelDto nivelDtoItem = new NivelDto(
+                        niveles.get(i).getId(),
+                        niveles.get(i).getNombre(),
+                        niveles.get(i).getDescripcion(),
+                        niveles.get(i).getPrioridad(),
+                        niveles.get(i).getPublicid(),
+                        niveles.get(i).getUrl(),
+                        niveles.get(i).isActivo(),
+                        subnivelesDto);
+                nivelesDto.add(nivelDtoItem);
             }
             return new NivelMessageDto(true, "Ok", null, null, nivelesDto);
         }

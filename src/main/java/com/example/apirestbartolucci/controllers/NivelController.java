@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -70,6 +71,20 @@ public class NivelController {
         NivelMessageDto niveles = nivelService.GetNivelByStatus(activo);
         if (niveles.isStatus()) {
             return new ResponseEntity(niveles.getNiveles(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity(new Mensaje(niveles.getMessage()), HttpStatus.OK);
+        }
+    }
+
+    @GetMapping(path = "/byDocenteAndEstudiante")
+    public ResponseEntity<?> GetAll(
+            @RequestParam("idDocente") int idDocente,
+            @RequestParam("idEstudiante") int idEstudiante) {
+        NivelMessageDto niveles
+                = nivelService.GetNivelByDocenteAndEstudiante(idDocente, idEstudiante);
+        if (niveles.isStatus()) {
+            return new ResponseEntity(niveles.getNivelesDto(),
+                    HttpStatus.OK);
         } else {
             return new ResponseEntity(new Mensaje(niveles.getMessage()), HttpStatus.OK);
         }

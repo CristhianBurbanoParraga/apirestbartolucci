@@ -101,7 +101,7 @@ public class SubnivelService {
                 return new SubnivelMessageDto(true, "Ok", null, subniveles, null);
             }
         } else {
-            return new SubnivelMessageDto(false, "Id nivel inexistente", null, null, null);
+            return new SubnivelMessageDto(false, "Id nivel inexistente", null, new ArrayList<>(), null);
         }
     }
 

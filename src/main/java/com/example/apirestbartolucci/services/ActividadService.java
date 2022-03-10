@@ -127,7 +127,7 @@ public class ActividadService {
                     return new ActividadMessageDto(false, "No existen actividades "
                             + "registradas con el Id Subnivel: " + idSubnivel
                             + " y Id Docente: " + idDocente,
-                            null, null, null, null, null);
+                            null, null, null, null, new ArrayList<>());
                 } else {
                     //ArrayList<Actividad> actividadesAux = new ArrayList<>();
                     ArrayList<ActividadOtherDto> actividadesAux = new ArrayList<>();
@@ -162,11 +162,11 @@ public class ActividadService {
                 }
             } else {
                 return new ActividadMessageDto(false, "Id Docente inexistente",
-                        null, null, null, null, null);
+                        null, null, null, null, new ArrayList<>());
             }
         } else {
             return new ActividadMessageDto(false, "Id Subnivel inexistente",
-                    null, null, null, null, null);
+                    null, null, null, null, new ArrayList<>());
         }
     }
 

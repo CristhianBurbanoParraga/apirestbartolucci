@@ -4,6 +4,9 @@
  */
 package com.example.apirestbartolucci.dtos.subnivel;
 
+import com.example.apirestbartolucci.dtos.actividad.ActividadOtherDto;
+import java.util.ArrayList;
+
 /**
  *
  * @author criss
@@ -18,13 +21,14 @@ public class SubnivelDto {
     private String publicid;
     private String url;
     private boolean activo;
+    private ArrayList<ActividadOtherDto> actividades;
 
     public SubnivelDto() {
     }
 
     public SubnivelDto(int id, String nombre, String descripcion,
             int numactividades, int prioridad, String publicid, String url,
-            boolean activo) {
+            boolean activo, ArrayList<ActividadOtherDto> actividades) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -33,6 +37,7 @@ public class SubnivelDto {
         this.publicid = publicid;
         this.url = url;
         this.activo = activo;
+        this.actividades = actividades;
     }
 
     public int getId() {
@@ -97,6 +102,14 @@ public class SubnivelDto {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    public ArrayList<ActividadOtherDto> getActividades() {
+        return actividades;
+    }
+
+    public void setActividades(ArrayList<ActividadOtherDto> actividades) {
+        this.actividades = actividades;
     }
 
 }
