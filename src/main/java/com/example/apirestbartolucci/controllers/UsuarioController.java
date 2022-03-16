@@ -42,7 +42,7 @@ public class UsuarioController {
             return new ResponseEntity(usuarios.getUsuarios(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(usuarios.getMessage()),
+            return new ResponseEntity(usuarios.getUsuarios(),
                     HttpStatus.OK);
         }
     }
@@ -67,7 +67,7 @@ public class UsuarioController {
             return new ResponseEntity(usuarios.getUsuariosDto(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(usuarios.getMessage()),
+            return new ResponseEntity(usuarios.getUsuariosDto(),
                     HttpStatus.OK);
         }
     }
@@ -80,7 +80,7 @@ public class UsuarioController {
             return new ResponseEntity(usuarios.getUsuarios(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(usuarios.getMessage()),
+            return new ResponseEntity(usuarios.getUsuarios(),
                     HttpStatus.OK);
         }
     }

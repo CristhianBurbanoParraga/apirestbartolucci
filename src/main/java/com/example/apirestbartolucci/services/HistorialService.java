@@ -58,7 +58,7 @@ public class HistorialService {
                 = (ArrayList<Historial>) historialRepository.findAll();
         if (historiales.isEmpty()) {
             return new HistorialMessageDto(false, "No hay registros",
-                    null, null, null, null);
+                    null, null, null, new ArrayList<>());
         } else {
             ArrayList<Integer> ids = new ArrayList<>();
             ArrayList<HistorialListDto> list = new ArrayList<>();
@@ -136,7 +136,7 @@ public class HistorialService {
             ArrayList<Grupo> grupos = grupoRepository.findByDocente(docente.get());
             if (grupos.isEmpty()) {
                 return new HistorialMessageDto(false, "El docente no tiene estudiantes asignados",
-                        null, null, null, null);
+                        null, null, null, new ArrayList<>());
             } else {
                 ArrayList<Integer> ids = new ArrayList<>();
                 ArrayList<HistorialListDto> list = new ArrayList<>();
@@ -161,7 +161,7 @@ public class HistorialService {
             }
         } else {
             return new HistorialMessageDto(false, "Id docente inexistente",
-                    null, null, null, null);
+                    null, null, null, new ArrayList<>());
         }
     }
 

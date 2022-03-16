@@ -40,7 +40,7 @@ public class ContenidoController {
             return new ResponseEntity(contenidos.getContenidos(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(contenidos.getMessage()),
+            return new ResponseEntity(contenidos.getContenidos(),
                     HttpStatus.OK);
         }
     }
@@ -65,7 +65,7 @@ public class ContenidoController {
             return new ResponseEntity(contenidos.getContenidos(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(contenidos.getMessage()),
+            return new ResponseEntity(contenidos.getContenidos(),
                     HttpStatus.OK);
         }
     }
@@ -79,7 +79,7 @@ public class ContenidoController {
             return new ResponseEntity(contenidos.getContenidos(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(contenidos.getMessage()),
+            return new ResponseEntity(contenidos.getContenidos(),
                     HttpStatus.OK);
         }
     }

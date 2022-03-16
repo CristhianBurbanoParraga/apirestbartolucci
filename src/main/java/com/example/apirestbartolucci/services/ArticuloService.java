@@ -28,7 +28,7 @@ public class ArticuloService {
         ArrayList<Articulo> articulos
                 = (ArrayList<Articulo>) articuloRepository.findAll();
         if (articulos.isEmpty()) {
-            return new ArticuloMessageDto(false, "No hay registros", null, null);
+            return new ArticuloMessageDto(false, "No hay registros", null, new ArrayList<>());
         } else {
             return new ArticuloMessageDto(true, "Ok", null, articulos);
         }
@@ -59,7 +59,7 @@ public class ArticuloService {
                 = (ArrayList<Articulo>) articuloRepository.findByActivo(activo);
         if (articulos.isEmpty()) {
             return new ArticuloMessageDto(false, "No hay articulos con Estado: "
-                    + activo, null, null);
+                    + activo, null, new ArrayList<>());
         } else {
             return new ArticuloMessageDto(true, "Ok", null, articulos);
         }

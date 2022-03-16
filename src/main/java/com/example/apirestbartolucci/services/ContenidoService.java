@@ -33,7 +33,7 @@ public class ContenidoService {
         ArrayList<Contenido> contenidos
                 = (ArrayList<Contenido>) contenidoRepository.findAll();
         if (contenidos.isEmpty()) {
-            return new ContenidoMessageDto(false, "No hay registros", null, null);
+            return new ContenidoMessageDto(false, "No hay registros", null, new ArrayList<>());
         } else {
             return new ContenidoMessageDto(true, "Ok", null, contenidos);
         }
@@ -57,13 +57,13 @@ public class ContenidoService {
                     = contenidoRepository.findByActividad(actividad.get());
             if (contenidos.isEmpty()) {
                 return new ContenidoMessageDto(false, "No hay contenidos "
-                        + "registrados con Id de actividad: " + idActividad, null, null);
+                        + "registrados con Id de actividad: " + idActividad, null, new ArrayList<>());
             } else {
                 return new ContenidoMessageDto(true, "Ok", null, contenidos);
             }
         } else {
             return new ContenidoMessageDto(false, "No existe actividad con Id: "
-                    + idActividad, null, null);
+                    + idActividad, null, new ArrayList<>());
         }
     }
 
@@ -72,7 +72,7 @@ public class ContenidoService {
                 = (ArrayList<Contenido>) contenidoRepository.findByActivo(activo);
         if (contenidos.isEmpty()) {
             return new ContenidoMessageDto(false, "No hay contenidos con Estado: "
-                    + activo, null, null);
+                    + activo, null, new ArrayList<>());
         } else {
             return new ContenidoMessageDto(true, "Ok", null, contenidos);
         }

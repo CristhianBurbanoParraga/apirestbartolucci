@@ -42,7 +42,7 @@ public class MultimediaService {
         ArrayList<Multimedia> multimedias
                 = (ArrayList<Multimedia>) multimediaRepository.findAll();
         if (multimedias.isEmpty()) {
-            return new MultimediaMessageDto(false, "No hay registros", null, null, null);
+            return new MultimediaMessageDto(false, "No hay registros", null, null, new ArrayList<>());
         } else {
             return new MultimediaMessageDto(true, "Ok", null, null, multimedias);
         }
@@ -66,13 +66,13 @@ public class MultimediaService {
                     = multimediaRepository.findByContenido(contenido.get());
             if (multimedias.isEmpty()) {
                 return new MultimediaMessageDto(false, "No hay registros de multmedia "
-                        + "con Id de contenido: " + idContenido, null, null, null);
+                        + "con Id de contenido: " + idContenido, null, null, new ArrayList<>());
             } else {
                 return new MultimediaMessageDto(true, "Ok", null, null, multimedias);
             }
         } else {
             return new MultimediaMessageDto(false, "Id de contenido inexistente",
-                    null, null, null);
+                    null, null, new ArrayList<>());
         }
     }
 

@@ -5,11 +5,8 @@
 package com.example.apirestbartolucci.controllers;
 
 import com.example.apirestbartolucci.dtos.inventario.InventarioMessageDto;
-import com.example.apirestbartolucci.models.Inventario;
 import com.example.apirestbartolucci.models.Mensaje;
 import com.example.apirestbartolucci.services.InventarioService;
-import java.util.ArrayList;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,7 +38,7 @@ public class InventarioController {
             return new ResponseEntity(inventarios.getInventarios(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(inventarios.getMessage()),
+            return new ResponseEntity(inventarios.getInventarios(),
                     HttpStatus.OK);
         }
     }
@@ -65,7 +62,7 @@ public class InventarioController {
         if (inventarios.isStatus()) {
             return new ResponseEntity(inventarios.getInventarios(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(inventarios.getMessage()),
+            return new ResponseEntity(inventarios.getInventarios(),
                     HttpStatus.OK);
         }
     }
@@ -80,7 +77,7 @@ public class InventarioController {
         if (inventarios.isStatus()) {
             return new ResponseEntity(inventarios.getInventarios(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(inventarios.getMessage()),
+            return new ResponseEntity(inventarios.getInventarios(),
                     HttpStatus.OK);
         }
     }
@@ -95,7 +92,7 @@ public class InventarioController {
         if (inventarios.isStatus()) {
             return new ResponseEntity(inventarios.getInventarios(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(inventarios.getMessage()),
+            return new ResponseEntity(inventarios.getInventarios(),
                     HttpStatus.OK);
         }
     }

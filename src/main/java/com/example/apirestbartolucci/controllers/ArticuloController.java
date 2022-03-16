@@ -39,7 +39,7 @@ public class ArticuloController {
         if (articulos.isStatus()) {
             return new ResponseEntity(articulos.getArticulos(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(articulos.getMessage()),
+            return new ResponseEntity(articulos.getArticulos(),
                     HttpStatus.OK);
         }
     }
@@ -76,7 +76,7 @@ public class ArticuloController {
         if (articulos.isStatus()) {
             return new ResponseEntity(articulos.getArticulos(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(articulos.getMessage()),
+            return new ResponseEntity(articulos.getArticulos(),
                     HttpStatus.OK);
         }
     }

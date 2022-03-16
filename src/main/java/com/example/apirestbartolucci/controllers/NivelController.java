@@ -40,7 +40,7 @@ public class NivelController {
             return new ResponseEntity(niveles.getNivelesDto(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(niveles.getMessage()), HttpStatus.OK);
+            return new ResponseEntity(niveles.getNivelesDto(), HttpStatus.OK);
         }
     }
 
@@ -72,7 +72,7 @@ public class NivelController {
         if (niveles.isStatus()) {
             return new ResponseEntity(niveles.getNiveles(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(niveles.getMessage()), HttpStatus.OK);
+            return new ResponseEntity(niveles.getNiveles(), HttpStatus.OK);
         }
     }
 
@@ -86,7 +86,7 @@ public class NivelController {
             return new ResponseEntity(niveles.getNivelesDto(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(niveles.getMessage()), HttpStatus.OK);
+            return new ResponseEntity(niveles.getNivelesDto(), HttpStatus.OK);
         }
     }
 

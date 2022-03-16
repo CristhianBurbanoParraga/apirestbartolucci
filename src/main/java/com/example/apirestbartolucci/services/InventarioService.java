@@ -37,7 +37,7 @@ public class InventarioService {
         ArrayList<Inventario> inventarios
                 = (ArrayList<Inventario>) inventarioRepository.findAll();
         if (inventarios.isEmpty()) {
-            return new InventarioMessageDto(false, "No hay registros", null, null);
+            return new InventarioMessageDto(false, "No hay registros", null, new ArrayList<>());
         } else {
             return new InventarioMessageDto(true, "Ok", null, inventarios);
         }
@@ -60,13 +60,13 @@ public class InventarioService {
                     = inventarioRepository.findByEstudiante(estudiante.get());
             if (inventarios.isEmpty()) {
                 return new InventarioMessageDto(false, "No hay registros de "
-                        + "inventario para el Estudiante con Id: " + id, null, null);
+                        + "inventario para el Estudiante con Id: " + id, null, new ArrayList<>());
             } else {
                 return new InventarioMessageDto(true, "Ok", null, inventarios);
             }
         } else {
             return new InventarioMessageDto(false, "No existe un Estudiante con Id: "
-                    + id, null, null);
+                    + id, null, new ArrayList<>());
         }
     }
 
@@ -80,13 +80,13 @@ public class InventarioService {
             if (inventarios.isEmpty()) {
                 return new InventarioMessageDto(false, "No hay registros de "
                         + "inventario con Selected: " + seleccionado + " para el "
-                        + "Estudiante con Id: " + id, null, null);
+                        + "Estudiante con Id: " + id, null, new ArrayList<>());
             } else {
                 return new InventarioMessageDto(true, "Ok", null, inventarios);
             }
         } else {
             return new InventarioMessageDto(false, "No existe un Estudiante con Id: "
-                    + id, null, null);
+                    + id, null, new ArrayList<>());
         }
     }
 
@@ -100,13 +100,13 @@ public class InventarioService {
             if (inventarios.isEmpty()) {
                 return new InventarioMessageDto(false, "No hay registros de "
                         + "inventario con Estado: " + activo + " para el "
-                        + "Estudiante con Id: " + id, null, null);
+                        + "Estudiante con Id: " + id, null, new ArrayList<>());
             } else {
                 return new InventarioMessageDto(true, "Ok", null, inventarios);
             }
         } else {
             return new InventarioMessageDto(false, "No existe un Estudiante con Id: "
-                    + id, null, null);
+                    + id, null, new ArrayList<>());
         }
     }
 

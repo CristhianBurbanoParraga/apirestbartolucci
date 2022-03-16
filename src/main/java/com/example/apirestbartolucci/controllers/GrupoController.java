@@ -36,7 +36,7 @@ public class GrupoController {
             return new ResponseEntity(grupos.getListByDocenteDto(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(grupos.getMessage()),
+            return new ResponseEntity(grupos.getListByDocenteDto(),
                     HttpStatus.OK);
         }
     }
@@ -52,19 +52,6 @@ public class GrupoController {
         }
     }
 
-    /*@GetMapping(path = "/byFechaRegistro")
-    public ResponseEntity<?> GetByFecharegistro(
-            @RequestParam("fecha") Date fecharegistro) {
-        ArrayList<Grupo> grupos
-                = grupoService.GetGruposByFecharegistro(fecharegistro);
-        if (grupos.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay registros con la"
-                    + " fecha: " + String.valueOf(fecharegistro)),
-                    HttpStatus.OK);
-        } else {
-            return new ResponseEntity(grupos, HttpStatus.OK);
-        }
-    }*/
     @GetMapping(path = "/byDocente")
     public ResponseEntity<?> GetByIdDocente(
             @RequestParam("idDocente") int id) {
@@ -77,17 +64,6 @@ public class GrupoController {
         }
     }
 
-    /*@GetMapping(path = "/byEstudiante")
-    public ResponseEntity<?> GetByIdEstudiante(
-            @RequestParam("idEstudiante") int id) {
-        ArrayList<Grupo> grupos = grupoService.GetGrupoByIdEstudiante(id);
-        if (grupos.isEmpty()) {
-            return new ResponseEntity(new Mensaje("No hay grupos con este "
-                    + "estudiante"), HttpStatus.OK);
-        } else {
-            return new ResponseEntity(grupos, HttpStatus.OK);
-        }
-    }*/
     @PutMapping(path = "/changeStatus")
     public Mensaje ChangeStatusGrupo(@RequestParam("id") int id,
             @RequestParam("activo") boolean activo) {

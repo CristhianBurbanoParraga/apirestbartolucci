@@ -40,7 +40,7 @@ public class SubnivelController {
             return new ResponseEntity(subniveles.getSubnivelesDto(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(subniveles.getMessage()),
+            return new ResponseEntity(subniveles.getSubnivelesDto(),
                     HttpStatus.OK);
         }
     }
@@ -77,7 +77,7 @@ public class SubnivelController {
         if (subniveles.isStatus()) {
             return new ResponseEntity(subniveles.getSubniveles(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(subniveles.getMessage()),
+            return new ResponseEntity(subniveles.getSubniveles(),
                     HttpStatus.OK);
         }
     }
@@ -89,7 +89,7 @@ public class SubnivelController {
         if (subniveles.isStatus()) {
             return new ResponseEntity(subniveles.getSubniveles(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(subniveles.getMessage()),
+            return new ResponseEntity(subniveles.getSubniveles(),
                     HttpStatus.OK);
         }
     }

@@ -8,7 +8,6 @@ import com.example.apirestbartolucci.dtos.historial.HistorialMessageDto;
 import com.example.apirestbartolucci.dtos.historial.HistorialSaveDto;
 import com.example.apirestbartolucci.models.Mensaje;
 import com.example.apirestbartolucci.services.HistorialService;
-import com.google.common.collect.HashBiMap;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ public class HistorialController {
             return new ResponseEntity(historial.getListActividadesDto(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(historial.getMessage()),
+            return new ResponseEntity(historial.getListActividadesDto(),
                     HttpStatus.OK);
         }
     }
@@ -81,7 +80,7 @@ public class HistorialController {
             return new ResponseEntity(historial.getListActividadesDto(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(historial.getMessage()),
+            return new ResponseEntity(historial.getListActividadesDto(),
                     HttpStatus.OK);
         }
     }

@@ -39,7 +39,7 @@ public class NivelService {
         ArrayList<Nivel> niveles
                 = (ArrayList<Nivel>) nivelRepository.findByOrderByPrioridadAsc();
         if (niveles.isEmpty()) {
-            return new NivelMessageDto(false, "No hay registros", null, null, null);
+            return new NivelMessageDto(false, "No hay registros", null, null, new ArrayList<>());
         } else {
             ArrayList<NivelDto> nivelesDto = new ArrayList<>();
             for (int i = 0; i < niveles.size(); i++) {
@@ -148,7 +148,7 @@ public class NivelService {
                 = (ArrayList<Nivel>) nivelRepository.findByActivo(activo);
         if (niveles.isEmpty()) {
             return new NivelMessageDto(false, "No hay niveles con Estado: "
-                    + activo, null, null, null);
+                    + activo, null, new ArrayList<>(), null);
         } else {
             return new NivelMessageDto(true, "Ok", null, niveles, null);
         }

@@ -48,7 +48,7 @@ public class ActividadService {
                 = (ArrayList<Actividad>) actividadRepository.findByOrderByIdAsc();
         if (actividades.isEmpty()) {
             return new ActividadMessageDto(false, "No hay registros", null, null, null,
-                    new ArrayList<ActividadDto>(), null);
+                    new ArrayList<>(), null);
         } else {
             ArrayList<ActividadDto> actividadesDto = new ArrayList<>();
             for (int i = 0; i < actividades.size(); i++) {
@@ -88,13 +88,13 @@ public class ActividadService {
             if (actividades.isEmpty()) {
                 return new ActividadMessageDto(false, "No existen actividades "
                         + "registradas con el Id Subnivel: " + idSubnivel,
-                        null, null, null, null, null);
+                        null, null, new ArrayList<>(), null, null);
             } else {
                 return new ActividadMessageDto(true, "Ok", null, null, actividades, null, null);
             }
         } else {
             return new ActividadMessageDto(false, "Id Subnivel inexistente",
-                    null, null, null, null, null);
+                    null, null, new ArrayList<>(), null, null);
         }
     }
 
@@ -106,13 +106,13 @@ public class ActividadService {
             if (actividades.isEmpty()) {
                 return new ActividadMessageDto(false, "No existen actividades "
                         + "registradas con el Id Docente: " + idDocente,
-                        null, null, null, null, null);
+                        null, null, new ArrayList<>(), null, null);
             } else {
                 return new ActividadMessageDto(true, "Ok", null, null, actividades, null, null);
             }
         } else {
             return new ActividadMessageDto(false, "Id Docente inexistente",
-                    null, null, null, null, null);
+                    null, null, new ArrayList<>(), null, null);
         }
     }
 
@@ -175,7 +175,7 @@ public class ActividadService {
         ArrayList<Actividad> actividades = actividadRepository.findByNombre(nombre);
         if (actividades.isEmpty()) {
             return new ActividadMessageDto(false, "No existe actividades con Nombre: "
-                    + nombre, null, null, null, null, null);
+                    + nombre, null, null, new ArrayList<>(), null, null);
         } else {
             return new ActividadMessageDto(true, "Ok", null, null, actividades, null, null);
         }
@@ -185,7 +185,7 @@ public class ActividadService {
         ArrayList<Actividad> actividades = actividadRepository.findByActivo(activo);
         if (actividades.isEmpty()) {
             return new ActividadMessageDto(false, "No existe actividades con Estado: "
-                    + activo, null, null, null, null, null);
+                    + activo, null, null, new ArrayList<>(), null, null);
         } else {
             return new ActividadMessageDto(true, "Ok", null, null, actividades, null, null);
         }
@@ -198,7 +198,7 @@ public class ActividadService {
                     .findByDocenteAndTipo(docente.get(), "EV");
             if (actividades.isEmpty()) {
                 return new ActividadMessageDto(false, "Este docente no ha creado "
-                        + "actividades de tipo Evaluativas", null, null, null, null, null);
+                        + "actividades de tipo Evaluativas", null, new ArrayList<>(), null, null, null);
             } else {
                 ArrayList<Integer> idsNivel = new ArrayList<>();
                 ArrayList<ActividadListTypeEvaluativaDto> list = new ArrayList<>();
@@ -232,7 +232,7 @@ public class ActividadService {
             }
         } else {
             return new ActividadMessageDto(false, "Id de docente inexistente", null,
-                    null, null, null, null);
+                    new ArrayList<>(), null, null, null);
         }
     }
 

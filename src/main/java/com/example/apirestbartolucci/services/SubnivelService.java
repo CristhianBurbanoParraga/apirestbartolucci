@@ -4,7 +4,6 @@
  */
 package com.example.apirestbartolucci.services;
 
-import com.example.apirestbartolucci.dtos.subnivel.SubnivelDto;
 import com.example.apirestbartolucci.dtos.subnivel.SubnivelMessageDto;
 import com.example.apirestbartolucci.dtos.subnivel.SubnivelSaveDto;
 import com.example.apirestbartolucci.dtos.subnivel.SubnivelTwoVersionDto;
@@ -37,7 +36,7 @@ public class SubnivelService {
                 = (ArrayList<Subnivel>) subnivelRepository.findByOrderByNivelAsc(
                         Sort.by(Sort.Direction.ASC, "prioridad"));
         if (subniveles.isEmpty()) {
-            return new SubnivelMessageDto(false, "No hay registros", null, null, null);
+            return new SubnivelMessageDto(false, "No hay registros", null, null, new ArrayList<>());
         } else {
             ArrayList<SubnivelTwoVersionDto> subnivelesDto = new ArrayList<>();
             for (int i = 0; i < subniveles.size(); i++) {
@@ -82,7 +81,7 @@ public class SubnivelService {
                 = (ArrayList<Subnivel>) subnivelRepository.findByActivo(activo);
         if (subniveles.isEmpty()) {
             return new SubnivelMessageDto(false, "No existe subniveles con Estado: "
-                    + activo, null, null, null);
+                    + activo, null, new ArrayList<>(), null);
         } else {
             return new SubnivelMessageDto(true, "Ok", null, subniveles, null);
         }

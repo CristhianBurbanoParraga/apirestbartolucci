@@ -42,7 +42,7 @@ public class MultimediaController {
             return new ResponseEntity(multimedias.getMultimedias(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(multimedias.getMessage()),
+            return new ResponseEntity(multimedias.getMultimedias(),
                     HttpStatus.OK);
         }
     }
@@ -68,7 +68,7 @@ public class MultimediaController {
             return new ResponseEntity(multimeidas.getMultimedias(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(multimeidas.getMessage()),
+            return new ResponseEntity(multimeidas.getMultimedias(),
                     HttpStatus.OK);
         }
     }

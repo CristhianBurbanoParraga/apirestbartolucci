@@ -61,10 +61,10 @@ public class UsuarioService {
                 = (ArrayList<Usuario>) usuarioRepository.findAll();
         if (usuarios.isEmpty()) {
             return new UsuarioMessageDto(false, "No hay registros", null, null,
-                    null, null, null, null);
+                    null, null, new ArrayList<>(), null);
         } else {
-            return new UsuarioMessageDto(true, "Ok", null, null, null, null, 
-usuarios, null);
+            return new UsuarioMessageDto(true, "Ok", null, null, null, null,
+                    usuarios, null);
         }
     }
 
@@ -72,7 +72,7 @@ usuarios, null);
         Optional<Usuario> usuario = usuarioRepository.findById(id);
         if (usuario.isPresent()) {
             return new UsuarioMessageDto(true, "Ok", usuario.get(), null, null,
- null, null, null);
+                    null, null, null);
         } else {
             return new UsuarioMessageDto(false, "Id de usuario inexistente", null, null,
                     null, null, null, null);
@@ -83,7 +83,7 @@ usuarios, null);
         ArrayList<Usuario> usuarios = usuarioRepository.findByTipousuario(tipo);
         if (usuarios.isEmpty()) {
             return new UsuarioMessageDto(false, "No hay usuarios de Tipo: "
-                    + tipo, null, null, null, null, null, null);
+                    + tipo, null, null, null, null, null, new ArrayList<>());
         } else {
             ArrayList<UsuarioDto> usuariosDto = new ArrayList<>();
             for (int i = 0; i < usuarios.size(); i++) {
@@ -118,8 +118,8 @@ usuarios, null);
                 }
                 usuariosDto.add(item);
             }
-            return new UsuarioMessageDto(true, "Ok", null, null, null, null, 
-null, usuariosDto);
+            return new UsuarioMessageDto(true, "Ok", null, null, null, null,
+                    null, usuariosDto);
         }
     }
 
@@ -128,10 +128,10 @@ null, usuariosDto);
                 = (ArrayList<Usuario>) usuarioRepository.findByActivo(activo);
         if (usuarios.isEmpty()) {
             return new UsuarioMessageDto(false, "No hay usuarios con Estado: "
-                    + activo, null, null, null, null, null, null);
+                    + activo, null, null, null, null, new ArrayList<>(), null);
         } else {
-            return new UsuarioMessageDto(true, "Ok", null, null, null, null, 
-usuarios, null);
+            return new UsuarioMessageDto(true, "Ok", null, null, null, null,
+                    usuarios, null);
         }
     }
 
@@ -140,8 +140,8 @@ usuarios, null);
                 usuarioSaveDto.getCorreo(),
                 usuarioSaveDto.getTelefono());
         if (!validation.equals("Ok")) {
-            return new UsuarioMessageDto(false, validation, null, null, null, null, 
-null, null);
+            return new UsuarioMessageDto(false, validation, null, null, null, null,
+                    null, null);
         } else {
             Usuario usuario = new Usuario();
             usuario.setUsuario(usuarioSaveDto.getUsuario());
@@ -161,7 +161,7 @@ null, null);
                         null, null);
                 docenteRepository.save(docente);
                 return new UsuarioMessageDto(true, "Ok", null, null, usuarioSaveDto,
- null, null, null);
+                        null, null, null);
             } else {
                 usuario.setTipousuario("ES");
                 if (ExistsDocenteSelectedSave(
@@ -184,7 +184,7 @@ null, null);
                             new Date(), true);
                     grupoRepository.save(grupo);
                     return new UsuarioMessageDto(true, "Ok", null, null,
- usuarioSaveDto, null, null, null);
+                            usuarioSaveDto, null, null, null);
                 } else {
                     return new UsuarioMessageDto(false, "El docente seleccionado"
                             + " no existe", null, null, null, null, null, null);

@@ -37,7 +37,7 @@ public class GrupoService {
     public GrupoMessageDto GetAllGrupos() {
         ArrayList<Grupo> grupos = (ArrayList<Grupo>) grupoRepository.findAll();
         if (grupos.isEmpty()) {
-            return new GrupoMessageDto(false, "No hay registros", null, null, null);
+            return new GrupoMessageDto(false, "No hay registros", null, null, new ArrayList<>());
         } else {
             ArrayList<GrupoListByDocenteDto> list
                     = new ArrayList<>();

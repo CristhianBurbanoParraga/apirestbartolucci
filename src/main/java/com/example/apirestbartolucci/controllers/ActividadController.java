@@ -66,7 +66,7 @@ public class ActividadController {
         if (actividades.isStatus()) {
             return new ResponseEntity(actividades.getActividades(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(actividades.getMessage()),
+            return new ResponseEntity(actividades.getActividades(),
                     HttpStatus.OK);
         }
     }
@@ -79,7 +79,7 @@ public class ActividadController {
         if (actividad.isStatus()) {
             return new ResponseEntity(actividad.getActividades(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(actividad.getMessage()),
+            return new ResponseEntity(actividad.getActividades(),
                     HttpStatus.OK);
         }
     }
@@ -93,7 +93,7 @@ public class ActividadController {
             return new ResponseEntity(actividades.getActividades(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(actividades.getMessage()),
+            return new ResponseEntity(actividades.getActividades(),
                     HttpStatus.OK);
         }
     }
@@ -107,7 +107,7 @@ public class ActividadController {
             return new ResponseEntity(actividades.getActividades(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(actividades.getMessage()),
+            return new ResponseEntity(actividades.getActividades(),
                     HttpStatus.OK);
         }
     }
@@ -122,7 +122,7 @@ public class ActividadController {
         if (actividades.isStatus()) {
             return new ResponseEntity(actividades.getActividadesOtherDtos(), HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(actividades.getMessage()),
+            return new ResponseEntity(actividades.getActividadesOtherDtos(),
                     HttpStatus.OK);
         }
     }
@@ -136,7 +136,7 @@ public class ActividadController {
             return new ResponseEntity(actividades.getActividadesEv(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(actividades.getMessage()),
+            return new ResponseEntity(actividades.getActividadesEv(),
                     HttpStatus.OK);
         }
     }
