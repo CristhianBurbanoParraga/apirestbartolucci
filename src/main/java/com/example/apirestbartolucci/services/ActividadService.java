@@ -47,7 +47,8 @@ public class ActividadService {
         ArrayList<Actividad> actividades
                 = (ArrayList<Actividad>) actividadRepository.findByOrderByIdAsc();
         if (actividades.isEmpty()) {
-            return new ActividadMessageDto(false, "No hay registros", null, null, null, null, null);
+            return new ActividadMessageDto(false, "No hay registros", null, null, null,
+                    new ArrayList<ActividadDto>(), null);
         } else {
             ArrayList<ActividadDto> actividadesDto = new ArrayList<>();
             for (int i = 0; i < actividades.size(); i++) {

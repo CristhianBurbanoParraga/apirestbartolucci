@@ -50,7 +50,7 @@ public class Subnivel implements Serializable {
     @Column(nullable = false, unique = false)
     private int prioridad;
 
-    @Column(length = 30, nullable = false, unique = true)
+    @Column(length = 35, nullable = false, unique = true)
     private String publicid;
 
     @Column(nullable = false, unique = false)

@@ -42,7 +42,7 @@ public class ActividadController {
             return new ResponseEntity(actividades.getActividadesDtos(),
                     HttpStatus.OK);
         } else {
-            return new ResponseEntity(new Mensaje(actividades.getMessage()),
+            return new ResponseEntity(actividades.getActividadesDtos(),
                     HttpStatus.OK);
         }
     }
