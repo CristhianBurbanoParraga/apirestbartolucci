@@ -117,14 +117,6 @@ public class UsuarioController {
         return new ResponseEntity(new Mensaje(message), HttpStatus.OK);
     }
 
-    @PostMapping(path = "/recoveryPhone")
-    public ResponseEntity<?> SendPhoneRecovery(
-            @RequestParam("telefono") String telefono) {
-        //String message = usuarioService.SendPhoneRecoveryCredentials(telefono);
-        //String message = twilioService.SendSMSVersion2(telefono, "Hola ha sido hakeada,no es broma jajaja");
-        return new ResponseEntity(new Mensaje("El servicio esta suspendido por el momento"), HttpStatus.OK);
-    }
-
     @PutMapping()
     public ResponseEntity<?> Update(
             @RequestBody UsuarioUpdateDto usuarioUpdateDto) {

@@ -130,15 +130,27 @@ public class MultimediaService {
                 ArrayList<Multimedia> multimedias
                         = multimediaRepository.findByContenido(contenido.get());
                 if (multimedias.size() < 3) {
-                    Multimedia multimedia = new Multimedia(0,
-                            contenido.get(),
-                            multimediaSaveDto.getDescripcion(),
-                            multimediaSaveDto.getMultimedia().getPublicid(),
-                            multimediaSaveDto.getMultimedia().getUrl(),
-                            multimediaSaveDto.getTipo(),
-                            multimediaSaveDto.isIsInicial());
-                    return new MultimediaMessageDto(true, "Ok",
-                            multimediaRepository.save(multimedia), null, null);
+                    boolean init = false;
+                    for (int i = 0; i < multimedias.size(); i++) {
+                        if (multimedias.get(i).isInicial()) {
+                            init = true;
+                            break;
+                        }
+                    }
+                    if (init) {
+                        return new MultimediaMessageDto(false, "Ya existe un "
+                                + "multimedia inicial", null, null, null);
+                    } else {
+                        Multimedia multimedia = new Multimedia(0,
+                                contenido.get(),
+                                multimediaSaveDto.getDescripcion(),
+                                multimediaSaveDto.getMultimedia().getPublicid(),
+                                multimediaSaveDto.getMultimedia().getUrl(),
+                                multimediaSaveDto.getTipo(),
+                                multimediaSaveDto.isIsInicial());
+                        return new MultimediaMessageDto(true, "Ok",
+                                multimediaRepository.save(multimedia), null, null);
+                    }
                 } else {
                     return new MultimediaMessageDto(false, "Este Contenido ya tiene"
                             + " las 3 multimedias permitidas", null, null, null);
