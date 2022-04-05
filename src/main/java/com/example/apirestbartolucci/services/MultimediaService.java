@@ -131,15 +131,27 @@ public class MultimediaService {
                         = multimediaRepository.findByContenido(contenido.get());
                 if (multimedias.size() < 3) {
                     boolean init = false;
-                    for (int i = 0; i < multimedias.size(); i++) {
-                        if (multimedias.get(i).isInicial()) {
-                            init = true;
-                            break;
+                    if (multimediaSaveDto.isIsInicial()) {
+                        for (int i = 0; i < multimedias.size(); i++) {
+                            if (multimedias.get(i).isInicial()) {
+                                init = true;
+                                break;
+                            }
                         }
-                    }
-                    if (init) {
-                        return new MultimediaMessageDto(false, "Ya existe un "
-                                + "multimedia inicial", null, null, null);
+                        if (init) {
+                            return new MultimediaMessageDto(false, "Ya existe un "
+                                    + "multimedia inicial", null, null, null);
+                        } else {
+                            Multimedia multimedia = new Multimedia(0,
+                                    contenido.get(),
+                                    multimediaSaveDto.getDescripcion(),
+                                    multimediaSaveDto.getMultimedia().getPublicid(),
+                                    multimediaSaveDto.getMultimedia().getUrl(),
+                                    multimediaSaveDto.getTipo(),
+                                    multimediaSaveDto.isIsInicial());
+                            return new MultimediaMessageDto(true, "Ok",
+                                    multimediaRepository.save(multimedia), null, null);
+                        }
                     } else {
                         Multimedia multimedia = new Multimedia(0,
                                 contenido.get(),
